@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "baseUrl": "./",
+    "baseUrl": "src",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,11 +18,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    "paths": {
-      "@/*": ["src/*"],
-      "overwritten-styled-components": ["src/styles/styled-components"]
-    }
+    "jsx": "react"
   },
   "include": [
     "src"
