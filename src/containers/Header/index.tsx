@@ -3,6 +3,7 @@ import styled from 'styles/styled-components';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
+import Container from 'components/Container';
 
 export interface IHeaderProps {
   className?: string;
@@ -23,7 +24,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
   public render() {
     return (
       <header className={this.props.className}>
-        <div className="container">
+        <Container>
           <Grid container alignItems="center">
             <Grid item xs={4}>
               <Typography component="h1" >
@@ -51,7 +52,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
               </div>
             </Grid>
           </Grid>
-        </div>
+        </Container>
       </header>
     );
   }
@@ -65,10 +66,6 @@ const StyledHeader = styled(Header)`
   & a {
     color: #333;
     text-decoration: none;
-  }
-  .container {
-    margin: 0 auto;
-    width: 1200px;
   }
   ul.menu {
     margin: 0;

@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './containers/Header';
 import HeroBanner from './containers/HeroBanner';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import HowToPlay from 'containers/HowToPlay';
 
 const Main: React.FC = () => {
   return (
@@ -9,8 +10,8 @@ const Main: React.FC = () => {
       <CssBaseline></CssBaseline>
       <Header/>
       <HeroBanner/>
-      {/* <HowToPlay/>
-      <Leaderboard/>
+      <HowToPlay/>
+      {/* <Leaderboard/>
       <Rules/>
       <Footer/> */}
     </div>
