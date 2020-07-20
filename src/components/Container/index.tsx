@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styled from 'styles/styled-components';
+import * as React from "react";
+import styled from "styles/styled-components";
 
 export interface IContainerProps {
   children?: any;

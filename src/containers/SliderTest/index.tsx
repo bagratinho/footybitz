@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styled from 'styles/styled-components';
+import * as React from "react";
+import styled from "styles/styled-components";
 import ContentSlider, { Slide } from "components/ContentSlider";
 
 export interface ISliderTestProps {
@@ -55,15 +55,15 @@ export default class SliderTest extends React.PureComponent<ISliderTestProps, { 
 
   private firstSlide = () => (
     <div className="first">
-      I'm the first slide <br/><br/>
+      I"m the first slide <br/><br/>
       Lorem ipsum dolor, sit amet consectetur adipisicing elit.
     </div>
   )
 
   private secondSlide = () => (
     <div className="second">
-      I'm the second slide <br/><br/>
-      I'm a bit longer then the previous one
+      I"m the second slide <br/><br/>
+      I"m a bit longer then the previous one
       <br/><br/>
       Lorem ipsum dolor, sit amet consectetur adipisicing elit.
     </div>
@@ -71,7 +71,7 @@ export default class SliderTest extends React.PureComponent<ISliderTestProps, { 
 
   private thirdSlide = () => (
     <div className="third">
-      Well, I'm the biggest of my brothers <br/>
+      Well, I"m the biggest of my brothers <br/>
       Seriously! <br/>
       Not joking! <br/><br/>
       Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat quae possimus, nostrum debitis repellat repudiandae eaque dolorum deleniti cum aliquam suscipit, quod animi. Voluptate magni qui, adipisci earum neque sint?
@@ -91,7 +91,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   font-size: 30px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   & div.wrapper {
     box-shadow: 0 0 0 10px #56508c;
     background: #56508c;

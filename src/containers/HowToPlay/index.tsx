@@ -1,7 +1,7 @@
-import * as React from 'react';
-import styled from 'styles/styled-components';
-import { Typography, Grid } from '@material-ui/core';
-import Container from 'components/Container';
+import * as React from "react";
+import styled from "styles/styled-components";
+import { Typography, Grid } from "@material-ui/core";
+import Container from "components/Container";
 
 
 export interface IHowToPlayProps {

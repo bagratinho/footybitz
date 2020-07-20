@@ -1,10 +1,16 @@
-import * as React from 'react';
-import styled from 'styles/styled-components';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import { Typography } from '@material-ui/core';
-import Container from 'components/Container';
-
+import * as React from "react";
+import styled from "styles/styled-components";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Grid from "@material-ui/core/Grid";
+import { Typography } from "@material-ui/core";
+import { Settings} from "@material-ui/icons";
+import Container from "components/Container";
+import Box from "components/Box";
+import Dictionary from "components/Dictionary";
+import logo from "./logo.png";
+import logo1 from "./logo1.png";
+import { FirebaseContext } from "components/Firebase";
 export interface IHeaderProps {
   className?: string;
 }
@@ -23,49 +29,63 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
 
   public render() {
     return (
-      <header className={this.props.className}>
+      <StyledHeader
+        className={this.props.className}
+        padding={["l", null]}
+      >
         <Container>
-          <Grid container alignItems="center">
-            <Grid item xs={4}>
-              <Typography component="h1" >
-                <a href="#">
-                  FOOTY PREDICTOR
-                </a>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={4} alignItems="center">
+              <Typography component="h1">
+                <img src={logo} />
               </Typography>
             </Grid>
             <Grid item xs={8} container alignItems="center" justify="flex-end">
-              <ul className="menu">
-                <li>
-                  <a href="">how to play</a>
-                </li>
-                <li>
-                  <a href="">leaderboard</a>
-                </li>
-                <li>
-                  <a href="">rules</a>
-                </li>
-              </ul>
+              <IconButton
+                size="medium"
+                color="primary"
+              >
+                <Settings />
+              </IconButton>
               <div className="authentication">
-                <Button>sign in</Button>
+                <FirebaseContext.Consumer>
+                  {(firebase: any) => (
+                    <Button
+                      size="large"
+                      color="primary"
+                      variant="outlined"
+                      onClick={() => firebase.signInWithEmailAndPassword("bagratinho@gmail.com", "br224728")}
+                    >
+                      <Dictionary label="signIn"/>
+                    </Button>
+                  )}
+                </FirebaseContext.Consumer>
                 <span>or</span>
-                <Button>sign up</Button>
+                <Button
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  disableElevation
+                >
+                  <Dictionary label="signUp"/>
+                </Button>
               </div>
             </Grid>
           </Grid>
         </Container>
-      </header>
+      </StyledHeader>
     );
   }
 }
 
-const StyledHeader = styled(Header)`
-  background: #ccc;
-  padding: 10px 0;
+const StyledHeader = styled(Box)`
+  background: #fbd46d;
   text-transform: uppercase;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  & a {
-    color: #333;
-    text-decoration: none;
+  color: #4f8a8b;
+  & img {
+    height: 30px;
+    display: block;
   }
   ul.menu {
     margin: 0;
@@ -83,4 +103,4 @@ const StyledHeader = styled(Header)`
   }
 `;
 
-export default StyledHeader;
+export default Header;
