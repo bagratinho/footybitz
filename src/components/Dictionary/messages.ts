@@ -9,6 +9,10 @@ export default defineMessages({
     id: "signUp",
     defaultMessage: "Sign up",
   },
+  howToPlay: {
+    id: "howToPlay",
+    defaultMessage: "How to play",
+  },
   or: {
     id: "or",
     defaultMessage: "Or",
