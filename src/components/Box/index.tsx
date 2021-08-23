@@ -27,5 +27,5 @@ const StyledContainer = styled.div<{ margin?: IElementSpacing[]; padding?: IElem
   ${props => props.margin ?
   `margin: ${props.margin.reduce((sum, item) => `${sum ? `${sum} ` : ""}${item ? props.theme.spacing[item] : 0}px`, "")};` : "" }
   ${props => props.padding ?
-    `padding: ${props.padding.reduce((sum, item) => `${sum ? `${sum} ` : ""}${item ? props.theme.spacing[item] : 0}px`, "")};` : "" }
+  `padding: ${props.padding.reduce((sum, item) => `${sum ? `${sum} ` : ""}${item ? props.theme.spacing[item] : 0}px`, "")};` : "" }
 `;

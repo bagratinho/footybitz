@@ -4,6 +4,8 @@ import Box from "components/Box";
 import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline } from "@material-ui/icons";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
+import logo from "./logo.png";
+import { Typography } from "@material-ui/core";
 
 export interface ISidebarNavigationProps {
   className?: string;
@@ -12,18 +14,31 @@ export interface ISidebarNavigationProps {
 export default (props: ISidebarNavigationProps) =>  {
   return (
     <StyledContainer>
-      <NavLink exact activeClassName="active" to="/">
-        <Sports/><Dictionary label="matchdays"/>
-      </NavLink>
-      <NavLink activeClassName="active" to="/results">
-        <FormatListNumbered/><Dictionary label="results"/>
-      </NavLink>
-      <NavLink activeClassName="active" to="/standings">
-        <EmojiEventsOutlined/><Dictionary label="standings"/>
-      </NavLink>
-      <NavLink activeClassName="active" to="/how-to-play">
-        <HelpOutline/><Dictionary label="howToPlay"/>
-      </NavLink>
+      <Typography component="h1">
+        <img src={logo} />
+      </Typography>
+      <ul>
+        <li>
+          <NavLink exact activeClassName="active" to="/">
+            <Sports/><Dictionary label="matchdays"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/results">
+            <FormatListNumbered/><Dictionary label="results"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/standings">
+            <EmojiEventsOutlined/><Dictionary label="standings"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/how-to-play">
+            <HelpOutline/><Dictionary label="howToPlay"/>
+          </NavLink>
+        </li>
+      </ul>
     </StyledContainer>
   );
 }
@@ -31,29 +46,46 @@ export default (props: ISidebarNavigationProps) =>  {
 
 const StyledContainer = styled(Box)`
   overflow: hidden;
-  background: #5e5c7b;;
   position: relative;
   z-index: 1;
-  & > a {
-    padding: 16px;
-    font-size: 16px;
-    color: #f4f6ff;
-    font-weight: 400;
+  & h1 {
+    height: 60px;
     display: flex;
     align-items: center;
-    transition: ${props => props.theme.transition.default};
-    cursor: pointer;
-    text-transform: uppercase;
-    text-decoration: none;
-    & > svg {
-      margin-right: 16px;
-    }
-    &.active ,
-    &:hover {
-      background: #4f8a8b;
-    }
+    padding: 0 16px;
   }
-  & > a:not(:last-child) {
-    border-bottom: solid 1px #4d4b62;
+  & img {
+    height: 30px;
+    display: block;
+  }
+  & ul {
+    display: block;
+    padding: 0;
+    margin: 0;
+    & > li {
+      display: block;
+      margin-bottom: 10px;
+      & > a {
+        padding: 16px;
+        font-size: 16px;
+        color: #f4f6ff;
+        font-weight: 400;
+        border-radius: 28px;
+        display: inline-flex;
+        align-items: center;
+        transition: background-color ${props => props.theme.transition.default} ;
+        cursor: pointer;
+        text-decoration: none;
+        & > svg {
+          margin-right: 16px;
+        }
+        &.active {
+          font-weight: 700;
+        }
+        &:hover {
+          background: rgb(120 29 242);
+        }
+      }
+    }
   }
 `;

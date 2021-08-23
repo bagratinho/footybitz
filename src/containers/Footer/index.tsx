@@ -47,7 +47,7 @@ class Footer extends React.Component<IFooterProps, IFooterState> {
 }
 
 const StyledFooter = styled(Box)`
-  background: #363544;
+  background: rgb(56, 68, 77);
   text-transform: uppercase;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   color: #4f8a8b;

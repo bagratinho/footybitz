@@ -3,7 +3,7 @@ import { IThemeInterface } from "styles/styled-components";
 export default {
   id: "base",
   transition: {
-    default: `all 300ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    default: "300ms cubic-bezier(0.4, 0, 0.2, 1)",
     duration: "300ms",
     function: "cubic-bezier(0.4, 0, 0.2, 1)",
   },

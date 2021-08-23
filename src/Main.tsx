@@ -19,19 +19,28 @@ import SidebarNavigation from "containers/SidebarNavigation";
 const muiTheme = createMuiTheme({
   palette: {
     primary: {
-      main: "#4f8a8b",
+      main: "#781df2",
     },
     secondary: {
-      main: "#fbd46d",
+      main: "#f8bbd0",
     },
+    background: {
+      default: "#15202B",
+    },
+    text: {
+      primary: "#ffffff",
+    },
+  },
+  typography: {
+    fontFamily: `-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif`,
+    h6: {
+      fontWeight: "bold",
+    }
   },
 })
 
 const GlobalStyle = createGlobalStyle`
   @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;1,100;1,300;1,400&display=swap");
-  html > body {
-    background-color: #4d4b62;
-  }
 `;
 
 const Main: React.FC = () => {
@@ -39,53 +48,59 @@ const Main: React.FC = () => {
     <Router>
       <IntlProvider
         locale="en"
-
         onError={error => console.log("Intl :::", error)}
       >
         <MuiThemeProvider theme={muiTheme}>
           <ThemeProvider theme={theme}>
             <FirebaseContext.Provider value={new Firebase()}>
-              <div className="app-main-wrapper">
+              <Box
+                display="flex"
+                flexDirection="column"
+              >
                 <CssBaseline/>
                 <GlobalStyle/>
-                <Header/>
-                  <StyledContainer>
-                    <Container>
-                      <Grid container alignItems="flex-start">
-                        <Grid item xs={3}>
-                          <SidebarNavigation/>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Switch>
-                            <Route path="/" exact={true} component={Interface}/>
-                            <Route path="/results" exact={true} component={Results}/>
-                            <Route path="/standings" exact={true} component={Standings}/>
-                            <Route path="/how-to-play" exact={true} component={HowToPlay}/>
-                            {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
-                            <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
-                          </Switch>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <div className="">
-                            <div>Matchday prize pool</div>
-                            <div>$15.000</div>
-                          </div>
-                          <div className="">
-                            <div>Season prize pool</div>
-                            <div>$65.000</div>
-                          </div>
-                          <div className="">
-                            <div>Season Leaders</div>
-                            <div>Lorem</div>
-                            <div>Ipsum</div>
-                            <div>Dolor</div>
-                          </div>
-                        </Grid>
-                      </Grid>
-                    </Container>
-                  </StyledContainer>
+                <Container>
+                  <Grid className="main-grid" container alignItems="flex-start">
+                    <Grid item xs={3}>
+                      <SidebarNavigation/>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box
+                        minHeight="calc(100vh - 40px)"
+                        borderLeft="solid 1px #38444d"
+                        borderRight="solid 1px #38444d"
+                      >
+                        <Switch>
+                          <Route path="/" exact={true} component={Interface}/>
+                          <Route path="/results" exact={true} component={Results}/>
+                          <Route path="/standings" exact={true} component={Standings}/>
+                          <Route path="/how-to-play" exact={true} component={HowToPlay}/>
+                          {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
+                          <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
+                        </Switch>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Header/>
+                      <div className="">
+                        <div>Matchday prize pool</div>
+                        <div>$15.000</div>
+                      </div>
+                      <div className="">
+                        <div>Season prize pool</div>
+                        <div>$65.000</div>
+                      </div>
+                      <div className="">
+                        <div>Season Leaders</div>
+                        <div>Lorem</div>
+                        <div>Ipsum</div>
+                        <div>Dolor</div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Container>
                 <Footer/>
-              </div>
+              </Box>
             </FirebaseContext.Provider>
           </ThemeProvider>
 
@@ -98,18 +113,10 @@ const Main: React.FC = () => {
 const StyledContainer = styled(Box)`
   margin-bottom: 40px;
   min-height: calc(100vh - 160px);
-
-  & .main-panel {
-    background: #3e3c4e;
-    & .main-panel-header {
-      background: #4f8a8b;
-      color: #fff;
-      background-color: #363544;
-      padding: 8px 16px;
-    }
-    & .main-panel-inner {
-      padding: 8px 16px;
-    }
+  display: flex;
+  flex-direction: column;
+  & .main-container {
+    flex: 1;
   }
 `;
 

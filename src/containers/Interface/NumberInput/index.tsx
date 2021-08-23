@@ -76,14 +76,14 @@ const StyledContainer = styled.div`
     color: #fbd46d;
     font-weight: 700;
     &::placeholder {
-      color: rgba(0, 0, 0, 0.26);
+      color: rgba(0, 0, 0, 0.25);
     }
   }
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 52px;
-  background: #5f5c7b;
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 26px;
   padding: 2px;
 `

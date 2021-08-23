@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styles/styled-components";
 import Box from "components/Box";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 
 export interface IHowToPlayProps {
   className?: string;
@@ -13,7 +13,9 @@ export default (props: IHowToPlayProps) =>  {
       <div className="main-panel">
         <div className="main-panel-header">
           <div className="filter-bar">
-            How to play
+            <Typography variant="h6">
+              How to play
+            </Typography>
           </div>
         </div>
         <div className="main-panel-inner">

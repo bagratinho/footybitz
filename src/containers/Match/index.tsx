@@ -50,12 +50,10 @@ export default class Match extends React.PureComponent<IMatchProps> {
 
 
 const StyledContainer = styled.div`
-  background-color: #4d4b62;
-  color: #f4f6fe;
-  /* border: solid 1px #5f5c7b; */
+  color: #fff;
   margin-bottom: 16px;
   & .info {
-    border-bottom: solid 1px #5f5c7b;
+    border-bottom: solid 1px #38444d;
     font-size: 12px;
     text-align: center;
     padding: 8px 16px;

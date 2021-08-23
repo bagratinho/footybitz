@@ -1,7 +1,5 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import Box from "components/Box";
-import { Grid } from "@material-ui/core";
+import { Box, Grid, Typography } from "@material-ui/core";
 import Container from "components/Container";
 import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline } from "@material-ui/icons";
 import Dictionary from "components/Dictionary";
@@ -27,48 +25,25 @@ export default (props: IInterfaceProps) =>  {
     setSelectedDate(date);
   };
   return (
-    <StyledContainer>
-      <div className="main-panel">
-        {/* <div className="filter-bar">
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              id="date-picker-inline"
-              value={selectedDate}
-              onChange={handleDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-            />
-            <KeyboardDatePicker
-              id="date-picker-dialog"
-              format="MM/dd/yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-            />
-          </MuiPickersUtilsProvider>
-        </div> */}
-        <div className="main-panel-header">
-          <div className="filter-bar">
-            Matchday
-          </div>
-        </div>
-        <div className="main-panel-inner">
-          <Match/>
-          <Match/>
-          <Match/>
-        </div>
-      </div>
-    </StyledContainer>
+    <Box>
+      <Box
+        height={60}
+        display="flex"
+        alignItems="center"
+        pt={0}
+        pb={0}
+        pr={2}
+        pl={2}
+      >
+        <Typography variant="h6">
+          Matchday
+        </Typography>
+      </Box>
+      <Box>
+        <Match/>
+        <Match/>
+        <Match/>
+      </Box>
+    </Box>
   );
 }
-
-
-const StyledContainer = styled(Box)`
-
-`;
