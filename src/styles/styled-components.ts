@@ -51,6 +51,7 @@ export interface IThemeInterface {
     text: string;
     box: string;
   };
+  muiTheme: any,
 }
 
 export type ISpacing = "xs" | "s" | "m" | "l" | "xl" | "xxl";

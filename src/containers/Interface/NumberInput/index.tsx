@@ -74,6 +74,7 @@ const StyledContainer = styled.div`
     padding: 0;
     height: 30px;
     color: #fbd46d;
+    color: ${props => props.theme.muiTheme.palette.secondary.main};
     font-weight: 700;
     &::placeholder {
       color: rgba(0, 0, 0, 0.25);
@@ -83,7 +84,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 52px;
-  background: rgba(0, 0, 0, 0.25);
+  background: ${props => props.theme.muiTheme.palette.divider};
   border-radius: 26px;
   padding: 2px;
 `

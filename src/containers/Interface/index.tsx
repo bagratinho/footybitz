@@ -1,18 +1,6 @@
 import * as React from "react";
-import { Box, Grid, Typography } from "@material-ui/core";
-import Container from "components/Container";
-import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline } from "@material-ui/icons";
-import Dictionary from "components/Dictionary";
-import { Link } from "react-router-dom";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-
-} from "@material-ui/pickers";
-import { NumberInput } from "./NumberInput";
+import { Box, Typography } from "@material-ui/core";
 import Match from "containers/Match";
-import SidebarNavigation from "containers/SidebarNavigation";
 
 export interface IInterfaceProps {
   className?: string;
@@ -34,6 +22,11 @@ export default (props: IInterfaceProps) =>  {
         pb={0}
         pr={2}
         pl={2}
+        borderColor="divider"
+        borderLeft={0}
+        borderRight={0}
+        borderTop={0}
+        border={1}
       >
         <Typography variant="h6">
           Matchday

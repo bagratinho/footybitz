@@ -3,6 +3,7 @@ import styled from "styles/styled-components";
 import { NumberInput } from "containers/Interface/NumberInput";
 import Dictionary from "components/Dictionary";
 import { Button } from "@material-ui/core";
+import * as images from "./images";
 
 export interface IMatchProps {
   // homeTeamLogo: string;
@@ -21,7 +22,11 @@ export default class Match extends React.PureComponent<IMatchProps> {
     return (
       <StyledContainer>
         <div className="info">
-          League: Spain, La Liga Santander - Hour: 14:00
+          <img src={images.laLiga} alt=""/>
+          <div>
+            <span>La Liga Santander Round 2</span>
+            <span>KO: 16/11/2021, 14:00</span>
+          </div>
         </div>
         <div className="details">
           <div className="team">
@@ -29,12 +34,12 @@ export default class Match extends React.PureComponent<IMatchProps> {
             Barcelona
           </div>
           <div className="outcome">
-            <div className="label">
+            {/* <div className="label">
               <Dictionary label="yourPrediction"/>
-            </div>
+            </div> */}
             <div className="prediction">
               <NumberInput/>
-              -
+              vs
               <NumberInput/>
             </div>
           </div>
@@ -51,17 +56,32 @@ export default class Match extends React.PureComponent<IMatchProps> {
 
 const StyledContainer = styled.div`
   color: #fff;
-  margin-bottom: 16px;
+  border-bottom: solid 1px #38444d;
+  user-select: none;
   & .info {
-    border-bottom: solid 1px #38444d;
-    font-size: 12px;
-    text-align: center;
-    padding: 8px 16px;
+    padding: 16px 16px 0;
+    display: flex;
+    align-items: center;
+
+    & > img {
+      width: 42px;
+      height: 42px;
+      border-radius: 4px;
+      background: #fff;
+      margin-right: 8px;
+    }
+    & > div {
+      display: flex;
+      flex-direction: column;
+    }
   }
   & .details {
     display: flex;
     justify-content: space-evenly;
-    padding: 32px 16px;
+    padding: 16px 8px;
+    margin: 16px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.05);
     & .team {
       display: flex;
       flex-direction: column;

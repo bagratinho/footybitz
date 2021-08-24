@@ -15,6 +15,7 @@ import Firebase, { FirebaseContext } from "components/Firebase";
 import Footer from "containers/Footer";
 import { Box, Container, Grid } from "@material-ui/core";
 import SidebarNavigation from "containers/SidebarNavigation";
+import { Paper } from "@material-ui/core";
 
 const muiTheme = createMuiTheme({
   palette: {
@@ -30,6 +31,7 @@ const muiTheme = createMuiTheme({
     text: {
       primary: "#ffffff",
     },
+    divider: "#38444d",
   },
   typography: {
     fontFamily: `-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif`,
@@ -51,7 +53,10 @@ const Main: React.FC = () => {
         onError={error => console.log("Intl :::", error)}
       >
         <MuiThemeProvider theme={muiTheme}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={{
+            ...theme,
+            muiTheme,
+          }}>
             <FirebaseContext.Provider value={new Firebase()}>
               <Box
                 display="flex"
@@ -67,8 +72,10 @@ const Main: React.FC = () => {
                     <Grid item xs={6}>
                       <Box
                         minHeight="calc(100vh - 40px)"
-                        borderLeft="solid 1px #38444d"
-                        borderRight="solid 1px #38444d"
+                        borderColor="divider"
+                        border={1}
+                        borderTop={0}
+                        borderBottom={0}
                       >
                         <Switch>
                           <Route path="/" exact={true} component={Interface}/>
@@ -82,6 +89,7 @@ const Main: React.FC = () => {
                     </Grid>
                     <Grid item xs={3}>
                       <Header/>
+                      <Paper variant="outlined"/>
                       <div className="">
                         <div>Matchday prize pool</div>
                         <div>$15.000</div>
