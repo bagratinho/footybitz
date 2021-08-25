@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styles/styled-components";
-import Box from "components/Box";
-import { Grid } from "@material-ui/core";
+import { Grid, Box, Typography } from "@material-ui/core";
 
 export interface IStandingsProps {
   className?: string;
@@ -9,20 +8,28 @@ export interface IStandingsProps {
 
 export default (props: IStandingsProps) =>  {
   return (
-    <StyledContainer>
-      <div className="main-panel">
-        <div className="main-panel-header">
-          <div className="filter-bar">
-            Standings
-          </div>
-        </div>
-        <div className="main-panel-inner">
-        </div>
-      </div>
-    </StyledContainer>
+    <Box>
+      <Box
+        height={60}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        pt={1}
+        pb={1}
+        pr={2}
+        pl={2}
+        borderColor="divider"
+        borderLeft={0}
+        borderRight={0}
+        borderTop={0}
+        border={1}
+      >
+        <Typography variant="h6">
+          Standings
+        </Typography>
+      </Box>
+      <Box>
+      </Box>
+    </Box>
   );
 }
-
-
-const StyledContainer = styled(Box)`
-`;

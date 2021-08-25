@@ -67,7 +67,7 @@ const StyledContainer = styled(Box)`
       margin-bottom: 10px;
       & > a {
         padding: 16px;
-        font-size: 16px;
+        font-size: 18px;
         color: #f4f6ff;
         font-weight: 400;
         border-radius: 28px;

@@ -19,19 +19,60 @@ import { Paper } from "@material-ui/core";
 
 const muiTheme = createMuiTheme({
   palette: {
+    type: "dark",
     primary: {
       main: "#781df2",
     },
     secondary: {
-      main: "#f8bbd0",
+      main: "#fff",
     },
     background: {
       default: "#15202B",
     },
     text: {
       primary: "#ffffff",
+      secondary: "#8899a6",
     },
     divider: "#38444d",
+  },
+  overrides: {
+    MuiPaper: {
+      root: {
+        backgroundColor: "#1e2731",
+      },
+    },
+    MuiInputBase: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+    MuiFilledInput: {
+      root: {
+        padding: 0,
+        borderRadius: 4,
+        overflow: "hidden",
+        backgroundColor: "#1e2731",
+        "&.Mui-focused": {
+          backgroundColor: "#1e2731",
+        },
+        "&:hover": {
+          backgroundColor: "#1e2731",
+        },
+      },
+      input: {
+        padding: 8,
+        paddingLeft: 16,
+        lineHeight: "26px",
+      },
+      underline: {
+        "&:after": {
+          display: "none",
+        },
+        "&:before": {
+          display: "none",
+        }
+      }
+    },
   },
   typography: {
     fontFamily: `-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif`,
@@ -88,7 +129,7 @@ const Main: React.FC = () => {
                       </Box>
                     </Grid>
                     <Grid item xs={3}>
-                      <Header/>
+                      {/* <Header/>
                       <Paper variant="outlined"/>
                       <div className="">
                         <div>Matchday prize pool</div>
@@ -103,7 +144,7 @@ const Main: React.FC = () => {
                         <div>Lorem</div>
                         <div>Ipsum</div>
                         <div>Dolor</div>
-                      </div>
+                      </div> */}
                     </Grid>
                   </Grid>
                 </Container>

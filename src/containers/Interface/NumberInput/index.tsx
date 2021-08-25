@@ -47,6 +47,7 @@ export function NumberInput (props: INumberInputProps) {
         value={value}
         type="number"
         placeholder="&mdash;"
+        disabled
         onChange={handleInputChange}
       />
       <IconButton

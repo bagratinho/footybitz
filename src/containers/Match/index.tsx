@@ -25,7 +25,7 @@ export default class Match extends React.PureComponent<IMatchProps> {
           <img src={images.laLiga} alt=""/>
           <div>
             <span>La Liga Santander Round 2</span>
-            <span>KO: 16/11/2021, 14:00</span>
+            <span>KO: 16.11.2021 14:00</span>
           </div>
         </div>
         <div className="details">
@@ -39,7 +39,7 @@ export default class Match extends React.PureComponent<IMatchProps> {
             </div> */}
             <div className="prediction">
               <NumberInput/>
-              vs
+              -
               <NumberInput/>
             </div>
           </div>
@@ -68,11 +68,19 @@ const StyledContainer = styled.div`
       height: 42px;
       border-radius: 4px;
       background: #fff;
-      margin-right: 8px;
+      margin-right: 12px;
     }
     & > div {
       display: flex;
       flex-direction: column;
+      & > span:first-child {
+        font-weight: 700;
+        color: ${props => props.theme.muiTheme.palette.text.primary};
+      }
+      & > span:last-child {
+        font-size: 12px;
+        color: ${props => props.theme.muiTheme.palette.text.secondary};
+      }
     }
   }
   & .details {
@@ -81,7 +89,7 @@ const StyledContainer = styled.div`
     padding: 16px 8px;
     margin: 16px;
     border-radius: 5px;
-    background: rgba(255,255,255,0.05);
+    background: #1e2731;
     & .team {
       display: flex;
       flex-direction: column;
@@ -98,6 +106,7 @@ const StyledContainer = styled.div`
     & .outcome {
       display: flex;
       flex-direction: column;
+      color: ${props => props.theme.muiTheme.palette.divider};
       & .label {
         line-height: 24px;
         border-radius: 12px;
