@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styles/styled-components";
 import { Box, FormControl, MenuItem, Select, Typography } from "@material-ui/core";
+import Match from "containers/Match";
 
 export interface IResultsProps {
   className?: string;
@@ -45,6 +46,15 @@ export default (props: IResultsProps) =>  {
         </FormControl>
       </Box>
       <Box>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
+        <Match/>
       </Box>
     </Box>
   );
