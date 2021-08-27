@@ -9,6 +9,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.10.0",
+    "@types/material-ui": "^0.21.9",
     "firebase": "^7.16.0",
     "react": "^16.9.0",
     "react-content-slider": "^1.0.1",

@@ -37,4 +37,32 @@ export default defineMessages({
     id: "save",
     defaultMessage: "Save",
   },
+  send: {
+    id: "send",
+    defaultMessage: "Send",
+  },
+  games: {
+    id: "games",
+    defaultMessage: "Games",
+  },
+  predictions: {
+    id: "predictions",
+    defaultMessage: "Predictions",
+  },
+  leaderboard: {
+    id: "leaderboard",
+    defaultMessage: "Leaderboard",
+  },
+  currentPrizePool: {
+    id: "currentPrizePool",
+    defaultMessage: "Current prize pool",
+  },
+  prizePool: {
+    id: "prizePool",
+    defaultMessage: "Prize pool",
+  },
+  numberOfParticipants: {
+    id: "numberOfParticipants",
+    defaultMessage: "Number of participants",
+  },
 });

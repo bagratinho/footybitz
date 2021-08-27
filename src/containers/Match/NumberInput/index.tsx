@@ -8,7 +8,7 @@ import { ExpandLess, ExpandMore } from "@material-ui/icons";
 export interface INumberInputProps {
 }
 
-export function NumberInput (props: INumberInputProps) {
+export default function NumberInput (props: INumberInputProps) {
   const arr = new Array(11).fill("").map((item: number, index: number) => index ? String(index) : item);
   const [value, setValue] = React.useState<"" | number>("");
 

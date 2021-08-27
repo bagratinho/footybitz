@@ -1,17 +1,16 @@
 import * as React from "react";
-import styled from "styles/styled-components";
 import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography } from "@material-ui/core";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";
-import GamesList from "./GamesList";
 import PredictionsList from "./PredictionsList";
+import GamesList from "./GamesList";
 
-export interface IResultsProps {
+export interface IMatchdaysProps {
   className?: string;
 }
 
-export default (props: IResultsProps) =>  {
+export default (props: IMatchdaysProps) =>  {
   const [selectedMatchday, setSelectedMatchday] = React.useState(1);
   const handleMatchdayChange = (event: any) => {
     setSelectedMatchday(event.target.value);
@@ -47,7 +46,7 @@ export default (props: IResultsProps) =>  {
             border={1}
           >
             <Typography variant="h6">
-              Results
+              Matchday
             </Typography>
             <FormControl variant="filled">
               <Select
@@ -71,7 +70,7 @@ export default (props: IResultsProps) =>  {
               action={(ref: any) => ref && ref.updateIndicator()}
             >
               <Tab label={<Dictionary label="games"/>} />
-              <Tab label={<Dictionary label="leaderboard"/>} />
+              <Tab label={<Dictionary label="predictions"/>} />
             </Tabs>
           </Box>
         </Box>
@@ -89,7 +88,3 @@ export default (props: IResultsProps) =>  {
     </Box>
   );
 }
-
-
-const StyledContainer = styled(Box)`
-`;

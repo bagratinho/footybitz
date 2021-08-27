@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styles/styled-components";
-import { NumberInput } from "containers/Interface/NumberInput";
+import NumberInput from "./NumberInput";
 import Dictionary from "components/Dictionary";
 import { Button } from "@material-ui/core";
 import * as images from "./images";

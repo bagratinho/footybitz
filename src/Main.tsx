@@ -4,7 +4,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import styled, { ThemeProvider, createGlobalStyle } from "styles/styled-components";
 import theme from "styles/theme";
 import { IntlProvider } from "react-intl";
-import Interface from "containers/Interface";
+import Matchdays from "containers/Matchdays";
 import Standings from "containers/Standings";
 import Results from "containers/Results";
 import HowToPlay from "containers/HowToPlay";
@@ -15,7 +15,6 @@ import Firebase, { FirebaseContext } from "components/Firebase";
 import Footer from "containers/Footer";
 import { Box, Container, Grid } from "@material-ui/core";
 import SidebarNavigation from "containers/SidebarNavigation";
-import { Paper } from "@material-ui/core";
 
 const muiTheme = createMuiTheme({
   palette: {
@@ -63,6 +62,7 @@ const muiTheme = createMuiTheme({
         padding: 8,
         paddingLeft: 16,
         lineHeight: "26px",
+
       },
       underline: {
         "&:after": {
@@ -82,15 +82,30 @@ const muiTheme = createMuiTheme({
   },
 })
 
+const formats = {
+  number: {
+    "BTC": {
+      style: 'currency',
+      currency: 'BTC',
+    },
+  }
+};
+
 const GlobalStyle = createGlobalStyle`
   @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;1,100;1,300;1,400&display=swap");
+  body {
+    overflow-y: scroll;
+  }
 `;
 
 const Main: React.FC = () => {
+  console.log(muiTheme);
   return (
     <Router>
       <IntlProvider
         locale="en"
+        formats={formats}
+        defaultFormats={formats}
         onError={error => console.log("Intl :::", error)}
       >
         <MuiThemeProvider theme={muiTheme}>
@@ -106,20 +121,25 @@ const Main: React.FC = () => {
                 <CssBaseline/>
                 <GlobalStyle/>
                 <Container>
-                  <Grid className="main-grid" container alignItems="flex-start">
+                  <Grid container alignItems="flex-start">
                     <Grid item xs={3}>
-                      <SidebarNavigation/>
+                      <Box
+                        position="fixed"
+                        height={0}
+                      >
+                        <SidebarNavigation/>
+                      </Box>
                     </Grid>
                     <Grid item xs={6}>
                       <Box
-                        minHeight="calc(100vh - 40px)"
+                        minHeight="100vh"
                         borderColor="divider"
                         border={1}
                         borderTop={0}
                         borderBottom={0}
                       >
                         <Switch>
-                          <Route path="/" exact={true} component={Interface}/>
+                          <Route path="/" exact={true} component={Matchdays}/>
                           <Route path="/results" exact={true} component={Results}/>
                           <Route path="/standings" exact={true} component={Standings}/>
                           <Route path="/how-to-play" exact={true} component={HowToPlay}/>
@@ -129,9 +149,8 @@ const Main: React.FC = () => {
                       </Box>
                     </Grid>
                     <Grid item xs={3}>
-                      {/* <Header/>
-                      <Paper variant="outlined"/>
-                      <div className="">
+                      {/* <Header/> */}
+                      {/* <div className="">
                         <div>Matchday prize pool</div>
                         <div>$15.000</div>
                       </div>
@@ -148,25 +167,13 @@ const Main: React.FC = () => {
                     </Grid>
                   </Grid>
                 </Container>
-                <Footer/>
               </Box>
             </FirebaseContext.Provider>
           </ThemeProvider>
-
         </MuiThemeProvider>
       </IntlProvider>
     </Router>
   );
 }
-
-const StyledContainer = styled(Box)`
-  margin-bottom: 40px;
-  min-height: calc(100vh - 160px);
-  display: flex;
-  flex-direction: column;
-  & .main-container {
-    flex: 1;
-  }
-`;
 
 export default Main;
