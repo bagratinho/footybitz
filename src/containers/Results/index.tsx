@@ -4,8 +4,8 @@ import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography } from "@mate
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";
-import GamesList from "./GamesList";
-import PredictionsList from "./PredictionsList";
+import MatchList from "./MatchList";
+import Leaderboard from "./Leaderboard";
 
 export interface IResultsProps {
   className?: string;
@@ -70,7 +70,7 @@ export default (props: IResultsProps) =>  {
               onChange={handleTabChange}
               action={(ref: any) => ref && ref.updateIndicator()}
             >
-              <Tab label={<Dictionary label="games"/>} />
+              <Tab label={<Dictionary label="matches"/>} />
               <Tab label={<Dictionary label="leaderboard"/>} />
             </Tabs>
           </Box>
@@ -80,10 +80,10 @@ export default (props: IResultsProps) =>  {
         pt="108px"
       >
         <TabPanel value={selectedTab} index={0}>
-          <GamesList/>
+          <MatchList/>
         </TabPanel>
         <TabPanel value={selectedTab} index={1}>
-          <PredictionsList/>
+          <Leaderboard/>
         </TabPanel>
       </Box>
     </Box>

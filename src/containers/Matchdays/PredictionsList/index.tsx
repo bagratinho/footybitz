@@ -23,7 +23,7 @@ export default (props: IPredictionsListProps) =>  {
           <Paper variant="outlined">
             <Box
               p={2}
-              color="info.main"
+              color="success.main"
             >
               <Typography variant="h6">
                 <FormattedNumber

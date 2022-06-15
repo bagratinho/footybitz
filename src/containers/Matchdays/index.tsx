@@ -46,7 +46,7 @@ export default (props: IMatchdaysProps) =>  {
             border={1}
           >
             <Typography variant="h6">
-              Matchday
+              <Dictionary label="matchdays"/>
             </Typography>
             <FormControl variant="filled">
               <Select
@@ -69,7 +69,7 @@ export default (props: IMatchdaysProps) =>  {
               onChange={handleTabChange}
               action={(ref: any) => ref && ref.updateIndicator()}
             >
-              <Tab label={<Dictionary label="games"/>} />
+              <Tab label={<Dictionary label="matches"/>} />
               <Tab label={<Dictionary label="predictions"/>} />
             </Tabs>
           </Box>

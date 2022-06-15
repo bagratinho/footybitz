@@ -12,13 +12,15 @@ export interface IMatchProps {
   // awayTeamName: string;
   // league: string;
   // kickOfDate: Date;
-  // score?: number[];
+  score?: number[];
   // prediction?: number[];
-  // points?: number;
+  points?: number;
+  onScoreSet?: (score: number[]) => void;
 }
 
 export default class Match extends React.PureComponent<IMatchProps> {
   public render() {
+    const { props } = this;
     return (
       <StyledContainer>
         <div className="info">
@@ -29,23 +31,31 @@ export default class Match extends React.PureComponent<IMatchProps> {
           </div>
         </div>
         <div className="details">
-          <div className="team">
-            <img src="https://ssl.gstatic.com/onebox/media/sports/logos/paYnEE8hcrP96neHRNofhQ_96x96.png" alt=""/>
-            Barcelona
+          <div className="label">
+            {props.score ? <Dictionary label="finalScore"/> : <Dictionary label="yourPrediction"/>}
           </div>
-          <div className="outcome">
-            {/* <div className="label">
-              <Dictionary label="yourPrediction"/>
-            </div> */}
-            <div className="prediction">
-              <NumberInput/>
-              -
-              <NumberInput/>
+          <div className="match">
+            <div className="team">
+              <img src="https://ssl.gstatic.com/onebox/media/sports/logos/paYnEE8hcrP96neHRNofhQ_96x96.png" alt=""/>
+              Barcelona
             </div>
-          </div>
-          <div className="team">
-            <img src="https://ssl.gstatic.com/onebox/media/sports/logos/Th4fAVAZeCJWRcKoLW7koA_96x96.png" alt=""/>
-            Real Madrid
+            <div className="outcome">
+              {props.score ?
+              <div className="result">
+                <div>{props.score[0]}</div>
+                -
+                <div>{props.score[1]}</div>
+              </div> :
+              <div className="prediction">
+                <NumberInput/>
+                -
+                <NumberInput/>
+              </div>}
+            </div>
+            <div className="team">
+              <img src="https://ssl.gstatic.com/onebox/media/sports/logos/Th4fAVAZeCJWRcKoLW7koA_96x96.png" alt=""/>
+              Real Madrid
+            </div>
           </div>
         </div>
       </StyledContainer>
@@ -84,48 +94,57 @@ const StyledContainer = styled.div`
     }
   }
   & .details {
-    display: flex;
-    justify-content: space-evenly;
     padding: 16px 8px;
     margin: 16px;
     border-radius: 5px;
     background: #1e2731;
-    & .team {
+    & .label {
+      width: 100%;
+      line-height: 24px;
+      border-radius: 12px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      font-size: 18px;
-      font-weight: 500;
       justify-content: center;
-      & > img {
-        display: block;
-        margin-bottom: 10px;
-        height: 64px;
-      }
+      margin-bottom: 8px;
+      color: ${props => props.theme.muiTheme.palette.text.secondary};
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 600;
     }
-    & .outcome {
+    & .match {
+      justify-content: space-evenly;
       display: flex;
-      flex-direction: column;
-      color: ${props => props.theme.muiTheme.palette.divider};
-      & .label {
-        line-height: 24px;
-        border-radius: 12px;
+      & .team {
+        flex: 1;
         display: flex;
+        flex-direction: column;
         align-items: center;
+        font-size: 18px;
+        font-weight: 500;
         justify-content: center;
-        margin-bottom: 16px;
-        background: #5e5c7b;
-        text-transform: uppercase;
-        font-size: 12px;
-        font-weight: 600;
+        & > img {
+          display: block;
+          margin-bottom: 10px;
+          height: 64px;
+        }
       }
-      & .prediction {
+      & .outcome {
         display: flex;
-        width: 150px;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 30px;
+        flex-direction: column;
+        color: ${props => props.theme.muiTheme.palette.divider};
+        & .result,
+        & .prediction {
+          display: flex;
+          width: 150px;
+          align-items: center;
+          justify-content: space-between;
+          color: ${props => props.theme.muiTheme.palette.text.primary};
+          font-size: 30px;
+          height: 130px;
+          font-weight: 700;
+        }
       }
     }
+
   }
 `

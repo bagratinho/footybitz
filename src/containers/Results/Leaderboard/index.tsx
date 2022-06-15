@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Avatar, Box, Chip, Divider, List, ListItem, Paper, TableContainer, Typography, Table, TableBody, TableRow, TableHead, TableCell } from "@material-ui/core";
+import { Avatar, Box, Chip, Paper, TableContainer, Typography, Table, TableBody, TableRow, TableHead, TableCell } from "@material-ui/core";
 import Dictionary from "components/Dictionary";
 import { FormattedNumber } from "react-intl";
 
-export interface IPredictionsListProps {
+export interface ILeaderboardProps {
   className?: string;
 }
 
@@ -41,32 +41,56 @@ const rows = [
   ),
 ];
 
-export default (props: IPredictionsListProps) =>  {
+export default (props: ILeaderboardProps) =>  {
 
   return (
     <Box>
       <Box
         p={2}
+        display="flex"
       >
-        <Paper variant="outlined">
-          <Box
-            p={2}
-            color="success.main"
-          >
-            <Typography variant="h6">
-              <FormattedNumber
-                value={0.5}
-                style="currency"
-                currency="BTC"
-                minimumFractionDigits={8}
-                maximumFractionDigits={8}
-              />
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              <Dictionary label="prizePool"/>
-            </Typography>
-          </Box>
-        </Paper>
+        <Box
+          flex={1}
+          marginRight={2}
+        >
+          <Paper variant="outlined">
+            <Box
+              p={2}
+              color="success.main"
+            >
+              <Typography variant="h6">
+                <FormattedNumber
+                  value={0.5}
+                  style="currency"
+                  currency="BTC"
+                  minimumFractionDigits={8}
+                  maximumFractionDigits={8}
+                />
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary">
+                <Dictionary label="prizePool"/>
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
+        <Box
+          flex={1}
+        >
+          <Paper variant="outlined">
+            <Box
+              p={2}
+            >
+              <Typography variant="h6" color="textPrimary">
+                <FormattedNumber
+                  value={1218}
+                />
+              </Typography>
+              <Typography variant="subtitle2" color="textSecondary">
+                <Dictionary label="numberOfParticipants"/>
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
       </Box>
       <Box>
         <TableContainer component={Box}>

@@ -41,9 +41,9 @@ export default defineMessages({
     id: "send",
     defaultMessage: "Send",
   },
-  games: {
-    id: "games",
-    defaultMessage: "Games",
+  matches: {
+    id: "matches",
+    defaultMessage: "Matches",
   },
   predictions: {
     id: "predictions",
@@ -64,5 +64,13 @@ export default defineMessages({
   numberOfParticipants: {
     id: "numberOfParticipants",
     defaultMessage: "Number of participants",
+  },
+  finalScore: {
+    id: "finalScore",
+    defaultMessage: "Final score",
+  },
+  profile: {
+    id: "profile",
+    defaultMessage: "Profile",
   },
 });

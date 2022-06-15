@@ -7,16 +7,16 @@ import { IntlProvider } from "react-intl";
 import Matchdays from "containers/Matchdays";
 import Standings from "containers/Standings";
 import Results from "containers/Results";
+import Profile from "containers/Profile";
 import HowToPlay from "containers/HowToPlay";
-import { createMuiTheme }  from "@material-ui/core/styles";
-import MuiThemeProvider from "@material-ui/styles/ThemeProvider";
+import { createTheme, MuiThemeProvider }  from "@material-ui/core/styles";
 import { BrowserRouter as Router, Route, Switch }  from "react-router-dom";
 import Firebase, { FirebaseContext } from "components/Firebase";
 import Footer from "containers/Footer";
 import { Box, Container, Grid } from "@material-ui/core";
 import SidebarNavigation from "containers/SidebarNavigation";
 
-const muiTheme = createMuiTheme({
+const muiTheme = createTheme({
   palette: {
     type: "dark",
     primary: {
@@ -34,46 +34,57 @@ const muiTheme = createMuiTheme({
     },
     divider: "#38444d",
   },
-  overrides: {
-    MuiPaper: {
-      root: {
-        backgroundColor: "#1e2731",
-      },
-    },
-    MuiInputBase: {
-      root: {
-        borderRadius: 0,
-      },
-    },
-    MuiFilledInput: {
-      root: {
-        padding: 0,
-        borderRadius: 4,
-        overflow: "hidden",
-        backgroundColor: "#1e2731",
-        "&.Mui-focused": {
-          backgroundColor: "#1e2731",
-        },
-        "&:hover": {
-          backgroundColor: "#1e2731",
-        },
-      },
-      input: {
-        padding: 8,
-        paddingLeft: 16,
-        lineHeight: "26px",
+  // overrides: {
+  //   MuiList: {
+  //     padding: {
+  //       paddingTop: 0,
+  //       paddingBottom: 0,
+  //     },
+  //   },
+  //   MuiTableCell: {
+  //     root: {
+  //       borderBottom: "solid 1px #38444d",
+  //     },
+  //   },
+  //   MuiPaper: {
+  //     root: {
+  //       backgroundColor: "#1e2731",
+  //     },
+  //   },
+  //   MuiInputBase: {
+  //     root: {
+  //       borderRadius: 0,
+  //     },
+  //   },
+  //   MuiFilledInput: {
+  //     root: {
+  //       padding: 0,
+  //       borderRadius: 4,
+  //       overflow: "hidden",
+  //       backgroundColor: "#1e2731",
+  //       "&.Mui-focused": {
+  //         backgroundColor: "#1e2731",
+  //       },
+  //       "&:hover": {
+  //         backgroundColor: "#1e2731",
+  //       },
+  //     },
+  //     input: {
+  //       padding: 8,
+  //       paddingLeft: 16,
+  //       lineHeight: "26px",
 
-      },
-      underline: {
-        "&:after": {
-          display: "none",
-        },
-        "&:before": {
-          display: "none",
-        }
-      }
-    },
-  },
+  //     },
+  //     underline: {
+  //       "&:after": {
+  //         display: "none",
+  //       },
+  //       "&:before": {
+  //         display: "none",
+  //       }
+  //     }
+  //   },
+  // },
   typography: {
     fontFamily: `-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif`,
     h6: {
@@ -85,10 +96,9 @@ const muiTheme = createMuiTheme({
 const formats = {
   number: {
     "BTC": {
-      style: 'currency',
-      currency: 'BTC',
+      style: "currency",
     },
-  }
+  },
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -143,6 +153,8 @@ const Main: React.FC = () => {
                           <Route path="/results" exact={true} component={Results}/>
                           <Route path="/standings" exact={true} component={Standings}/>
                           <Route path="/how-to-play" exact={true} component={HowToPlay}/>
+                          <Route path="/how-to-play" exact={true} component={HowToPlay}/>
+                          <Route path="/profile" exact={true} component={Profile}/>
                           {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
                           <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
                         </Switch>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styles/styled-components";
 import Box from "components/Box";
-import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline } from "@material-ui/icons";
+import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person } from "@material-ui/icons";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
 import logo from "./logo.png";
@@ -36,6 +36,11 @@ export default (props: ISidebarNavigationProps) =>  {
         <li>
           <NavLink activeClassName="active" to="/how-to-play">
             <HelpOutline/><Dictionary label="howToPlay"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/profile">
+            <Person/><Dictionary label="profile"/>
           </NavLink>
         </li>
       </ul>
