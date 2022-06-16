@@ -142,11 +142,12 @@ const Main: React.FC = () => {
                   </Grid>
                   <Grid item xs={6}>
                     <Box
-                      minHeight="100vh"
-                      borderColor="divider"
-                      border={1}
-                      borderTop={0}
-                      borderBottom={0}
+                      sx={{
+                        minHeight: "100vh",
+                        color: "divider",
+                        borderLeft: "1px solid",
+                        borderRight: "1px solid",
+                      }}
                     >
                       <Switch>
                         <Route exact={true} path="/" component={Matchdays}/>
