@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography } from "@material-ui/core";
+import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";

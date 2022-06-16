@@ -1,7 +1,7 @@
 import * as React from "react";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import { Settings} from "@material-ui/icons";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import { Settings} from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 import { FirebaseContext } from "components/Firebase";
 export interface IHeaderProps {

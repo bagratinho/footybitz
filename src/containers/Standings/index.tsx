@@ -1,6 +1,5 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import { Grid, Box, Typography } from "@material-ui/core";
+import { Grid, Box, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import PredictionsList from "./PredictionsList";
 import Dictionary from "components/Dictionary";

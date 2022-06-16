@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Box, Chip, Divider, List, ListItem, Paper, Typography } from "@material-ui/core";
-import FaceIcon from '@material-ui/icons/Face';
+import { Box, Chip, Divider, List, ListItem, Paper, Typography } from "@mui/material";
+import FaceIcon from '@mui/icons-material/Face';
 import Dictionary from "components/Dictionary";
 import { FormattedNumber } from "react-intl";
 

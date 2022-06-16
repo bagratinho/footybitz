@@ -1,24 +1,21 @@
 import React from "react";
-import Header from "./containers/Header";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import styled, { ThemeProvider, createGlobalStyle } from "styles/styled-components";
-import theme from "styles/theme";
+import CssBaseline from "@mui/material/CssBaseline";
 import { IntlProvider } from "react-intl";
 import Matchdays from "containers/Matchdays";
 import Standings from "containers/Standings";
 import Results from "containers/Results";
 import Profile from "containers/Profile";
 import HowToPlay from "containers/HowToPlay";
-import { createTheme, MuiThemeProvider }  from "@material-ui/core/styles";
-import { BrowserRouter as Router, Route, Switch }  from "react-router-dom";
+import { createTheme, ThemeProvider }  from "@mui/material/styles";
 import Firebase, { FirebaseContext } from "components/Firebase";
-import Footer from "containers/Footer";
-import { Box, Container, Grid } from "@material-ui/core";
-import SidebarNavigation from "containers/SidebarNavigation";
+import { Box, Container, Grid } from "@mui/material";
+import SidebarNavigation from "containers/SidebarNavigation";;
+import 'styles/css/global.css';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const muiTheme = createTheme({
   palette: {
-    type: "dark",
+    mode: "dark",
     primary: {
       main: "#781df2",
     },
@@ -95,21 +92,14 @@ const muiTheme = createTheme({
 
 const formats = {
   number: {
-    "BTC": {
+    BTC: {
       style: "currency",
-    },
+      currency: "BTC",
+    } as any,
   },
 };
 
-const GlobalStyle = createGlobalStyle`
-  @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;1,100;1,300;1,400&display=swap");
-  body {
-    overflow-y: scroll;
-  }
-`;
-
 const Main: React.FC = () => {
-  console.log(muiTheme);
   return (
     <Router>
       <IntlProvider
@@ -118,71 +108,65 @@ const Main: React.FC = () => {
         defaultFormats={formats}
         onError={error => console.log("Intl :::", error)}
       >
-        <MuiThemeProvider theme={muiTheme}>
-          <ThemeProvider theme={{
-            ...theme,
-            muiTheme,
-          }}>
-            <FirebaseContext.Provider value={new Firebase()}>
-              <Box
-                display="flex"
-                flexDirection="column"
-              >
-                <CssBaseline/>
-                <GlobalStyle/>
-                <Container>
-                  <Grid container alignItems="flex-start">
-                    <Grid item xs={3}>
-                      <Box
-                        position="fixed"
-                        height={0}
-                      >
-                        <SidebarNavigation/>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box
-                        minHeight="100vh"
-                        borderColor="divider"
-                        border={1}
-                        borderTop={0}
-                        borderBottom={0}
-                      >
-                        <Switch>
-                          <Route path="/" exact={true} component={Matchdays}/>
-                          <Route path="/results" exact={true} component={Results}/>
-                          <Route path="/standings" exact={true} component={Standings}/>
-                          <Route path="/how-to-play" exact={true} component={HowToPlay}/>
-                          <Route path="/how-to-play" exact={true} component={HowToPlay}/>
-                          <Route path="/profile" exact={true} component={Profile}/>
-                          {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
-                          <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
-                        </Switch>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={3}>
-                      {/* <Header/> */}
-                      {/* <div className="">
-                        <div>Matchday prize pool</div>
-                        <div>$15.000</div>
-                      </div>
-                      <div className="">
-                        <div>Season prize pool</div>
-                        <div>$65.000</div>
-                      </div>
-                      <div className="">
-                        <div>Season Leaders</div>
-                        <div>Lorem</div>
-                        <div>Ipsum</div>
-                        <div>Dolor</div>
-                      </div> */}
-                    </Grid>
+        <ThemeProvider theme={muiTheme}>
+          <FirebaseContext.Provider value={new Firebase()}>
+            <Box
+              display="flex"
+              flexDirection="column"
+            >
+              <CssBaseline/>
+              <Container>
+                <Grid container alignItems="flex-start">
+                  <Grid item xs={3}>
+                    <Box
+                      position="fixed"
+                      height={0}
+                    >
+                      <SidebarNavigation/>
+                    </Box>
                   </Grid>
-                </Container>
-              </Box>
-            </FirebaseContext.Provider>
-          </ThemeProvider>
-        </MuiThemeProvider>
+                  <Grid item xs={6}>
+                    <Box
+                      minHeight="100vh"
+                      borderColor="divider"
+                      border={1}
+                      borderTop={0}
+                      borderBottom={0}
+                    >
+                      <Switch>
+                        <Route path="/" component={Matchdays}/>
+                        <Route path="/results" component={Results}/>
+                        <Route path="/standings" component={Standings}/>
+                        <Route path="/how-to-play" component={HowToPlay}/>
+                        <Route path="/how-to-play" component={HowToPlay}/>
+                        <Route path="/profile" component={Profile}/>
+                        {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
+                        <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
+                      </Switch>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={3}>
+                    {/* <Header/> */}
+                    {/* <div className="">
+                      <div>Matchday prize pool</div>
+                      <div>$15.000</div>
+                    </div>
+                    <div className="">
+                      <div>Season prize pool</div>
+                      <div>$65.000</div>
+                    </div>
+                    <div className="">
+                      <div>Season Leaders</div>
+                      <div>Lorem</div>
+                      <div>Ipsum</div>
+                      <div>Dolor</div>
+                    </div> */}
+                  </Grid>
+                </Grid>
+              </Container>
+            </Box>
+          </FirebaseContext.Provider>
+        </ThemeProvider>
       </IntlProvider>
     </Router>
   );

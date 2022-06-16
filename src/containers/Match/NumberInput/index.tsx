@@ -1,7 +1,7 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import { IconButton, InputBase } from "@material-ui/core";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { Box, IconButton, InputBase } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 
 
@@ -63,7 +63,7 @@ export default function NumberInput (props: INumberInputProps) {
   );
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled(Box)`
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -75,7 +75,7 @@ const StyledContainer = styled.div`
     padding: 0;
     height: 30px;
     color: #fbd46d;
-    color: ${props => props.theme.muiTheme.palette.secondary.main};
+    color: ${props => props.theme.palette.secondary.main};
     font-weight: 700;
     &::placeholder {
       color: rgba(0, 0, 0, 0.25);
@@ -85,7 +85,7 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 52px;
-  background: ${props => props.theme.muiTheme.palette.divider};
+  background: ${props => props.theme.palette.divider};
   border-radius: 26px;
   padding: 2px;
 `

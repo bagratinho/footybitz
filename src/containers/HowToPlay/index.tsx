@@ -1,6 +1,5 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 
 export interface IHowToPlayProps {

@@ -3,21 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "^1.3.13",
-    "@date-io/moment": "^2.0.0",
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
-    "@material-ui/pickers": "^3.2.10",
-    "@material-ui/styles": "^4.11.5",
-    "@types/material-ui": "^0.21.12",
-    "firebase": "^7.16.0",
-    "react": "^16.9.0",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.4",
+    "@mui/types": "^7.1.4",
     "react-content-slider": "^1.0.1",
     "react-dom": "^16.9.0",
+    "firebase": "^7.16.0",
+    "react": "^16.9.0",
     "react-intl": "^5.0.2",
     "react-measure": "^2.1.0",
-    "react-router-dom": "^5.2.0",
-    "styled-components": "^4.3.2"
+    "react-router-dom": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,6 +24,12 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "resolutions": {
+    "@types/react": "16.9.2",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-router": "^5.1.18",
+    "@types/react-dom": "16.9.0"
   },
   "browserslist": {
     "production": [
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "@types/jest": "24.0.18",
+    "@types/react-router": "^5.1.18",
     "@types/node": "12.7.5",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.9.0",

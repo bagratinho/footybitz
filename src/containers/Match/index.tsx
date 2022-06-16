@@ -1,9 +1,9 @@
 import * as React from "react";
-import styled from "styles/styled-components";
 import NumberInput from "./NumberInput";
 import Dictionary from "components/Dictionary";
-import { Button } from "@material-ui/core";
 import * as images from "./images";
+import { styled } from "@mui/material/styles";
+import { Box } from "@mui/material";
 
 export interface IMatchProps {
   // homeTeamLogo: string;
@@ -64,7 +64,7 @@ export default class Match extends React.PureComponent<IMatchProps> {
 }
 
 
-const StyledContainer = styled.div`
+const StyledContainer = styled(Box)`
   color: #fff;
   border-bottom: solid 1px #38444d;
   user-select: none;
@@ -85,11 +85,11 @@ const StyledContainer = styled.div`
       flex-direction: column;
       & > span:first-child {
         font-weight: 700;
-        color: ${props => props.theme.muiTheme.palette.text.primary};
+        color: ${props => props.theme.palette.text.primary};
       }
       & > span:last-child {
         font-size: 12px;
-        color: ${props => props.theme.muiTheme.palette.text.secondary};
+        color: ${props => props.theme.palette.text.secondary};
       }
     }
   }
@@ -106,7 +106,7 @@ const StyledContainer = styled.div`
       align-items: center;
       justify-content: center;
       margin-bottom: 8px;
-      color: ${props => props.theme.muiTheme.palette.text.secondary};
+      color: ${props => props.theme.palette.text.secondary};
       text-transform: uppercase;
       font-size: 12px;
       font-weight: 600;
@@ -131,14 +131,14 @@ const StyledContainer = styled.div`
       & .outcome {
         display: flex;
         flex-direction: column;
-        color: ${props => props.theme.muiTheme.palette.divider};
+        color: ${props => props.theme.palette.divider};
         & .result,
         & .prediction {
           display: flex;
           width: 150px;
           align-items: center;
           justify-content: space-between;
-          color: ${props => props.theme.muiTheme.palette.text.primary};
+          color: ${props => props.theme.palette.text.primary};
           font-size: 30px;
           height: 130px;
           font-weight: 700;

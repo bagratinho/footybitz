@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Typography } from "@mui/material";
 import Match from "containers/Match";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";

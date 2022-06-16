@@ -1,5 +1,6 @@
+import { Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import * as React from "react";
-import styled from "styles/styled-components";
 
 export interface IContainerProps {
   children?: any;
@@ -13,7 +14,7 @@ const Container = (props: IContainerProps) => {
   );
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled(Box)`
   margin: 0 auto;
   width: 1200px;
 `;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Avatar, Box, Chip, Divider, List, ListItem, Paper, TableContainer, Typography, Table, TableBody, TableRow, TableHead, TableCell } from "@material-ui/core";
+import { Avatar, Box, Chip, Divider, List, ListItem, Paper, TableContainer, Typography, Table, TableBody, TableRow, TableHead, TableCell } from "@mui/material";
 import Dictionary from "components/Dictionary";
 import { FormattedNumber } from "react-intl";
 

@@ -1,11 +1,9 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Grid from "@material-ui/core/Grid";
-import { Container, Typography } from "@material-ui/core";
-import { Settings} from "@material-ui/icons";
-import Box from "components/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Grid from "@mui/material/Grid";
+import { Box, Container, styled, Typography } from "@mui/material";
+import { Settings} from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 export interface IFooterProps {
   className?: string;

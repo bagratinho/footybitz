@@ -1,6 +1,5 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import { Avatar, Box, Paper, Typography } from "@material-ui/core";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 

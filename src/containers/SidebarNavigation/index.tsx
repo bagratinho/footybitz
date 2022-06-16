@@ -1,11 +1,9 @@
 import * as React from "react";
-import styled from "styles/styled-components";
-import Box from "components/Box";
-import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person } from "@material-ui/icons";
+import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person } from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
 import logo from "./logo.png";
-import { Typography } from "@material-ui/core";
+import { Box, styled, Typography } from "@mui/material";
 
 export interface ISidebarNavigationProps {
   className?: string;
@@ -78,7 +76,7 @@ const StyledContainer = styled(Box)`
         border-radius: 28px;
         display: inline-flex;
         align-items: center;
-        transition: background-color ${props => props.theme.transition.default} ;
+        /* transition: background-color ${props => props.theme.transition.default} ; */
         cursor: pointer;
         text-decoration: none;
         & > svg {

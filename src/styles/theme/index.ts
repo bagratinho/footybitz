@@ -1,5 +1,3 @@
-import { IThemeInterface } from "styles/styled-components";
-
 export default {
   id: "base",
   transition: {
@@ -50,4 +48,4 @@ export default {
     text: `0px 2px 8px rgba(0, 0, 0, 1) `,
     box: `rgba(0, 0, 0, 0.15) 0px 2px 8px`,
   }
-} as IThemeInterface;
+};
