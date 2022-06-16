@@ -12,9 +12,9 @@ export interface ISidebarNavigationProps {
 export default (props: ISidebarNavigationProps) =>  {
   return (
     <StyledContainer>
-      <Typography component="h1">
+      {/* <Typography component="h1">
         <img src={logo} />
-      </Typography>
+      </Typography> */}
       <ul>
         <li>
           <NavLink exact activeClassName="active" to="/">
@@ -76,7 +76,6 @@ const StyledContainer = styled(Box)`
         border-radius: 28px;
         display: inline-flex;
         align-items: center;
-        /* transition: background-color ${props => props.theme.transition.default} ; */
         cursor: pointer;
         text-decoration: none;
         & > svg {

@@ -32,7 +32,7 @@ class Footer extends React.Component<IFooterProps, IFooterState> {
             <Grid item xs={4} alignItems="center">
 
             </Grid>
-            <Grid item xs={8} container alignItems="center" justify="flex-end">
+            <Grid item xs={8} container alignItems="center">
 
 
 
