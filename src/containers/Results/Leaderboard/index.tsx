@@ -58,16 +58,14 @@ export default (props: ILeaderboardProps) =>  {
               p={2}
               color="success.main"
             >
-              <Typography variant="h6">
+              <Typography variant="h6" component="h2" color="text.primary">
+                ₮
                 <FormattedNumber
-                  value={0.5}
-                  style="currency"
-                  currency="BTC"
-                  minimumFractionDigits={8}
-                  maximumFractionDigits={8}
+                  value={1800.05}
+                  style="decimal"
                 />
               </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
+              <Typography variant="subtitle2" color="text.secondary">
                 <Dictionary label="prizePool"/>
               </Typography>
             </Box>
@@ -80,12 +78,12 @@ export default (props: ILeaderboardProps) =>  {
             <Box
               p={2}
             >
-              <Typography variant="h6" color="textPrimary">
+              <Typography variant="h6" component="h2" color="text.primary">
                 <FormattedNumber
                   value={1218}
                 />
               </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
+              <Typography variant="subtitle2" color="text.secondary">
                 <Dictionary label="numberOfParticipants"/>
               </Typography>
             </Box>
@@ -118,11 +116,10 @@ export default (props: ILeaderboardProps) =>  {
                   </TableCell>
                   <TableCell align="right"><FormattedNumber value={row.points}/></TableCell>
                   <TableCell align="right">
-                    <FormattedNumber value={row.wining}
-                      style="currency"
-                      currency="BTC"
-                      minimumFractionDigits={8}
-                      maximumFractionDigits={8}
+                    ₮
+                    <FormattedNumber
+                      value={1800.05}
+                      style="decimal"
                     />
                   </TableCell>
                 </TableRow>

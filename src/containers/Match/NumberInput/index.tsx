@@ -84,7 +84,7 @@ const StyledContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 52px;
+  width: 44px;
   background: ${props => props.theme.palette.divider};
   border-radius: 26px;
   padding: 2px;

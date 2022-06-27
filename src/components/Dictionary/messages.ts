@@ -73,4 +73,12 @@ export default defineMessages({
     id: "profile",
     defaultMessage: "Profile",
   },
+  earnings: {
+    id: "earnings",
+    defaultMessage: "Earnings",
+  },
+  joined: {
+    id: "joined",
+    defaultMessage: "Joined {date}",
+  },
 });

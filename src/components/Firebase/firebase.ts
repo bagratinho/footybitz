@@ -20,8 +20,20 @@ const config = {
 //   }
 // }
 
-class Firebase {
+interface IFirebase {
+  auth: any;
+  user: any;
+  isAuthenticated: () => boolean;
+  createUserWithEmailAndPassword: (email: string, password: string) => void;
+  signInWithEmailAndPassword: (email: string, password: string) => boolean;
+  signOut: () => boolean;
+  sendPasswordResetEmail: (email: string) => boolean;
+  updatePassword: (password: string) => boolean;
+}
+
+class Firebase<IFirebase> {
   private auth: any;
+  private user: any = null;
 
   constructor() {
     if (!firebase.apps.length) {
@@ -29,8 +41,12 @@ class Firebase {
     }
     this.auth = firebase.app().auth();
     this.auth.onAuthStateChanged((user: any) => {
-
+      console.log("Firebase:", user);
     });
+  }
+
+  private isAuthenticated = () => {
+    return false;
   }
 
   private createUserWithEmailAndPassword = (email: string, password: string) =>
@@ -45,6 +61,6 @@ class Firebase {
 
   private updatePassword = (password: string) =>
     this.auth.currentUser.updatePassword(password);
-}
+};
 
 export default Firebase;

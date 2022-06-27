@@ -23,18 +23,15 @@ export default (props: IPredictionsListProps) =>  {
           <Paper variant="outlined">
             <Box
               p={2}
-              color="success.main"
             >
-              <Typography variant="h6">
+              <Typography variant="h6" component="h2" color="success.main">
+                ₮
                 <FormattedNumber
-                  value={0.5}
-                  style="currency"
-                  currency="BTC"
-                  minimumFractionDigits={8}
-                  maximumFractionDigits={8}
+                  value={1800.05}
+                  style="decimal"
                 />
               </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
+              <Typography variant="subtitle2" color="text.secondary">
                 <Dictionary label="currentPrizePool"/>
               </Typography>
             </Box>
@@ -47,12 +44,12 @@ export default (props: IPredictionsListProps) =>  {
             <Box
               p={2}
             >
-              <Typography variant="h6" color="textPrimary">
+              <Typography variant="h6" component="h2" color="textPrimary">
                 <FormattedNumber
                   value={1218}
                 />
               </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
+              <Typography variant="subtitle2" color="text.secondary">
                 <Dictionary label="numberOfParticipants"/>
               </Typography>
             </Box>

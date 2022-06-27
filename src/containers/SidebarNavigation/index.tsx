@@ -12,9 +12,9 @@ export interface ISidebarNavigationProps {
 export default (props: ISidebarNavigationProps) =>  {
   return (
     <StyledContainer>
-      {/* <Typography component="h1">
+      <Typography component="h1">
         <img src={logo} />
-      </Typography> */}
+      </Typography>
       <ul>
         <li>
           <NavLink exact activeClassName="active" to="/">

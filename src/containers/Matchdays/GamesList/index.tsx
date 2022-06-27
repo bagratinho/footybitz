@@ -34,14 +34,14 @@ export default (props: IGamesListProps) =>  {
           pb={2}
           pr={2}
           pl={2}
-          bgcolor="background.default"
           borderColor="divider"
+          bgcolor="background.default"
           borderLeft={0}
           borderRight={0}
           borderBottom={0}
-          border={1}
+          borderTop={1}
         >
-          <Typography variant="h6">
+          <Typography variant="h6" component="h2" color="text.primary">
             0/10
           </Typography>
           <Button
