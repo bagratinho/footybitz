@@ -77,8 +77,32 @@ export default defineMessages({
     id: "earnings",
     defaultMessage: "Earnings",
   },
+  signOut: {
+    id: "signOut",
+    defaultMessage: "Sign out",
+  },
+  email: {
+    id: "email",
+    defaultMessage: "Email",
+  },
+  password: {
+    id: "password",
+    defaultMessage: "Password",
+  },
   joined: {
     id: "joined",
     defaultMessage: "Joined {date}",
+  },
+  logoSlogan: {
+    id: "logoSlogan",
+    defaultMessage: "Join the best football prediction game and compete your way to huge rewards!",
+  },
+  signInTo: {
+    id: "signInTo",
+    defaultMessage: "Sign in to Footybitz",
+  },
+  forgotPassword: {
+    id: "forgotPassword",
+    defaultMessage: "Forgot password?",
   },
 });

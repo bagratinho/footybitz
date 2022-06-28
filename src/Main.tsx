@@ -1,8 +1,9 @@
 import React from "react";
 import { IntlProvider } from "react-intl";
 import { createTheme, ThemeProvider }  from "@mui/material/styles";
-import Firebase, { FirebaseContext } from "components/Firebase";
 import Routes from "routes";
+import AuthProvider from "context/AuthContext";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const muiTheme = createTheme({
   palette: {
@@ -131,9 +132,10 @@ const Main: React.FC = () => {
       onError={error => console.log("Intl :::", error)}
     >
       <ThemeProvider theme={muiTheme}>
-        <FirebaseContext.Provider value={new Firebase()}>
+        <AuthProvider>
+          <CssBaseline/>
           <Routes/>
-        </FirebaseContext.Provider>
+        </AuthProvider>
       </ThemeProvider>
     </IntlProvider>
   );

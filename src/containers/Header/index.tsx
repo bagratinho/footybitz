@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { Settings} from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
-import { FirebaseContext } from "components/Firebase";
 export interface IHeaderProps {
   className?: string;
 }
@@ -29,19 +28,13 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
           <Settings />
         </IconButton>
         <div className="authentication">
-          <FirebaseContext.Consumer>
-            {(firebase: any) => (
-              <Button
-                size="large"
-                color="primary"
-                variant="outlined"
-                style={{ borderRadius: 25 }}
-                onClick={() => firebase.signInWithEmailAndPassword("bagratinho@gmail.com", "br224728")}
-              >
-                <Dictionary label="signIn"/>
-              </Button>
-            )}
-          </FirebaseContext.Consumer>
+          <Button
+            size="large"
+            color="primary"
+            variant="outlined"
+          >
+            <Dictionary label="signIn"/>
+          </Button>
           <span>or</span>
           <Button
             size="large"

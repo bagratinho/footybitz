@@ -1,15 +1,16 @@
 import React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import SidebarNavigation from "containers/SidebarNavigation";
+import Dictionary from "components/Dictionary";
+import { useAuth } from "context/AuthContext";
 
 const PageWrapper: React.FC = (props: any) => {
+  const { signOut } = useAuth();
   return (
     <Box
       display="flex"
       flexDirection="column"
     >
-      <CssBaseline/>
       <Container>
         <Grid container alignItems="flex-start">
           <Grid item xs={3}>
@@ -33,6 +34,11 @@ const PageWrapper: React.FC = (props: any) => {
             </Box>
           </Grid>
           <Grid item xs={3}>
+            <Button
+              onClick={signOut}
+            >
+              <Dictionary label="signOut"/>
+            </Button>
             {/* <Header/> */}
             {/* <div className="">
               <div>Matchday prize pool</div>
