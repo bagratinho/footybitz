@@ -2,7 +2,6 @@ import * as React from "react";
 import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person } from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
-import logo from "./logo.png";
 import { Box, styled, Typography } from "@mui/material";
 
 export interface ISidebarNavigationProps {
@@ -12,8 +11,16 @@ export interface ISidebarNavigationProps {
 export default (props: ISidebarNavigationProps) =>  {
   return (
     <StyledContainer>
-      <Typography component="h1">
-        <img src={logo} />
+      <Typography
+        component="h1"
+        variant="h4"
+        borderRadius={2}
+        sx={{
+          fontFamily: "Nunito",
+          fontWeight: 800,
+        }}
+      >
+        <Dictionary label="footybitz" />
       </Typography>
       <ul>
         <li>

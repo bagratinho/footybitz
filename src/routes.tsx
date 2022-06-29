@@ -6,19 +6,21 @@ import Profile from "containers/Profile";
 import HowToPlay from "containers/HowToPlay";
 import { BrowserRouter as Router, Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import "styles/css/global.css";
-import Login from "containers/Login";
 import { useAuth } from "context/AuthContext";
+import PasswordReset from "containers/PasswordReset";
+import Signin from "containers/Signin";
+import Signup from "containers/Signup";
 
 const Routes = () => {
   const { user } = useAuth();
-  const renderProtectedPage = (Component: any, user: boolean) => (props: RouteComponentProps) => {
+  const renderProtectedRoute = (Component: any, user: boolean) => (props: RouteComponentProps) => {
     if (user) {
       return <Component {...props}/>;
     } else {
-      return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />;
+      return <Redirect to={{ pathname: "/signin", state: { from: props.location } }} />;
     }
   }
-  const renderLoginPage = (Component: any, user: boolean) => (props: RouteComponentProps) => {
+  const renderUnprotectedRoute = (Component: any, user: boolean) => (props: RouteComponentProps) => {
     if (user) {
       return <Redirect to={{ pathname: "/", state: { from: props.location } }} />;
     } else {
@@ -29,12 +31,14 @@ const Routes = () => {
   return (
     <Router>
       <Switch>
-        <Route exact={true} path="/login" render={renderLoginPage(Login, user)}/>
-        <Route exact={true} path="/" render={renderProtectedPage(Matchdays, user)}/>
-        <Route exact={true} path="/results" render={renderProtectedPage(Results, user)}/>
-        <Route exact={true} path="/standings" render={renderProtectedPage(Standings, user)}/>
-        <Route exact={true} path="/how-to-play" render={renderProtectedPage(HowToPlay, user)}/>
-        <Route exact={true} path="/profile" render={renderProtectedPage(Profile, user)}/>
+        <Route exact={true} path="/signin" render={renderUnprotectedRoute(Signin, user)}/>
+        <Route exact={true} path="/signup" render={renderUnprotectedRoute(Signup, user)}/>
+        <Route exact={true} path="/password-reset" render={renderUnprotectedRoute(PasswordReset, user)}/>
+        <Route exact={true} path="/" render={renderProtectedRoute(Matchdays, user)}/>
+        <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
+        <Route exact={true} path="/standings" render={renderProtectedRoute(Standings, user)}/>
+        <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>
+        <Route exact={true} path="/profile" render={renderProtectedRoute(Profile, user)}/>
         {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
         <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
       </Switch>

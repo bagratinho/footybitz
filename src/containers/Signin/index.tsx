@@ -1,34 +1,36 @@
-import { PropaneSharp } from "@mui/icons-material";
-import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Link, Paper, TextField, Typography } from "@mui/material";
 import Dictionary from "components/Dictionary";
 import messages from "components/Dictionary/messages";
 import { useAuth } from "context/AuthContext";
 import * as React from "react";
 import { useState } from "react";
 import { injectIntl } from "react-intl";
-import logo from "./logo.png";
 
-interface ILoginProps {
+interface ISigninProps {
   intl?: any,
 }
 
-const Routes = (props: ILoginProps) => {
+const Signin = (props: ISigninProps) => {
   const [ login, setLogin ] = useState("");
   const [ password, setPassword ] = useState("");
-  const { signIn, isLoading, authError, resetAuthError } = useAuth();
+  const { signIn, isLoading, authMessage, resetAuthMessage } = useAuth();
+
   const onLoginChange = (e: any) => {
-    if (authError) { resetAuthError(); }
+    if (authMessage) { resetAuthMessage(); }
     setLogin(e.target.value);
   }
+
   const onPasswordChange = (e: any) => {
-    if (authError) { resetAuthError(); }
+    if (authMessage) { resetAuthMessage(); }
     setPassword(e.target.value);
   }
+
   const onSubmit = () => {
     if (login && password) {
       signIn(login, password)
     }
   };
+
   return (
     <Box
       display="flex"
@@ -65,14 +67,16 @@ const Routes = (props: ILoginProps) => {
           >
             <Typography
               component="h1"
+              variant="h3"
               mb={2}
               borderRadius={2}
-              bgcolor="background.default"
               sx={{
-                padding: "20px 20px 15px 20px",
+                fontFamily: "Nunito",
+                fontWeight: 800,
+                textShadow: "1px 1px 0 #781df2, 2px 2px 0 #ffffff",
               }}
             >
-              <img src={logo} style={{ maxWidth: "100%" }}/>
+              <Dictionary label="footybitz" />
             </Typography>
             <Typography variant="body2" align="center">
               <Dictionary label="logoSlogan"/>
@@ -107,7 +111,7 @@ const Routes = (props: ILoginProps) => {
               />
             </Box>
             <Box
-              mb={2}
+              mb={0.5}
             >
               <TextField
                 size="medium"
@@ -120,7 +124,22 @@ const Routes = (props: ILoginProps) => {
               />
             </Box>
             <Box
-              mb={1}
+              mb={2}
+              textAlign="right"
+              sx={{ width: 300 }}
+            >
+              <Link
+                underline="none"
+                href="/password-reset"
+                variant="body2"
+              >
+                <Dictionary
+                  label="forgotPassword"
+                />
+              </Link>
+            </Box>
+            <Box
+              mb={2}
             >
               <Button
                 size="large"
@@ -133,23 +152,59 @@ const Routes = (props: ILoginProps) => {
                 <Dictionary label="signIn"/>
               </Button>
             </Box>
-            <Box>
-              <Button
-                size="large"
-                disableElevation
-                variant="text"
-                onClick={onSubmit}
-
-                sx={{ width: 300 }}
-                color="info"
+            {authMessage === "auth/wrong-password" ?
+            <Box
+              mb={2}
+            >
+              <Alert
+                severity="error"
+                variant="filled"
               >
-                <Dictionary label="forgotPassword"/>
-              </Button>
-            </Box>
-            {authError ?
-            <Box mt={2}>
-              <Alert severity="error" variant="filled">This is an error alert — check it out!</Alert>
+                <Dictionary
+                  label="wrongPassword"
+                />
+              </Alert>
             </Box> : null}
+            {authMessage === "auth/user-not-found" ?
+            <Box
+              mb={2}
+            >
+              <Alert
+                severity="error"
+                variant="filled"
+              >
+                <Dictionary
+                  label="userNotFound"
+                />
+              </Alert>
+            </Box> : null}
+            <Box
+              sx={{ width: 300 }}
+            >
+              <Typography
+                variant="body2"
+                align="center"
+                color="text.secondary"
+              >
+                <Dictionary
+                  label="newToFootybitz"
+                  values={{
+                    link: (
+                      <Link
+                        underline="none"
+                        href="/signup"
+                        variant="body2"
+                        color="secondary"
+                      >
+                        <Dictionary
+                          label="signUp"
+                        />
+                      </Link>
+                    )
+                  }}
+                />
+              </Typography>
+            </Box>
           </Box>
         </Paper>
       </Container>
@@ -157,4 +212,4 @@ const Routes = (props: ILoginProps) => {
   );
 }
 
-export default injectIntl(Routes);
+export default injectIntl(Signin);

@@ -89,6 +89,10 @@ export default defineMessages({
     id: "password",
     defaultMessage: "Password",
   },
+  repeatPassword: {
+    id: "repeatPassword",
+    defaultMessage: "Repeat password",
+  },
   joined: {
     id: "joined",
     defaultMessage: "Joined {date}",
@@ -101,8 +105,64 @@ export default defineMessages({
     id: "signInTo",
     defaultMessage: "Sign in to Footybitz",
   },
+  signUpTo: {
+    id: "signUpTo",
+    defaultMessage: "Sign up to Footybitz",
+  },
+  backToSignIn: {
+    id: "backToSignIn",
+    defaultMessage: "Back to sign in",
+  },
   forgotPassword: {
     id: "forgotPassword",
     defaultMessage: "Forgot password?",
+  },
+  footybitz: {
+    id: "footybitz",
+    defaultMessage: "footybitz",
+  },
+  reset: {
+    id: "reset",
+    defaultMessage: "Reset",
+  },
+  resetYourPassword: {
+    id: "resetYourPassword",
+    defaultMessage: "Reset your password",
+  },
+  emailSent: {
+    id: "emailSent",
+    defaultMessage: "Email sent",
+  },
+  emailSentDescription: {
+    id: "emailSentDescription",
+    defaultMessage: "We sent an email to {email} with password reset instructions.",
+  },
+  newToFootybitz: {
+    id: "newToFootybitz",
+    defaultMessage: "New to Footybitz? {link}",
+  },
+  alreadyHaveAnAccount: {
+    id: "alreadyHaveAnAccount",
+    defaultMessage: "Already have an account? {link}",
+  },
+  passwordsMismatch: {
+    id: "passwordsMismatch",
+    defaultMessage: "Passwords do not match",
+  },
+  emailAlreadyInUse: {
+    id: "emailAlreadyInUse",
+    defaultMessage: "Email is already in use",
+  },
+  passwordIsTooWeak: {
+    id: "passwordIsTooWeak",
+    defaultMessage: "Password you choose is too week",
+  },
+  wrongPassword: {
+    id: "wrongPassword",
+    defaultMessage: "The password is incorrect",
+  },
+  userNotFound: {
+    id: "wrongPassword",
+    defaultMessage: "User not found",
   },
 });

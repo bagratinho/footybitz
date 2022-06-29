@@ -7,6 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -20,11 +21,16 @@ export const useAuth = () => {
 
 const AuthProvider = (props: any) => {
   const [user, setUser] = useState(null);
-  const [authError, setAuthError] = useState(null);
+  const [authMessage, setAuthMessage] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const signUp = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string) => {
+    const userCredential: any = await
+    createUserWithEmailAndPassword(auth, email, password).catch((e: any) => {
+      setIsLoading(false);
+      setAuthMessage(e.code);
+    });
+    sendEmailVerification(userCredential.user);
   };
 
   const signIn = (email: string, password: string) => {
@@ -33,7 +39,7 @@ const AuthProvider = (props: any) => {
       .then(r => console.log(r))
       .catch(e => {
         setIsLoading(false);
-        setAuthError(e)
+        setAuthMessage(e.code);
       });
   };
 
@@ -42,19 +48,38 @@ const AuthProvider = (props: any) => {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const resetAuthError = () => {
-    setAuthError(null);
+  const resetAuthMessage = () => {
+    setAuthMessage(null);
   }
 
   const signOut = () => firebaseSignOut(auth);
 
-  const resetPassword = async (email: string) => sendPasswordResetEmail(auth, email);
+  const resetPassword = (email: string) => {
+    setIsLoading(true);
+    return sendPasswordResetEmail(auth, email).then(() => {
+      setAuthMessage("auth/reset-success");
+      setIsLoading(false);
+    }).catch((e: any) => {
+      setIsLoading(false);
+      setAuthMessage(e.code);
+    });;
+  }
 
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, (currentUser: any) => {
       console.log({ currentUser });
       setUser(currentUser);
       setIsLoading(false);
+      // if (currentUser && currentUser.emailVerified) {
+      //   setUser(currentUser);
+      //   setIsLoading(false);
+      // } else if (currentUser === null) {
+      //   setUser(null);
+      //   setIsLoading(false);
+      // } else if (currentUser && !currentUser.emailVerified) {
+      //   setAuthMessage("auth/link-sent");
+      //   setIsLoading(false);
+      // }
     });
     return () => unsubuscribe();
   }, []);
@@ -63,14 +88,14 @@ const AuthProvider = (props: any) => {
     <AuthContext.Provider
       value={{
         user,
-        authError,
+        authMessage,
         isLoading,
         signIn,
         signUp,
         signInWithGoogle,
         signOut,
         resetPassword,
-        resetAuthError,
+        resetAuthMessage,
       }}
     >
       {props.children}
