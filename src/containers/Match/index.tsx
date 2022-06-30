@@ -4,17 +4,17 @@ import Dictionary from "components/Dictionary";
 import * as images from "./images";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import { FormattedDate } from "react-intl";
 
 export interface IMatchProps {
-  // homeTeamLogo: string;
-  // homeTeamName: string;
-  // awayTeamLogo: string;
-  // awayTeamName: string;
-  // league: string;
-  // kickOfDate: Date;
+  id: string;
+  homeTeamLogo: string;
+  homeTeamName: string;
+  awayTeamLogo: string;
+  awayTeamName: string;
+  competition: string;
+  kickOffDate: Date;
   score?: number[];
-  // prediction?: number[];
-  points?: number;
   onScoreSet?: (score: number[]) => void;
 }
 
@@ -26,8 +26,8 @@ export default class Match extends React.PureComponent<IMatchProps> {
         <div className="info">
           <img src={images.laLiga} alt=""/>
           <div>
-            <span>La Liga Santander Round 2</span>
-            <span>KO: 16.11.2021 14:00</span>
+            <span>{props.competition}</span>
+            <span>KO: <FormattedDate value={props.kickOffDate}/></span>
           </div>
         </div>
         <div className="details">
@@ -36,8 +36,8 @@ export default class Match extends React.PureComponent<IMatchProps> {
           </div>
           <div className="match">
             <div className="team">
-              <img src="https://ssl.gstatic.com/onebox/media/sports/logos/paYnEE8hcrP96neHRNofhQ_96x96.png" alt=""/>
-              Barcelona
+              <img src={props.homeTeamLogo} alt=""/>
+              {props.homeTeamName}
             </div>
             <div className="outcome">
               {props.score ?
@@ -53,8 +53,8 @@ export default class Match extends React.PureComponent<IMatchProps> {
               </div>}
             </div>
             <div className="team">
-              <img src="https://ssl.gstatic.com/onebox/media/sports/logos/Th4fAVAZeCJWRcKoLW7koA_96x96.png" alt=""/>
-              Real Madrid
+              <img src={props.awayTeamLogo} alt=""/>
+              {props.awayTeamName}
             </div>
           </div>
         </div>

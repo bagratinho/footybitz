@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail,
   sendEmailVerification,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../firebaseInstance";
 
 const AuthContext = React.createContext<any|null>(null);
 

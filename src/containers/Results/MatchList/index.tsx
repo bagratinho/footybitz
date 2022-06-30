@@ -13,6 +13,7 @@ export default (props: IMatchListProps) =>  {
   return (
     <>
       <Box>
+        {/* <Match score={[2,5]}/>
         <Match score={[2,5]}/>
         <Match score={[2,5]}/>
         <Match score={[2,5]}/>
@@ -21,8 +22,7 @@ export default (props: IMatchListProps) =>  {
         <Match score={[2,5]}/>
         <Match score={[2,5]}/>
         <Match score={[2,5]}/>
-        <Match score={[2,5]}/>
-        <Match score={[2,5]}/>
+        <Match score={[2,5]}/> */}
       </Box>
     </>
   );

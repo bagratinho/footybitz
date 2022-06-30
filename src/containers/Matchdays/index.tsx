@@ -6,20 +6,84 @@ import TabPanel from "components/TabPanel";
 import PredictionsList from "./PredictionsList";
 import GamesList from "./GamesList";
 import PageWrapper from "containers/PageWrapper";
+import { useEffect, useState } from "react";
+import { db } from "firebaseInstance";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
 export interface IMatchdaysProps {
   className?: string;
 }
 
 export default (props: IMatchdaysProps) =>  {
-  const [selectedMatchday, setSelectedMatchday] = React.useState(1);
-  const handleMatchdayChange = (event: any) => {
-    setSelectedMatchday(event.target.value);
-  };
-  const [selectedTab, setSelectedTab] = React.useState(0);
+  const [selectedMatchday, setSelectedMatchday] = useState<string | undefined>();
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [matchdays, setMatchdays] = useState<any[]>([]);
+
   const handleTabChange = (event: React.ChangeEvent<{}>, value: number) => {
     setSelectedTab(value);
   };
+
+  const handleMatchdayChange = (event: any) => {
+    setSelectedMatchday(event.target.value);
+  };
+
+  const getMatchdaysControl = () => {
+    const options = matchdays.map(i => {
+      return (
+        <MenuItem value={i.id}>{i.name}</MenuItem>
+      );
+    });
+    return options.length ? (
+      <FormControl variant="filled">
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={selectedMatchday}
+          onChange={handleMatchdayChange}
+        >
+          {options}
+        </Select>
+      </FormControl>
+    ) : null;
+  }
+
+  const getMatches = () => {
+    const matches = matchdays.find(i => i.id === selectedMatchday)?.matches.map((i: any) => {
+      const matchData = i.data();
+      return {
+        id: matchData.id,
+        homeTeamName: matchData.homeTeam.get("name"),
+        homeTeamLogo: matchData.homeTeam.get("avatar"),
+        awayTeamName: matchData.awayTeam.get("name"),
+        awayTeamLogo: matchData.awayTeam.get("avatar"),
+        competition: matchData.competition.get("name"),
+        kickOffDate: matchData.kickOffDate,
+      };
+    });
+    console.log(matches);
+    return undefined;
+  }
+
+  useEffect(() => {
+    const matchdaysCollectionRef = collection(db, "matchdays");
+    const data = async (y: any) => {
+      const q = query(y, where("kickOffDate", ">", new Date(Date.now())), orderBy("kickOffDate", "asc"),);
+      const querySnapshot = await getDocs(q);
+      let mds: any[] = [];
+      querySnapshot.forEach((doc) => {
+        mds.push({
+          id: doc.id,
+          ...doc.data() as Object,
+        });
+      });
+      console.log("Asd", mds[0].matches.data());
+      setMatchdays(mds);
+      setSelectedMatchday(mds[0].id);
+    };
+    data(matchdaysCollectionRef);
+  }, []);
+
+  console.log(matchdays);
   return (
     <PageWrapper>
       <Box>
@@ -50,18 +114,7 @@ export default (props: IMatchdaysProps) =>  {
               <Typography variant="h6" component="h2" color="text.primary">
                 <Dictionary label="matchdays"/>
               </Typography>
-              <FormControl variant="filled">
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedMatchday}
-                  onChange={handleMatchdayChange}
-                >
-                  <MenuItem value={1}>Week 1</MenuItem>
-                  <MenuItem value={2}>Week 2</MenuItem>
-                  <MenuItem value={3}>Week 3</MenuItem>
-                </Select>
-              </FormControl>
+              {getMatchdaysControl()}
             </Box>
             <Box>
               <Tabs
@@ -81,7 +134,10 @@ export default (props: IMatchdaysProps) =>  {
           pt="108px"
         >
           <TabPanel value={selectedTab} index={0}>
-            <GamesList/>
+            <GamesList
+              matchdayId={selectedMatchday}
+              matches={getMatches()}
+            />
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             <PredictionsList/>

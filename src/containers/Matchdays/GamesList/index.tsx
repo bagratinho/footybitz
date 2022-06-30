@@ -1,29 +1,40 @@
 import * as React from "react";
 import { Box, Button, Typography } from "@mui/material";
-import Match from "containers/Match";
+import Match, { IMatchProps } from "containers/Match";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 
 export interface IGamesListProps {
   className?: string;
+  matches?: IMatchProps[];
+  matchdayId?: string;
 }
 
 export default (props: IGamesListProps) =>  {
+  const getMatches = () => {
+    if (!props.matches) { return null; }
+    const matches = props.matches.map((i: IMatchProps) => {
+      <Match
+        id={i.id}
+        key={i.id}
+        awayTeamLogo={i.awayTeamLogo}
+        homeTeamLogo={i.homeTeamLogo}
+        awayTeamName={i.awayTeamName}
+        homeTeamName={i.homeTeamLogo}
+        kickOffDate={i.kickOffDate}
+        competition={i.competition}
+        onScoreSet={() => null}
+      />
+    });
+    return matches;
+  };
 
   return (
     <>
       <Box
         pb="74px"
       >
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
-        <Match/>
+        {getMatches()}
       </Box>
       <StickyBar position="bottom">
         <Box
