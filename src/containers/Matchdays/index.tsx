@@ -30,9 +30,10 @@ export default (props: IMatchdaysProps) =>  {
   const getMatchdaysControl = () => {
     const options = matchdays.map(i => {
       return (
-        <MenuItem value={i.id}>{i.name}</MenuItem>
+        <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
       );
     });
+    console.log({ selectedMatchday });
     return options.length ? (
       <FormControl variant="filled">
         <Select
@@ -47,23 +48,6 @@ export default (props: IMatchdaysProps) =>  {
     ) : null;
   }
 
-  const getMatches = () => {
-    const matches = matchdays.find(i => i.id === selectedMatchday)?.matches.map((i: any) => {
-      const matchData = i.data();
-      return {
-        id: matchData.id,
-        homeTeamName: matchData.homeTeam.get("name"),
-        homeTeamLogo: matchData.homeTeam.get("avatar"),
-        awayTeamName: matchData.awayTeam.get("name"),
-        awayTeamLogo: matchData.awayTeam.get("avatar"),
-        competition: matchData.competition.get("name"),
-        kickOffDate: matchData.kickOffDate,
-      };
-    });
-    console.log(matches);
-    return undefined;
-  }
-
   useEffect(() => {
     const matchdaysCollectionRef = collection(db, "matchdays");
     const data = async (y: any) => {
@@ -72,18 +56,16 @@ export default (props: IMatchdaysProps) =>  {
       let mds: any[] = [];
       querySnapshot.forEach((doc) => {
         mds.push({
-          id: doc.id,
           ...doc.data() as Object,
         });
       });
-      console.log("Asd", mds[0].matches.data());
-      setMatchdays(mds);
+      console.log(mds, mds[0].id);
       setSelectedMatchday(mds[0].id);
+      setMatchdays(mds);
     };
     data(matchdaysCollectionRef);
   }, []);
 
-  console.log(matchdays);
   return (
     <PageWrapper>
       <Box>
@@ -136,7 +118,6 @@ export default (props: IMatchdaysProps) =>  {
           <TabPanel value={selectedTab} index={0}>
             <GamesList
               matchdayId={selectedMatchday}
-              matches={getMatches()}
             />
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>

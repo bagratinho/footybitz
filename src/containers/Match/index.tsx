@@ -8,12 +8,13 @@ import { FormattedDate } from "react-intl";
 
 export interface IMatchProps {
   id: string;
-  homeTeamLogo: string;
+  homeTeamAvatar: string;
   homeTeamName: string;
-  awayTeamLogo: string;
+  awayTeamAvatar: string;
   awayTeamName: string;
-  competition: string;
   kickOffDate: Date;
+  competitionName: string;
+  competitionAvatar: string;
   score?: number[];
   onScoreSet?: (score: number[]) => void;
 }
@@ -24,10 +25,18 @@ export default class Match extends React.PureComponent<IMatchProps> {
     return (
       <StyledContainer>
         <div className="info">
-          <img src={images.laLiga} alt=""/>
+          <img src={props.competitionAvatar} alt=""/>
           <div>
-            <span>{props.competition}</span>
-            <span>KO: <FormattedDate value={props.kickOffDate}/></span>
+            <span>{props.competitionName}</span>
+            <span>
+              KO:
+              <FormattedDate
+                value={props.kickOffDate}
+                // @ts-ignore:next-line
+                dateStyle={"full"}
+                timeStyle="short"
+              />
+            </span>
           </div>
         </div>
         <div className="details">
@@ -36,7 +45,7 @@ export default class Match extends React.PureComponent<IMatchProps> {
           </div>
           <div className="match">
             <div className="team">
-              <img src={props.homeTeamLogo} alt=""/>
+              <img src={props.homeTeamAvatar} alt=""/>
               {props.homeTeamName}
             </div>
             <div className="outcome">
@@ -53,7 +62,7 @@ export default class Match extends React.PureComponent<IMatchProps> {
               </div>}
             </div>
             <div className="team">
-              <img src={props.awayTeamLogo} alt=""/>
+              <img src={props.awayTeamAvatar} alt=""/>
               {props.awayTeamName}
             </div>
           </div>

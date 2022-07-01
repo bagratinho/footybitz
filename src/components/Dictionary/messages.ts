@@ -162,7 +162,11 @@ export default defineMessages({
     defaultMessage: "The password is incorrect",
   },
   userNotFound: {
-    id: "wrongPassword",
+    id: "userNotFound",
     defaultMessage: "User not found",
+  },
+  nothingToShow: {
+    id: "nothingToShow",
+    defaultMessage: "Nothing to show",
   },
 });
