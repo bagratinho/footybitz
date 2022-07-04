@@ -5,7 +5,7 @@ import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export interface IGamesListProps {
   className?: string;
@@ -15,6 +15,18 @@ export interface IGamesListProps {
 export default (props: IGamesListProps) =>  {
   const [matches, setMatches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [matchScores, setMatchScores] = useState<Object>({});
+
+  const onMatchScoreSet = (id: string, index: number, value: number) => {
+    setMatchScores({
+      ...matchScores,
+      [id]: {
+        ...matchScores[id],
+        [index]: value,
+      }
+    })
+  }
+
   const renderMatches = () => {
     if (isLoading) {
       return (
@@ -59,7 +71,7 @@ export default (props: IGamesListProps) =>  {
         kickOffDate={i.kickOffDate}
         competitionName={i.competitionName}
         competitionAvatar={i.competitionAvatar}
-        onScoreSet={() => null}
+        onScoreSet={onMatchScoreSet}
       />
     ));
   };
@@ -83,6 +95,9 @@ export default (props: IGamesListProps) =>  {
     data(matchesCollectionRef);
   }, [props.matchdayId]);
 
+  const matchesWithPrediction = Object.keys(matchScores).reduce((sum: any[], item: string) => {
+    return Object.keys(matchScores[item]).length === 2 ? [...sum, matchScores[item]] : sum
+  }, []);
   return (
     <>
       <Box
@@ -107,7 +122,7 @@ export default (props: IGamesListProps) =>  {
           borderTop={1}
         >
           <Typography variant="h6" component="h2" color="text.primary">
-            0/{matches.length}
+            {matchesWithPrediction.length}/{matches.length}
           </Typography>
           <Button
             size="large"

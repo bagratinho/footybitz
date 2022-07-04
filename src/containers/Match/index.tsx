@@ -12,64 +12,71 @@ export interface IMatchProps {
   homeTeamName: string;
   awayTeamAvatar: string;
   awayTeamName: string;
-  kickOffDate: Date;
+  kickOffDate: { seconds: number };
   competitionName: string;
   competitionAvatar: string;
   score?: number[];
-  onScoreSet?: (score: number[]) => void;
+  onScoreSet?: (id: string, index: number, value: number) => void;
 }
 
-export default class Match extends React.PureComponent<IMatchProps> {
-  public render() {
-    const { props } = this;
-    return (
-      <StyledContainer>
-        <div className="info">
-          <img src={props.competitionAvatar} alt=""/>
-          <div>
-            <span>{props.competitionName}</span>
-            <span>
-              KO:
-              <FormattedDate
-                value={props.kickOffDate}
-                // @ts-ignore:next-line
-                dateStyle={"full"}
-                timeStyle="short"
-              />
-            </span>
-          </div>
-        </div>
-        <div className="details">
-          <div className="label">
-            {props.score ? <Dictionary label="finalScore"/> : <Dictionary label="yourPrediction"/>}
-          </div>
-          <div className="match">
-            <div className="team">
-              <img src={props.homeTeamAvatar} alt=""/>
-              {props.homeTeamName}
-            </div>
-            <div className="outcome">
-              {props.score ?
-              <div className="result">
-                <div>{props.score[0]}</div>
-                -
-                <div>{props.score[1]}</div>
-              </div> :
-              <div className="prediction">
-                <NumberInput/>
-                -
-                <NumberInput/>
-              </div>}
-            </div>
-            <div className="team">
-              <img src={props.awayTeamAvatar} alt=""/>
-              {props.awayTeamName}
-            </div>
-          </div>
-        </div>
-      </StyledContainer>
-    );
+export default (props: IMatchProps) => {
+  const changeScore = (index: number) => (value: number) => {
+    if (!props.onScoreSet) { return; }
+    props.onScoreSet(props.id, index, value);
   }
+  return (
+    <StyledContainer>
+      <div className="info">
+        <img src={props.competitionAvatar} alt=""/>
+        <div>
+          <span>{props.competitionName}</span>
+          <span>
+            <Dictionary
+              label="ko"
+              values={{
+                date: (
+                  <FormattedDate
+                    value={props.kickOffDate.seconds * 1000}
+                    // @ts-ignore:next-line
+                    dateStyle={"full"}
+                    timeStyle="short"
+                  />
+                )
+              }}
+            />
+          </span>
+        </div>
+      </div>
+      <div className="details">
+        <div className="label">
+          {props.score ? <Dictionary label="finalScore"/> : <Dictionary label="yourPrediction"/>}
+        </div>
+        <div className="match">
+          <div className="team">
+            <img src={props.homeTeamAvatar} alt=""/>
+            {props.homeTeamName}
+          </div>
+          <div className="outcome">
+            {props.score ?
+            <div className="result">
+              <div>{props.score[0]}</div>
+              -
+              <div>{props.score[1]}</div>
+            </div> :
+            <div className="prediction">
+              <NumberInput onChange={changeScore(0)}/>
+              -
+              <NumberInput onChange={changeScore(1)}/>
+            </div>}
+          </div>
+          <div className="team">
+            <img src={props.awayTeamAvatar} alt=""/>
+            {props.awayTeamName}
+          </div>
+        </div>
+      </div>
+    </StyledContainer>
+  );
 }
 
 

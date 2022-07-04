@@ -152,6 +152,20 @@ const Signin = (props: ISigninProps) => {
                 <Dictionary label="signIn"/>
               </Button>
             </Box>
+            {authMessage === "auth/invalid-email" ?
+            <Box
+              mb={2}
+            >
+              <Alert
+                severity="error"
+                variant="filled"
+              >
+                <Dictionary
+                  label="invalidEmail"
+                />
+              </Alert>
+            </Box>
+            : null}
             {authMessage === "auth/wrong-password" ?
             <Box
               mb={2}

@@ -169,4 +169,12 @@ export default defineMessages({
     id: "nothingToShow",
     defaultMessage: "Nothing to show",
   },
+  invalidEmail: {
+    id: "invalidEmail",
+    defaultMessage: "Invalid email",
+  },
+  ko: {
+    id: "ko",
+    defaultMessage: "KO: {date}",
+  },
 });

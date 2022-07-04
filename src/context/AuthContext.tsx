@@ -62,7 +62,7 @@ const AuthProvider = (props: any) => {
     }).catch((e: any) => {
       setIsLoading(false);
       setAuthMessage(e.code);
-    });;
+    });
   }
 
   useEffect(() => {

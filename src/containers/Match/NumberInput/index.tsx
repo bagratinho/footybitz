@@ -6,31 +6,30 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 
 export interface INumberInputProps {
+  onChange: (value: number) => void;
 }
 
 export default function NumberInput (props: INumberInputProps) {
   const arr = new Array(11).fill("").map((item: number, index: number) => index ? String(index) : item);
   const [value, setValue] = React.useState<"" | number>("");
 
-  const handleInputChange = (e: any) => {
-    if (arr.indexOf(e.target.value) !== -1 && e.target.value < 11 && value > -1) {
-      setValue(e.target.value);
-    }
-  };
-
+  // const handleInputChange = (e: any) => {
+  //   if (arr.indexOf(e.target.value) !== -1 && e.target.value < 11 && value > -1) {
+  //     props.onChange(e.target.value);
+  //     setValue(e.target.value);
+  //   }
+  // };
 
   const add = () => {
-    const newValue = value === "" ? 0 : Number(value) + 1;
-    if (newValue <= 10) {
-      setValue(newValue);
-    }
+    const newValue = Number(value) + 1;
+    props.onChange(newValue);
+    setValue(newValue);
   };
 
   const reduce = () => {
-    const newValue = value === "" ? 0 : Number(value) - 1;
-    if (newValue >= 0) {
-      setValue(newValue);
-    }
+    const newValue = Number(value) - 1;
+    props.onChange(newValue);
+    setValue(newValue);
   };
 
   return (
@@ -48,7 +47,7 @@ export default function NumberInput (props: INumberInputProps) {
         type="number"
         placeholder="&mdash;"
         disabled
-        onChange={handleInputChange}
+        // onChange={handleInputChange}
       />
       <IconButton
         onClick={reduce}
