@@ -10,6 +10,7 @@ import { useAuth } from "context/AuthContext";
 import PasswordReset from "containers/PasswordReset";
 import Signin from "containers/Signin";
 import Signup from "containers/Signup";
+import Teams from "containers/Teams";
 
 const Routes = () => {
   const { user } = useAuth();
@@ -35,6 +36,7 @@ const Routes = () => {
         <Route exact={true} path="/signup" render={renderUnprotectedRoute(Signup, user)}/>
         <Route exact={true} path="/password-reset" render={renderUnprotectedRoute(PasswordReset, user)}/>
         <Route exact={true} path="/" render={renderProtectedRoute(Matchdays, user)}/>
+        <Route exact={true} path="/teams" render={renderProtectedRoute(Teams, user)}/>
         <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
         <Route exact={true} path="/standings" render={renderProtectedRoute(Standings, user)}/>
         <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>

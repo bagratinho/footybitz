@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person } from "@mui/icons-material";
+import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person, SecurityOutlined } from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
 import { Box, styled, Typography } from "@mui/material";
@@ -46,6 +46,11 @@ export default (props: ISidebarNavigationProps) =>  {
         <li>
           <NavLink activeClassName="active" to="/profile">
             <Person/><Dictionary label="profile"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/teams">
+            <SecurityOutlined/><Dictionary label="teams"/>
           </NavLink>
         </li>
       </ul>

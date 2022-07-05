@@ -177,4 +177,40 @@ export default defineMessages({
     id: "ko",
     defaultMessage: "KO: {date}",
   },
+  teams: {
+    id: "teams",
+    defaultMessage: "Teams",
+  },
+  newTeam: {
+    id: "newTeam",
+    defaultMessage: "New team",
+  },
+  search: {
+    id: "search",
+    defaultMessage: "Search",
+  },
+  update: {
+    id: "update",
+    defaultMessage: "Update",
+  },
+  cancel: {
+    id: "cancel",
+    defaultMessage: "Cancel",
+  },
+  create: {
+    id: "create",
+    defaultMessage: "Create",
+  },
+  teamName: {
+    id: "teamName",
+    defaultMessage: "Team name",
+  },
+  teamAvatar: {
+    id: "teamAvatar",
+    defaultMessage: "Team avatar",
+  },
+  editEntity: {
+    id: "editEntity",
+    defaultMessage: "Edit {name}",
+  },
 });
