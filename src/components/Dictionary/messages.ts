@@ -181,9 +181,17 @@ export default defineMessages({
     id: "teams",
     defaultMessage: "Teams",
   },
+  competitions: {
+    id: "competitions",
+    defaultMessage: "Competitions",
+  },
   newTeam: {
     id: "newTeam",
     defaultMessage: "New team",
+  },
+  newCompetition: {
+    id: "newCompetition",
+    defaultMessage: "New competition",
   },
   search: {
     id: "search",
@@ -212,5 +220,13 @@ export default defineMessages({
   editEntity: {
     id: "editEntity",
     defaultMessage: "Edit {name}",
+  },
+  kickOffDate: {
+    id: "kickOffDate",
+    defaultMessage: "KO date & time",
+  },
+  matchdayName: {
+    id: "matchdayName",
+    defaultMessage: "Matchday name",
   },
 });

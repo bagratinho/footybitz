@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Avatar, Box, Button, Chip, CircularProgress, debounce, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, IconButton, InputAdornment, InputBase, List, ListItem, TextField, Typography } from "@mui/material";
+  Divider, IconButton, InputAdornment, InputBase, List, ListItem, MenuItem, Select, TextField, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import PageWrapper from "containers/PageWrapper";
@@ -11,26 +11,27 @@ import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-export interface ITeamsProps {
+export interface IAdminMatchdaysProps {
   className?: string;
   intl?: any;
 }
 
-const Teams = (props: ITeamsProps) =>  {
-  const [teams, setTeams] = useState<any[]>([]);
+const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
+  const [matchdays, setCompetitions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
-  const [currentSelectedTeam, setCurrentSelectedTeam] = useState<{ name: string, avatar: string, id: string } | undefined>();
-  const [currentEditedTeam, setCurrentEditedTeam] = useState<{ name?: string, avatar?: string } | undefined>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentSelectedMatchday, setCurrentSelectedMatchday] = useState<{ name: string, kickOffDate: string, id: string; isArchived: boolean; isFinished: boolean } | undefined>();
+  const [currentEditedMatchday, setCurrentEditedMatchday] = useState<{ name?: string, kickOffDate?: string; isArchived: boolean; isFinished: boolean } | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const collectionName = "teams";
+
+  const collectionName = "matchdays";
   const theme = useTheme();
 
   const getTeams = async (nameFilter?: string) => {
     setIsLoading(true);
     const q = nameFilter ?
       query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
-      query(collection(db, collectionName), orderBy("name", "desc"), limit(40));
+      query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
     const querySnapshot = await getDocs(q);
     const tms: any[] = [];
     querySnapshot.forEach((doc) => {
@@ -39,7 +40,7 @@ const Teams = (props: ITeamsProps) =>  {
       });
     });
     setIsLoading(false);
-    setTeams(tms);
+    setCompetitions(tms);
   };
   const debouncedGetItems = debounce(getTeams, 300);
 
@@ -53,31 +54,35 @@ const Teams = (props: ITeamsProps) =>  {
   }
 
   const handleSave = async () => {
-    if (currentSelectedTeam && currentEditedTeam && currentEditedTeam.name && currentEditedTeam.avatar) {
-      const teamRef = doc(db, collectionName, currentSelectedTeam.id);
+    if (currentSelectedMatchday && currentEditedMatchday && currentEditedMatchday.name && currentEditedMatchday.avatar) {
+      const teamRef = doc(db, collectionName, currentSelectedMatchday.id);
       const unsubscribe = onSnapshot(doc(db, collectionName, teamRef.id), (doc) => {
         const team = doc.data();
         if (!team) { return; }
-        const newTeams = teams.map(i => i.id === team.id ? team : i);
-        setTeams(newTeams);
+        const newTeams = matchdays.map(i => i.id === team.id ? team : i);
+        setCompetitions(newTeams);
         unsubscribe();
       });
       await updateDoc(teamRef, {
-        name: currentEditedTeam.name,
-        avatar: currentEditedTeam.avatar,
+        name: currentEditedMatchday.name,
+        kickOffDate: currentEditedMatchday.kickOffDate,
+        isArchived: currentEditedMatchday.isArchived,
+        isFinished: currentEditedMatchday.isFinished,
       });
     } else {
-      if (!currentEditedTeam || !currentEditedTeam.name || !currentEditedTeam.avatar) { return; }
+      if (!currentEditedMatchday || !currentEditedMatchday.name || !currentEditedMatchday.avatar) { return; }
       const newTeamRef = doc(collection(db, collectionName));
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
         const team = doc.data();
         if (!team) { return; }
-        setTeams([...teams, team]);
+        setCompetitions([...matchdays, team]);
         unsubscribe();
       });
       await setDoc(newTeamRef, {
-        name: currentEditedTeam.name,
-        avatar: currentEditedTeam.avatar,
+        name: currentEditedMatchday.name,
+        kickOffDate: currentEditedMatchday.kickOffDate,
+        isArchived: currentEditedMatchday.isArchived,
+        isFinished: currentEditedMatchday.isFinished,
         id: newTeamRef.id,
       });
     }
@@ -85,41 +90,43 @@ const Teams = (props: ITeamsProps) =>  {
 
   const handleDelete = (docRef: string) => async () => {
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
-      setTeams(teams.filter(i => i.id !== docRef));
+      setCompetitions(matchdays.filter(i => i.id !== docRef));
     });
   }
 
   const handleClose = () => {
-    setCurrentSelectedTeam(undefined);
-    setCurrentEditedTeam(undefined);
-    setIsTeamModalOpen(false);
+    setCurrentSelectedMatchday(undefined);
+    setCurrentEditedMatchday(undefined);
+    setIsModalOpen(false);
   }
 
   const handleOpen = () => {
-    setIsTeamModalOpen(true);
+    setIsModalOpen(true);
   }
 
   const handleOpenWithEdit = (item: any) => () => {
-    setCurrentSelectedTeam(item);
-    setCurrentEditedTeam({
+    setCurrentSelectedMatchday(item);
+    setCurrentEditedMatchday({
       name: item.name,
-      avatar: item.avatar,
+      isArchived: item.isArchived,
+      isFinished: item.isFinished,
+      kickOffDate: item.kickOffDate,
     });
     handleOpen();
   }
 
   const handleNameChange = (e: any) => {
-    setCurrentEditedTeam({
-      ...currentEditedTeam,
+    setCurrentEditedMatchday({
+      ...currentEditedMatchday,
       name: e.target.value,
-    })
+    });
   }
 
-  const handleAvatarChange = (e: any) => {
-    setCurrentEditedTeam({
-      ...currentEditedTeam,
-      avatar: e.target.value,
-    })
+  const handleIsArchivedChange = (e: any) => {
+    setCurrentEditedMatchday({
+      ...currentEditedMatchday,
+      isArchived: Boolean(e.target.value),
+    });
   }
 
   const renderTeams = () => {
@@ -138,7 +145,7 @@ const Teams = (props: ITeamsProps) =>  {
         </Box>
       );
     }
-    if (!teams.length) {
+    if (!matchdays.length) {
       return (
         <Box
           display="flex"
@@ -155,7 +162,7 @@ const Teams = (props: ITeamsProps) =>  {
         </Box>
       );
     }
-    return teams.map(item => {
+    return matchdays.map(item => {
       return (
         <React.Fragment key={item.id}>
           <Divider />
@@ -220,7 +227,7 @@ const Teams = (props: ITeamsProps) =>  {
               }}
             >
               <Typography variant="h6" component="h2" color="text.primary">
-                <Dictionary label="teams"/>
+                <Dictionary label="matchdays"/>
               </Typography>
               <IconButton
                 color="default"
@@ -270,7 +277,7 @@ const Teams = (props: ITeamsProps) =>  {
         </Box>
       </Box>
       <Dialog
-        open={isTeamModalOpen}
+        open={isModalOpen}
         onClose={handleClose}
         transitionDuration={{
           enter: theme.transitions.duration.enteringScreen,
@@ -279,30 +286,42 @@ const Teams = (props: ITeamsProps) =>  {
       >
         <DialogTitle>
           <Dictionary
-            label={currentSelectedTeam ? "editEntity" : "newTeam"}
-            values={currentSelectedTeam ? { name: currentSelectedTeam.name } : undefined}
+            label={currentSelectedMatchday ? "editEntity" : "newCompetition"}
+            values={currentSelectedMatchday ? { name: currentSelectedMatchday.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamName)}
+            placeholder={props.intl.formatMessage(messages.matchdayName)}
             onChange={handleNameChange}
-            value={currentEditedTeam?.name || ""}
+            value={currentEditedMatchday?.name || ""}
             type="text"
             fullWidth
             variant="outlined"
             color="secondary"
           />
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={`${currentEditedMatchday?.isArchived}` || "true"}
+            label="Age"
+            onChange={handleIsArchivedChange}
+          >
+            <MenuItem value="true">true</MenuItem>
+            <MenuItem value="false">false</MenuItem>
+          </Select>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamAvatar)}
-            onChange={handleAvatarChange}
-            value={currentEditedTeam?.avatar || ""}
-            type="text"
-            fullWidth
+            type="datetime-local"
+            label={props.intl.formatMessage(messages.kickOffDate)}
+            defaultValue={currentEditedMatchday?.kickOffDate || ""}
             variant="outlined"
             color="secondary"
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
         </DialogContent>
         <DialogActions>
@@ -319,7 +338,7 @@ const Teams = (props: ITeamsProps) =>  {
             disableElevation
             color="secondary"
           >
-            <Dictionary label={currentSelectedTeam ? "update" : "create"}/>
+            <Dictionary label={currentSelectedMatchday ? "update" : "create"}/>
           </Button>
         </DialogActions>
       </Dialog>
@@ -327,4 +346,4 @@ const Teams = (props: ITeamsProps) =>  {
   );
 }
 
-export default injectIntl(Teams);
+export default injectIntl(AdminMatchdays);

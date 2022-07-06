@@ -11,19 +11,20 @@ import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-export interface ITeamsProps {
+export interface ICompetitionsProps {
   className?: string;
   intl?: any;
 }
 
-const Teams = (props: ITeamsProps) =>  {
-  const [teams, setTeams] = useState<any[]>([]);
+const Competitions = (props: ICompetitionsProps) =>  {
+  const [competitions, setCompetitions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
   const [currentSelectedTeam, setCurrentSelectedTeam] = useState<{ name: string, avatar: string, id: string } | undefined>();
   const [currentEditedTeam, setCurrentEditedTeam] = useState<{ name?: string, avatar?: string } | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const collectionName = "teams";
+
+  const collectionName = "competitions";
   const theme = useTheme();
 
   const getTeams = async (nameFilter?: string) => {
@@ -39,7 +40,7 @@ const Teams = (props: ITeamsProps) =>  {
       });
     });
     setIsLoading(false);
-    setTeams(tms);
+    setCompetitions(tms);
   };
   const debouncedGetItems = debounce(getTeams, 300);
 
@@ -58,8 +59,8 @@ const Teams = (props: ITeamsProps) =>  {
       const unsubscribe = onSnapshot(doc(db, collectionName, teamRef.id), (doc) => {
         const team = doc.data();
         if (!team) { return; }
-        const newTeams = teams.map(i => i.id === team.id ? team : i);
-        setTeams(newTeams);
+        const newTeams = competitions.map(i => i.id === team.id ? team : i);
+        setCompetitions(newTeams);
         unsubscribe();
       });
       await updateDoc(teamRef, {
@@ -72,7 +73,7 @@ const Teams = (props: ITeamsProps) =>  {
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
         const team = doc.data();
         if (!team) { return; }
-        setTeams([...teams, team]);
+        setCompetitions([...competitions, team]);
         unsubscribe();
       });
       await setDoc(newTeamRef, {
@@ -85,7 +86,7 @@ const Teams = (props: ITeamsProps) =>  {
 
   const handleDelete = (docRef: string) => async () => {
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
-      setTeams(teams.filter(i => i.id !== docRef));
+      setCompetitions(competitions.filter(i => i.id !== docRef));
     });
   }
 
@@ -138,7 +139,7 @@ const Teams = (props: ITeamsProps) =>  {
         </Box>
       );
     }
-    if (!teams.length) {
+    if (!competitions.length) {
       return (
         <Box
           display="flex"
@@ -155,7 +156,7 @@ const Teams = (props: ITeamsProps) =>  {
         </Box>
       );
     }
-    return teams.map(item => {
+    return competitions.map(item => {
       return (
         <React.Fragment key={item.id}>
           <Divider />
@@ -220,7 +221,7 @@ const Teams = (props: ITeamsProps) =>  {
               }}
             >
               <Typography variant="h6" component="h2" color="text.primary">
-                <Dictionary label="teams"/>
+                <Dictionary label="competitions"/>
               </Typography>
               <IconButton
                 color="default"
@@ -229,6 +230,15 @@ const Teams = (props: ITeamsProps) =>  {
               >
                 <AddRounded/>
               </IconButton>
+              {/* <TextField
+                id="datetime-local"
+                type="datetime-local"
+                defaultValue={new Date(Date.now())}
+                sx={{ width: 250 }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              /> */}
             </Box>
             <Box
               sx={{
@@ -279,7 +289,7 @@ const Teams = (props: ITeamsProps) =>  {
       >
         <DialogTitle>
           <Dictionary
-            label={currentSelectedTeam ? "editEntity" : "newTeam"}
+            label={currentSelectedTeam ? "editEntity" : "newCompetition"}
             values={currentSelectedTeam ? { name: currentSelectedTeam.name } : undefined}
           />
         </DialogTitle>
@@ -327,4 +337,4 @@ const Teams = (props: ITeamsProps) =>  {
   );
 }
 
-export default injectIntl(Teams);
+export default injectIntl(Competitions);

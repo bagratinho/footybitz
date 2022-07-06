@@ -53,6 +53,16 @@ export default (props: ISidebarNavigationProps) =>  {
             <SecurityOutlined/><Dictionary label="teams"/>
           </NavLink>
         </li>
+        <li>
+          <NavLink activeClassName="active" to="/competitions">
+            <EmojiEventsOutlined/><Dictionary label="competitions"/>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink activeClassName="active" to="/admin-matchdays">
+            <Sports/><Dictionary label="matchdays"/>
+          </NavLink>
+        </li>
       </ul>
     </StyledContainer>
   );
