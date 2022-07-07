@@ -1,51 +1,67 @@
 import * as React from "react";
-import { Avatar, Box, Button, Chip, CircularProgress, debounce, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, IconButton, InputAdornment, InputBase, List, ListItem, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Checkbox, Chip, CircularProgress, debounce, Dialog, DialogActions, DialogContent, DialogTitle,
+  Divider, FormControlLabel, FormGroup, IconButton, InputAdornment, InputBase, List, ListItem, MenuItem, Select, TextField, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import PageWrapper from "containers/PageWrapper";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
-import { collection, getDocs, query, setDoc, doc, updateDoc, onSnapshot, orderBy, limit, deleteDoc, where } from "firebase/firestore";
+import { Timestamp, collection, getDocs, query, setDoc, doc, updateDoc, onSnapshot, orderBy, limit, deleteDoc, where } from "firebase/firestore";
 import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import ConfirmationPrompt from "components/ConfirmationPrompt";
 export interface IAdminMatchdaysProps {
   className?: string;
   intl?: any;
 }
 
+interface IEditedMatchday {
+  name?: string,
+  kickOffDate?: any;
+  isArchived?: boolean;
+  isFinished?: boolean
+}
+interface ISelectedMatchday {
+  id: string;
+  name: string,
+  kickOffDate: any;
+  isArchived: boolean;
+  isFinished: boolean
+}
+
 const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
-  const [matchdays, setCompetitions] = useState<any[]>([]);
+  const [matchdays, setMatchdays] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [currentSelectedMatchday, setCurrentSelectedMatchday] = useState<{ name: string, kickOffDate: string, id: string; isArchived: boolean; isFinished: boolean } | undefined>();
-  const [currentEditedMatchday, setCurrentEditedMatchday] = useState<{ name?: string, kickOffDate?: string; isArchived: boolean; isFinished: boolean } | undefined>();
+  const [isMatchdayModalOpen, setIsMatchdayModalOpen] = useState<boolean>(false);
+  const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
+  const [currentSelectedMatchday, setCurrentSelectedMatchday] = useState<ISelectedMatchday | undefined>();
+  const [currentEditedMatchday, setCurrentEditedMatchday] = useState<IEditedMatchday | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const collectionName = "matchdays";
   const theme = useTheme();
 
-  const getTeams = async (nameFilter?: string) => {
+  const getMatchdays = async (nameFilter?: string) => {
     setIsLoading(true);
     const q = nameFilter ?
       query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
       query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
     const querySnapshot = await getDocs(q);
-    const tms: any[] = [];
+    const mchds: any[] = [];
     querySnapshot.forEach((doc) => {
-      tms.push({
+      mchds.push({
         ...doc.data() as Object,
       });
     });
     setIsLoading(false);
-    setCompetitions(tms);
+    setMatchdays(mchds);
   };
-  const debouncedGetItems = debounce(getTeams, 300);
+  const debouncedGetItems = debounce(getMatchdays, 300);
 
   useEffect(() => {
-    getTeams();
+    getMatchdays();
   }, []);
 
   const onSearchQueryChange = (e: any) => {
@@ -54,28 +70,38 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
   }
 
   const handleSave = async () => {
-    if (currentSelectedMatchday && currentEditedMatchday && currentEditedMatchday.name && currentEditedMatchday.avatar) {
-      const teamRef = doc(db, collectionName, currentSelectedMatchday.id);
-      const unsubscribe = onSnapshot(doc(db, collectionName, teamRef.id), (doc) => {
-        const team = doc.data();
-        if (!team) { return; }
-        const newTeams = matchdays.map(i => i.id === team.id ? team : i);
-        setCompetitions(newTeams);
+    if (currentSelectedMatchday &&
+      currentEditedMatchday &&
+      currentEditedMatchday.name &&
+      currentEditedMatchday.kickOffDate &&
+      currentEditedMatchday.isArchived !== undefined &&
+      currentEditedMatchday.isFinished !== undefined) {
+      const matchdayRef = doc(db, collectionName, currentSelectedMatchday.id);
+      const unsubscribe = onSnapshot(doc(db, collectionName, matchdayRef.id), (doc) => {
+        const matchday = doc.data();
+        if (!matchday) { return; }
+        const newTeams = matchdays.map(i => i.id === matchday.id ? matchday : i);
+        setMatchdays(newTeams);
         unsubscribe();
       });
-      await updateDoc(teamRef, {
+      await updateDoc(matchdayRef, {
         name: currentEditedMatchday.name,
         kickOffDate: currentEditedMatchday.kickOffDate,
         isArchived: currentEditedMatchday.isArchived,
         isFinished: currentEditedMatchday.isFinished,
       });
     } else {
-      if (!currentEditedMatchday || !currentEditedMatchday.name || !currentEditedMatchday.avatar) { return; }
+      if (!currentEditedMatchday ||
+        !currentEditedMatchday.name ||
+        !currentEditedMatchday.kickOffDate ||
+        currentEditedMatchday.isArchived === undefined ||
+        currentEditedMatchday.isFinished === undefined
+      ) { return; }
       const newTeamRef = doc(collection(db, collectionName));
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
-        const team = doc.data();
-        if (!team) { return; }
-        setCompetitions([...matchdays, team]);
+        const matchday = doc.data();
+        if (!matchday) { return; }
+        setMatchdays([...matchdays, matchday]);
         unsubscribe();
       });
       await setDoc(newTeamRef, {
@@ -86,22 +112,42 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         id: newTeamRef.id,
       });
     }
+    setIsMatchdayModalOpen(false);
   }
 
-  const handleDelete = (docRef: string) => async () => {
+  const handleDelete = async () => {
+    if (!currentSelectedMatchday) { return; }
+    const docRef = currentSelectedMatchday?.id;
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
-      setCompetitions(matchdays.filter(i => i.id !== docRef));
+      setMatchdays(matchdays.filter(i => i.id !== docRef));
     });
+    setIsDeletePromptOpen(false);
+  }
+
+  const handleDeletePromptOpenGenerator = (item: ISelectedMatchday) => () => {
+    setCurrentSelectedMatchday(item);
+    setIsDeletePromptOpen(true);
+  }
+
+  const handleDeletePromptClose = () => {
+    setCurrentSelectedMatchday(undefined);
+    setIsDeletePromptOpen(false);
   }
 
   const handleClose = () => {
     setCurrentSelectedMatchday(undefined);
     setCurrentEditedMatchday(undefined);
-    setIsModalOpen(false);
+    setIsMatchdayModalOpen(false);
   }
 
   const handleOpen = () => {
-    setIsModalOpen(true);
+    setCurrentEditedMatchday({
+      name: "",
+      isArchived: true,
+      isFinished: false,
+      kickOffDate: "",
+    });
+    setIsMatchdayModalOpen(true);
   }
 
   const handleOpenWithEdit = (item: any) => () => {
@@ -112,7 +158,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       isFinished: item.isFinished,
       kickOffDate: item.kickOffDate,
     });
-    handleOpen();
+    setIsMatchdayModalOpen(true);
   }
 
   const handleNameChange = (e: any) => {
@@ -125,8 +171,23 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
   const handleIsArchivedChange = (e: any) => {
     setCurrentEditedMatchday({
       ...currentEditedMatchday,
-      isArchived: Boolean(e.target.value),
+      isArchived: e.target.checked,
     });
+  }
+
+  const handleIsFinishedChange = (e: any) => {
+    setCurrentEditedMatchday({
+      ...currentEditedMatchday,
+      isFinished: e.target.checked,
+    });
+  }
+
+  const handleKickOffDateChange = (e: any) => {
+    setCurrentEditedMatchday({
+      ...currentEditedMatchday,
+      kickOffDate: Timestamp.fromDate(new Date(e.target.value)),
+    });
+    console.log(Timestamp.fromDate(e.target.value));
   }
 
   const renderTeams = () => {
@@ -173,9 +234,9 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
               alignItems="center"
             >
               <Chip
-                avatar={<Avatar src={item.avatar} sx={{ p: 0.5 }}/>}
                 label={item.name}
                 color="primary"
+                onClick={handleOpenWithEdit(item)}
                 sx={{
                   mr: "auto",
                 }}
@@ -190,7 +251,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
               <IconButton
                 color="default"
                 size="small"
-                onClick={handleDelete(item.id)}
+                onClick={handleDeletePromptOpenGenerator(item)}
               >
                 <Delete/>
               </IconButton>
@@ -200,6 +261,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       )
     })
   }
+
   return (
     <PageWrapper>
       <Box>
@@ -277,7 +339,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         </Box>
       </Box>
       <Dialog
-        open={isModalOpen}
+        open={isMatchdayModalOpen}
         onClose={handleClose}
         transitionDuration={{
           enter: theme.transitions.duration.enteringScreen,
@@ -286,14 +348,14 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       >
         <DialogTitle>
           <Dictionary
-            label={currentSelectedMatchday ? "editEntity" : "newCompetition"}
-            values={currentSelectedMatchday ? { name: currentSelectedMatchday.name } : undefined}
+            label={currentSelectedMatchday ? "editEntity" : "newMatchday"}
+            values={currentSelectedMatchday ? { entity: currentSelectedMatchday.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
           <TextField
-            margin="dense"
-            placeholder={props.intl.formatMessage(messages.matchdayName)}
+            margin="normal"
+            label={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
             value={currentEditedMatchday?.name || ""}
             type="text"
@@ -301,33 +363,52 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             variant="outlined"
             color="secondary"
           />
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={`${currentEditedMatchday?.isArchived}` || "true"}
-            label="Age"
-            onChange={handleIsArchivedChange}
-          >
-            <MenuItem value="true">true</MenuItem>
-            <MenuItem value="false">false</MenuItem>
-          </Select>
           <TextField
-            margin="dense"
+            margin="normal"
             type="datetime-local"
             label={props.intl.formatMessage(messages.kickOffDate)}
-            defaultValue={currentEditedMatchday?.kickOffDate || ""}
+            value={(currentEditedMatchday?.kickOffDate ?
+              currentEditedMatchday?.kickOffDate.toDate().toISOString() :
+              "").slice(0, 16)
+            }
             variant="outlined"
             color="secondary"
             fullWidth
             InputLabelProps={{
               shrink: true,
             }}
+            onChange={handleKickOffDateChange}
           />
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={currentEditedMatchday?.isArchived}
+                  onChange={handleIsArchivedChange}
+                  disableRipple
+                  color="secondary"
+                />
+              }
+              label={props.intl.formatMessage(messages.isArchived)}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={currentEditedMatchday?.isFinished}
+                  onChange={handleIsFinishedChange}
+                  disableRipple
+                  color="secondary"
+                />
+              }
+              label={props.intl.formatMessage(messages.isFinished)}
+            />
+          </FormGroup>
         </DialogContent>
         <DialogActions>
           <Button
             onClick={handleClose}
             disableElevation
+            variant="outlined"
             color="secondary"
           >
             <Dictionary label="cancel"/>
@@ -342,6 +423,15 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmationPrompt
+        isOpen={isDeletePromptOpen}
+        onClose={handleDeletePromptClose}
+        onConfirm={handleDelete}
+        titleLabel="deleteEntityPromptTitle"
+        titleValues={{ entity: currentSelectedMatchday?.name || "" }}
+        descriptionLabel="deleteEntityPromptDescription"
+        descriptionValues={{ entity: currentSelectedMatchday?.name || "" }}
+      />
     </PageWrapper>
   );
 }

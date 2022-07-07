@@ -12,7 +12,7 @@ export interface IMatchProps {
   homeTeamName: string;
   awayTeamAvatar: string;
   awayTeamName: string;
-  kickOffDate: { seconds: number };
+  kickOffDate: { seconds: number};
   competitionName: string;
   competitionAvatar: string;
   score?: number[];

@@ -193,6 +193,14 @@ export default defineMessages({
     id: "newCompetition",
     defaultMessage: "New competition",
   },
+  newMatchday: {
+    id: "newMatchday",
+    defaultMessage: "New matchday",
+  },
+  name: {
+    id: "name",
+    defaultMessage: "Name",
+  },
   search: {
     id: "search",
     defaultMessage: "Search",
@@ -205,21 +213,29 @@ export default defineMessages({
     id: "cancel",
     defaultMessage: "Cancel",
   },
+  confirm: {
+    id: "confirm",
+    defaultMessage: "Confirm",
+  },
   create: {
     id: "create",
     defaultMessage: "Create",
   },
-  teamName: {
-    id: "teamName",
-    defaultMessage: "Team name",
-  },
-  teamAvatar: {
-    id: "teamAvatar",
-    defaultMessage: "Team avatar",
+  avatar: {
+    id: "avatar",
+    defaultMessage: "Avatar",
   },
   editEntity: {
     id: "editEntity",
-    defaultMessage: "Edit {name}",
+    defaultMessage: "Edit {entity}",
+  },
+  deleteEntityPromptTitle: {
+    id: "editEntity",
+    defaultMessage: "Delete {entity}",
+  },
+  deleteEntityPromptDescription: {
+    id: "editEntity",
+    defaultMessage: "Are you sure you want to delete {entity}?",
   },
   kickOffDate: {
     id: "kickOffDate",
@@ -228,5 +244,13 @@ export default defineMessages({
   matchdayName: {
     id: "matchdayName",
     defaultMessage: "Matchday name",
+  },
+  isArchived: {
+    id: "isArchived",
+    defaultMessage: "Is archived",
+  },
+  isFinished: {
+    id: "isFinished",
+    defaultMessage: "Is finished",
   },
 });

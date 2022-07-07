@@ -11,41 +11,52 @@ import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import ConfirmationPrompt from "components/ConfirmationPrompt";
 export interface ICompetitionsProps {
   className?: string;
   intl?: any;
+}
+interface IEditedCompetition {
+  name?: string,
+  avatar?: string;
+}
+interface ISelectedCompetition {
+  id: string;
+  name: string,
+  avatar: string;
 }
 
 const Competitions = (props: ICompetitionsProps) =>  {
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
-  const [currentSelectedTeam, setCurrentSelectedTeam] = useState<{ name: string, avatar: string, id: string } | undefined>();
-  const [currentEditedTeam, setCurrentEditedTeam] = useState<{ name?: string, avatar?: string } | undefined>();
+  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState<boolean>(false);
+  const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
+  const [currentSelectedCompetition, setCurrentSelectedCompetition] = useState<ISelectedCompetition | undefined>();
+  const [currentEditedCompetition, setCurrentEditedCompetition] = useState<IEditedCompetition | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const collectionName = "competitions";
   const theme = useTheme();
 
-  const getTeams = async (nameFilter?: string) => {
+  const getCompetitions = async (nameFilter?: string) => {
     setIsLoading(true);
     const q = nameFilter ?
       query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
       query(collection(db, collectionName), orderBy("name", "desc"), limit(40));
     const querySnapshot = await getDocs(q);
-    const tms: any[] = [];
+    const cmps: any[] = [];
     querySnapshot.forEach((doc) => {
-      tms.push({
+      cmps.push({
         ...doc.data() as Object,
       });
     });
     setIsLoading(false);
-    setCompetitions(tms);
+    setCompetitions(cmps);
   };
-  const debouncedGetItems = debounce(getTeams, 300);
+  const debouncedGetItems = debounce(getCompetitions, 300);
 
   useEffect(() => {
-    getTeams();
+    getCompetitions();
   }, []);
 
   const onSearchQueryChange = (e: any) => {
@@ -54,55 +65,69 @@ const Competitions = (props: ICompetitionsProps) =>  {
   }
 
   const handleSave = async () => {
-    if (currentSelectedTeam && currentEditedTeam && currentEditedTeam.name && currentEditedTeam.avatar) {
-      const teamRef = doc(db, collectionName, currentSelectedTeam.id);
-      const unsubscribe = onSnapshot(doc(db, collectionName, teamRef.id), (doc) => {
-        const team = doc.data();
-        if (!team) { return; }
-        const newTeams = competitions.map(i => i.id === team.id ? team : i);
-        setCompetitions(newTeams);
+    if (currentSelectedCompetition && currentEditedCompetition && currentEditedCompetition.name && currentEditedCompetition.avatar) {
+      const competitionRef = doc(db, collectionName, currentSelectedCompetition.id);
+      const unsubscribe = onSnapshot(doc(db, collectionName, competitionRef.id), (doc) => {
+        const competition = doc.data();
+        if (!competition) { return; }
+        const newCompetitions = competitions.map(i => i.id === competition.id ? competition : i);
+        setCompetitions(newCompetitions);
         unsubscribe();
       });
-      await updateDoc(teamRef, {
-        name: currentEditedTeam.name,
-        avatar: currentEditedTeam.avatar,
+      await updateDoc(competitionRef, {
+        name: currentEditedCompetition.name,
+        avatar: currentEditedCompetition.avatar,
       });
     } else {
-      if (!currentEditedTeam || !currentEditedTeam.name || !currentEditedTeam.avatar) { return; }
-      const newTeamRef = doc(collection(db, collectionName));
-      const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
-        const team = doc.data();
-        if (!team) { return; }
-        setCompetitions([...competitions, team]);
+      if (!currentEditedCompetition || !currentEditedCompetition.name || !currentEditedCompetition.avatar) { return; }
+      const newCompetitionRef = doc(collection(db, collectionName));
+      const unsubscribe = onSnapshot(doc(db, collectionName, newCompetitionRef.id), (doc) => {
+        const competition = doc.data();
+        if (!competition) { return; }
+        setCompetitions([...competitions, competition]);
         unsubscribe();
       });
-      await setDoc(newTeamRef, {
-        name: currentEditedTeam.name,
-        avatar: currentEditedTeam.avatar,
-        id: newTeamRef.id,
+      await setDoc(newCompetitionRef, {
+        name: currentEditedCompetition.name,
+        avatar: currentEditedCompetition.avatar,
+        id: newCompetitionRef.id,
       });
     }
+    setIsCompetitionModalOpen(false);
   }
 
-  const handleDelete = (docRef: string) => async () => {
+  const handleDelete = async () => {
+    if (!currentSelectedCompetition) { return; }
+    const docRef = currentSelectedCompetition?.id;
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
       setCompetitions(competitions.filter(i => i.id !== docRef));
     });
+    setIsDeletePromptOpen(false);
+  }
+
+  const handleDeletePromptOpenGenerator = (item: ISelectedCompetition) => () => {
+    setCurrentSelectedCompetition(item);
+    setIsDeletePromptOpen(true);
+  }
+
+  const handleDeletePromptClose = () => {
+    setCurrentSelectedCompetition(undefined);
+    setIsDeletePromptOpen(false);
   }
 
   const handleClose = () => {
-    setCurrentSelectedTeam(undefined);
-    setCurrentEditedTeam(undefined);
-    setIsTeamModalOpen(false);
+    setCurrentSelectedCompetition(undefined);
+    setCurrentEditedCompetition(undefined);
+    setIsCompetitionModalOpen(false);
   }
 
   const handleOpen = () => {
-    setIsTeamModalOpen(true);
+    setIsCompetitionModalOpen(true);
   }
 
   const handleOpenWithEdit = (item: any) => () => {
-    setCurrentSelectedTeam(item);
-    setCurrentEditedTeam({
+    setCurrentSelectedCompetition(item);
+    setCurrentEditedCompetition({
       name: item.name,
       avatar: item.avatar,
     });
@@ -110,20 +135,20 @@ const Competitions = (props: ICompetitionsProps) =>  {
   }
 
   const handleNameChange = (e: any) => {
-    setCurrentEditedTeam({
-      ...currentEditedTeam,
+    setCurrentEditedCompetition({
+      ...currentEditedCompetition,
       name: e.target.value,
     })
   }
 
   const handleAvatarChange = (e: any) => {
-    setCurrentEditedTeam({
-      ...currentEditedTeam,
+    setCurrentEditedCompetition({
+      ...currentEditedCompetition,
       avatar: e.target.value,
     })
   }
 
-  const renderTeams = () => {
+  const renderCompetitions = () => {
     if (isLoading) {
       return (
         <Box
@@ -168,6 +193,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
             >
               <Chip
                 avatar={<Avatar src={item.avatar} sx={{ p: 0.5 }}/>}
+                onClick={handleOpenWithEdit(item)}
                 label={item.name}
                 color="primary"
                 sx={{
@@ -184,7 +210,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
               <IconButton
                 color="default"
                 size="small"
-                onClick={handleDelete(item.id)}
+                onClick={handleDeletePromptOpenGenerator(item)}
               >
                 <Delete/>
               </IconButton>
@@ -230,15 +256,6 @@ const Competitions = (props: ICompetitionsProps) =>  {
               >
                 <AddRounded/>
               </IconButton>
-              {/* <TextField
-                id="datetime-local"
-                type="datetime-local"
-                defaultValue={new Date(Date.now())}
-                sx={{ width: 250 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              /> */}
             </Box>
             <Box
               sx={{
@@ -275,12 +292,12 @@ const Competitions = (props: ICompetitionsProps) =>  {
           pt="108px"
         >
           <List component="nav" >
-            {renderTeams()}
+            {renderCompetitions()}
           </List>
         </Box>
       </Box>
       <Dialog
-        open={isTeamModalOpen}
+        open={isCompetitionModalOpen}
         onClose={handleClose}
         transitionDuration={{
           enter: theme.transitions.duration.enteringScreen,
@@ -289,16 +306,16 @@ const Competitions = (props: ICompetitionsProps) =>  {
       >
         <DialogTitle>
           <Dictionary
-            label={currentSelectedTeam ? "editEntity" : "newCompetition"}
-            values={currentSelectedTeam ? { name: currentSelectedTeam.name } : undefined}
+            label={currentSelectedCompetition ? "editEntity" : "newCompetition"}
+            values={currentSelectedCompetition ? { entity: currentSelectedCompetition.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamName)}
+            placeholder={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
-            value={currentEditedTeam?.name || ""}
+            value={currentEditedCompetition?.name || ""}
             type="text"
             fullWidth
             variant="outlined"
@@ -306,9 +323,9 @@ const Competitions = (props: ICompetitionsProps) =>  {
           />
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamAvatar)}
+            placeholder={props.intl.formatMessage(messages.avatar)}
             onChange={handleAvatarChange}
-            value={currentEditedTeam?.avatar || ""}
+            value={currentEditedCompetition?.avatar || ""}
             type="text"
             fullWidth
             variant="outlined"
@@ -319,6 +336,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
           <Button
             onClick={handleClose}
             disableElevation
+            variant="outlined"
             color="secondary"
           >
             <Dictionary label="cancel"/>
@@ -329,10 +347,19 @@ const Competitions = (props: ICompetitionsProps) =>  {
             disableElevation
             color="secondary"
           >
-            <Dictionary label={currentSelectedTeam ? "update" : "create"}/>
+            <Dictionary label={currentSelectedCompetition ? "update" : "create"}/>
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmationPrompt
+        isOpen={isDeletePromptOpen}
+        onClose={handleDeletePromptClose}
+        onConfirm={handleDelete}
+        titleLabel="deleteEntityPromptTitle"
+        titleValues={{ entity: currentSelectedCompetition?.name || "" }}
+        descriptionLabel="deleteEntityPromptDescription"
+        descriptionValues={{ entity: currentSelectedCompetition?.name || "" }}
+      />
     </PageWrapper>
   );
 }

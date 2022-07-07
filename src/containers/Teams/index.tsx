@@ -11,17 +11,28 @@ import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import ConfirmationPrompt from "components/ConfirmationPrompt";
 export interface ITeamsProps {
   className?: string;
   intl?: any;
+}
+interface IEditedTeam {
+  name?: string,
+  avatar?: string;
+}
+interface ISelectedTeam {
+  id: string;
+  name: string,
+  avatar: string;
 }
 
 const Teams = (props: ITeamsProps) =>  {
   const [teams, setTeams] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
-  const [currentSelectedTeam, setCurrentSelectedTeam] = useState<{ name: string, avatar: string, id: string } | undefined>();
-  const [currentEditedTeam, setCurrentEditedTeam] = useState<{ name?: string, avatar?: string } | undefined>();
+  const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
+  const [currentSelectedTeam, setCurrentSelectedTeam] = useState<ISelectedTeam | undefined>();
+  const [currentEditedTeam, setCurrentEditedTeam] = useState<IEditedTeam | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const collectionName = "teams";
   const theme = useTheme();
@@ -81,12 +92,26 @@ const Teams = (props: ITeamsProps) =>  {
         id: newTeamRef.id,
       });
     }
+    setIsTeamModalOpen(false);
   }
 
-  const handleDelete = (docRef: string) => async () => {
+  const handleDelete = async () => {
+    if (!currentSelectedTeam) { return; }
+    const docRef = currentSelectedTeam?.id;
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
       setTeams(teams.filter(i => i.id !== docRef));
     });
+    setIsDeletePromptOpen(false);
+  }
+
+  const handleDeletePromptOpenGenerator = (item: ISelectedTeam) => () => {
+    setCurrentSelectedTeam(item);
+    setIsDeletePromptOpen(true);
+  }
+
+  const handleDeletePromptClose = () => {
+    setCurrentSelectedTeam(undefined);
+    setIsDeletePromptOpen(false);
   }
 
   const handleClose = () => {
@@ -183,7 +208,7 @@ const Teams = (props: ITeamsProps) =>  {
               <IconButton
                 color="default"
                 size="small"
-                onClick={handleDelete(item.id)}
+                onClick={handleDeletePromptOpenGenerator(item)}
               >
                 <Delete/>
               </IconButton>
@@ -280,13 +305,13 @@ const Teams = (props: ITeamsProps) =>  {
         <DialogTitle>
           <Dictionary
             label={currentSelectedTeam ? "editEntity" : "newTeam"}
-            values={currentSelectedTeam ? { name: currentSelectedTeam.name } : undefined}
+            values={currentSelectedTeam ? { entity: currentSelectedTeam.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamName)}
+            placeholder={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
             value={currentEditedTeam?.name || ""}
             type="text"
@@ -296,7 +321,7 @@ const Teams = (props: ITeamsProps) =>  {
           />
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.teamAvatar)}
+            placeholder={props.intl.formatMessage(messages.avatar)}
             onChange={handleAvatarChange}
             value={currentEditedTeam?.avatar || ""}
             type="text"
@@ -309,6 +334,7 @@ const Teams = (props: ITeamsProps) =>  {
           <Button
             onClick={handleClose}
             disableElevation
+            variant="outlined"
             color="secondary"
           >
             <Dictionary label="cancel"/>
@@ -323,6 +349,15 @@ const Teams = (props: ITeamsProps) =>  {
           </Button>
         </DialogActions>
       </Dialog>
+      <ConfirmationPrompt
+        isOpen={isDeletePromptOpen}
+        onClose={handleDeletePromptClose}
+        onConfirm={handleDelete}
+        titleLabel="deleteEntityPromptTitle"
+        titleValues={{ entity: currentSelectedTeam?.name || "" }}
+        descriptionLabel="deleteEntityPromptDescription"
+        descriptionValues={{ entity: currentSelectedTeam?.name || "" }}
+      />
     </PageWrapper>
   );
 }
