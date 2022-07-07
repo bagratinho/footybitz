@@ -235,7 +235,8 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             >
               <Chip
                 label={item.name}
-                color="primary"
+                disabled={item.isFinished}
+                color={item.isArchived ? "default" : "primary"}
                 onClick={handleOpenWithEdit(item)}
                 sx={{
                   mr: "auto",
