@@ -197,6 +197,10 @@ export default defineMessages({
     id: "newMatchday",
     defaultMessage: "New matchday",
   },
+  newMatch: {
+    id: "newMatch",
+    defaultMessage: "New match",
+  },
   name: {
     id: "name",
     defaultMessage: "Name",

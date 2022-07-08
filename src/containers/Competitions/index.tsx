@@ -12,6 +12,8 @@ import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
+import EntitySelect, { IEntitySelectOption } from "components/EntitySelect";
+import { EntityImage, EntityImagesMap } from "components/EntityImage";
 export interface ICompetitionsProps {
   className?: string;
   intl?: any;
@@ -93,7 +95,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
         id: newCompetitionRef.id,
       });
     }
-    setIsCompetitionModalOpen(false);
+    handleClose();
   }
 
   const handleDelete = async () => {
@@ -141,10 +143,10 @@ const Competitions = (props: ICompetitionsProps) =>  {
     })
   }
 
-  const handleAvatarChange = (e: any) => {
+  const handleAvatarChange = (e: React.SyntheticEvent, value: IEntitySelectOption) => {
     setCurrentEditedCompetition({
       ...currentEditedCompetition,
-      avatar: e.target.value,
+      avatar: value.id,
     })
   }
 
@@ -192,10 +194,10 @@ const Competitions = (props: ICompetitionsProps) =>  {
               alignItems="center"
             >
               <Chip
-                avatar={<Avatar src={item.avatar} sx={{ p: 0.5 }}/>}
+                avatar={<Avatar src={EntityImagesMap.competition.find(i => i.id === item.avatar)!.img} sx={{ p: 0.5 }}/>}
                 onClick={handleOpenWithEdit(item)}
                 label={item.name}
-                color="primary"
+                color="secondary"
                 sx={{
                   mr: "auto",
                 }}
@@ -313,7 +315,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
         <DialogContent>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.name)}
+            label={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
             value={currentEditedCompetition?.name || ""}
             type="text"
@@ -321,15 +323,10 @@ const Competitions = (props: ICompetitionsProps) =>  {
             variant="outlined"
             color="secondary"
           />
-          <TextField
-            margin="dense"
-            placeholder={props.intl.formatMessage(messages.avatar)}
-            onChange={handleAvatarChange}
+          <EntitySelect
+            onOptionChange={handleAvatarChange}
             value={currentEditedCompetition?.avatar || ""}
-            type="text"
-            fullWidth
-            variant="outlined"
-            color="secondary"
+            type="competition"
           />
         </DialogContent>
         <DialogActions>

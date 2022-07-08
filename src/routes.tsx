@@ -13,6 +13,7 @@ import Signup from "containers/Signup";
 import Teams from "containers/Teams";
 import Competitions from "containers/Competitions";
 import AdminMatchdays from "containers/AdminMatchdays";
+import Matchday from "containers/AdminMatchdays/Matchday";
 
 const Routes = () => {
   const { user } = useAuth();
@@ -41,6 +42,7 @@ const Routes = () => {
         <Route exact={true} path="/teams" render={renderProtectedRoute(Teams, user)}/>
         <Route exact={true} path="/competitions" render={renderProtectedRoute(Competitions, user)}/>
         <Route exact={true} path="/admin-matchdays" render={renderProtectedRoute(AdminMatchdays, user)}/>
+        <Route exact={true} path="/admin-matchdays/:matchdayId" render={renderProtectedRoute(Matchday, user)}/>
         <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
         <Route exact={true} path="/standings" render={renderProtectedRoute(Standings, user)}/>
         <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>

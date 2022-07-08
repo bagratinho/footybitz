@@ -12,6 +12,8 @@ import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
+import { EntityImagesMap } from "components/EntityImage";
+import EntitySelect, { IEntitySelectOption } from "components/EntitySelect";
 export interface ITeamsProps {
   className?: string;
   intl?: any;
@@ -92,7 +94,7 @@ const Teams = (props: ITeamsProps) =>  {
         id: newTeamRef.id,
       });
     }
-    setIsTeamModalOpen(false);
+    handleClose();
   }
 
   const handleDelete = async () => {
@@ -140,10 +142,10 @@ const Teams = (props: ITeamsProps) =>  {
     })
   }
 
-  const handleAvatarChange = (e: any) => {
+  const handleAvatarChange = (e: React.SyntheticEvent, value: IEntitySelectOption) => {
     setCurrentEditedTeam({
       ...currentEditedTeam,
-      avatar: e.target.value,
+      avatar: value?.id,
     })
   }
 
@@ -191,7 +193,8 @@ const Teams = (props: ITeamsProps) =>  {
               alignItems="center"
             >
               <Chip
-                avatar={<Avatar src={item.avatar} sx={{ p: 0.5 }}/>}
+                avatar={<Avatar src={EntityImagesMap.team.find(i => i.id === item.avatar)!.img} sx={{ p: 0.5 }}/>}
+                onClick={handleOpenWithEdit(item)}
                 label={item.name}
                 color="primary"
                 sx={{
@@ -311,7 +314,7 @@ const Teams = (props: ITeamsProps) =>  {
         <DialogContent>
           <TextField
             margin="dense"
-            placeholder={props.intl.formatMessage(messages.name)}
+            label={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
             value={currentEditedTeam?.name || ""}
             type="text"
@@ -319,15 +322,10 @@ const Teams = (props: ITeamsProps) =>  {
             variant="outlined"
             color="secondary"
           />
-          <TextField
-            margin="dense"
-            placeholder={props.intl.formatMessage(messages.avatar)}
-            onChange={handleAvatarChange}
+          <EntitySelect
+            onOptionChange={handleAvatarChange}
             value={currentEditedTeam?.avatar || ""}
-            type="text"
-            fullWidth
-            variant="outlined"
-            color="secondary"
+            type="team"
           />
         </DialogContent>
         <DialogActions>

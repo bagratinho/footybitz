@@ -12,19 +12,21 @@ import messages from "components/Dictionary/messages";
 import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
-import { useHistory } from "react-router-dom";
-export interface IAdminMatchdaysProps {
+import { RouteComponentProps, useHistory } from "react-router-dom";
+
+export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}> {
   className?: string;
   intl?: any;
 }
 
-interface IEditedMatchday {
+interface IEditedMatch {
   name?: string,
   kickOffDate?: any;
   isArchived?: boolean;
   isFinished?: boolean
 }
-interface ISelectedMatchday {
+
+interface ISelectedMatch {
   id: string;
   name: string,
   kickOffDate: any;
@@ -32,24 +34,21 @@ interface ISelectedMatchday {
   isFinished: boolean
 }
 
-const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
-  const [matchdays, setMatchdays] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isMatchdayModalOpen, setIsMatchdayModalOpen] = useState<boolean>(false);
+const Matchday = (props: IMatchdayProps) =>  {
+  const [matches, setMatches] = useState<any[]>([]);
+  const [isMatchModalOpen, setIsMatchModalOpen] = useState<boolean>(false);
   const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
-  const [currentSelectedMatchday, setCurrentSelectedMatchday] = useState<ISelectedMatchday | undefined>();
-  const [currentEditedMatchday, setCurrentEditedMatchday] = useState<IEditedMatchday | undefined>();
+  const [currentSelectedMatch, setCurrentSelectedMatch] = useState<ISelectedMatch | undefined>();
+  const [currentEditedMatch, setCurrentEditedMatch] = useState<IEditedMatch | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const collectionName = "matchdays";
+  const collectionName = "matches";
   const history = useHistory();
   const theme = useTheme();
-
-  const getMatchdays = async (nameFilter?: string) => {
+  console.log(props.match.params.matchdayId);
+  const getMatchs = async () => {
     setIsLoading(true);
-    const q = nameFilter ?
-      query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
-      query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
+    const q = query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
     const querySnapshot = await getDocs(q);
     const mchds: any[] = [];
     querySnapshot.forEach((doc) => {
@@ -58,59 +57,53 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       });
     });
     setIsLoading(false);
-    setMatchdays(mchds);
+    setMatches(mchds);
   };
-  const debouncedGetItems = debounce(getMatchdays, 300);
 
   useEffect(() => {
-    getMatchdays();
+    getMatchs();
   }, []);
 
-  const onSearchQueryChange = (e: any) => {
-    setSearchQuery(e.target.value);
-    debouncedGetItems(e.target.value);
-  }
-
   const handleSave = async () => {
-    if (currentSelectedMatchday &&
-      currentEditedMatchday &&
-      currentEditedMatchday.name &&
-      currentEditedMatchday.kickOffDate &&
-      currentEditedMatchday.isArchived !== undefined &&
-      currentEditedMatchday.isFinished !== undefined) {
-      const matchdayRef = doc(db, collectionName, currentSelectedMatchday.id);
+    if (currentSelectedMatch &&
+      currentEditedMatch &&
+      currentEditedMatch.name &&
+      currentEditedMatch.kickOffDate &&
+      currentEditedMatch.isArchived !== undefined &&
+      currentEditedMatch.isFinished !== undefined) {
+      const matchdayRef = doc(db, collectionName, currentSelectedMatch.id);
       const unsubscribe = onSnapshot(doc(db, collectionName, matchdayRef.id), (doc) => {
         const matchday = doc.data();
         if (!matchday) { return; }
-        const newTeams = matchdays.map(i => i.id === matchday.id ? matchday : i);
-        setMatchdays(newTeams);
+        const newTeams = matches.map(i => i.id === matchday.id ? matchday : i);
+        setMatches(newTeams);
         unsubscribe();
       });
       await updateDoc(matchdayRef, {
-        name: currentEditedMatchday.name,
-        kickOffDate: currentEditedMatchday.kickOffDate,
-        isArchived: currentEditedMatchday.isArchived,
-        isFinished: currentEditedMatchday.isFinished,
+        name: currentEditedMatch.name,
+        kickOffDate: currentEditedMatch.kickOffDate,
+        isArchived: currentEditedMatch.isArchived,
+        isFinished: currentEditedMatch.isFinished,
       });
     } else {
-      if (!currentEditedMatchday ||
-        !currentEditedMatchday.name ||
-        !currentEditedMatchday.kickOffDate ||
-        currentEditedMatchday.isArchived === undefined ||
-        currentEditedMatchday.isFinished === undefined
+      if (!currentEditedMatch ||
+        !currentEditedMatch.name ||
+        !currentEditedMatch.kickOffDate ||
+        currentEditedMatch.isArchived === undefined ||
+        currentEditedMatch.isFinished === undefined
       ) { return; }
       const newTeamRef = doc(collection(db, collectionName));
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
         const matchday = doc.data();
         if (!matchday) { return; }
-        setMatchdays([...matchdays, matchday]);
+        setMatches([...matches, matchday]);
         unsubscribe();
       });
       await setDoc(newTeamRef, {
-        name: currentEditedMatchday.name,
-        kickOffDate: currentEditedMatchday.kickOffDate,
-        isArchived: currentEditedMatchday.isArchived,
-        isFinished: currentEditedMatchday.isFinished,
+        name: currentEditedMatch.name,
+        kickOffDate: currentEditedMatch.kickOffDate,
+        isArchived: currentEditedMatch.isArchived,
+        isFinished: currentEditedMatch.isFinished,
         id: newTeamRef.id,
       });
     }
@@ -118,81 +111,81 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
   }
 
   const handleDelete = async () => {
-    if (!currentSelectedMatchday) { return; }
-    const docRef = currentSelectedMatchday?.id;
+    if (!currentSelectedMatch) { return; }
+    const docRef = currentSelectedMatch?.id;
     await deleteDoc(doc(db, collectionName, docRef)).then(r => {
-      setMatchdays(matchdays.filter(i => i.id !== docRef));
+      setMatches(matches.filter(i => i.id !== docRef));
     });
     setIsDeletePromptOpen(false);
   }
 
-  const handleDeletePromptOpenGenerator = (item: ISelectedMatchday) => () => {
-    setCurrentSelectedMatchday(item);
+  const handleDeletePromptOpenGenerator = (item: ISelectedMatch) => () => {
+    setCurrentSelectedMatch(item);
     setIsDeletePromptOpen(true);
   }
 
   const handleDeletePromptClose = () => {
-    setCurrentSelectedMatchday(undefined);
+    setCurrentSelectedMatch(undefined);
     setIsDeletePromptOpen(false);
   }
 
   const handleClose = () => {
-    setCurrentSelectedMatchday(undefined);
-    setCurrentEditedMatchday(undefined);
-    setIsMatchdayModalOpen(false);
+    setCurrentSelectedMatch(undefined);
+    setCurrentEditedMatch(undefined);
+    setIsMatchModalOpen(false);
   }
 
   const handleOpen = () => {
-    setCurrentEditedMatchday({
+    setCurrentEditedMatch({
       name: "",
       isArchived: true,
       isFinished: false,
       kickOffDate: "",
     });
-    setIsMatchdayModalOpen(true);
+    setIsMatchModalOpen(true);
   }
 
   const handleOpenWithEdit = (item: any) => () => {
-    setCurrentSelectedMatchday(item);
-    setCurrentEditedMatchday({
+    setCurrentSelectedMatch(item);
+    setCurrentEditedMatch({
       name: item.name,
       isArchived: item.isArchived,
       isFinished: item.isFinished,
       kickOffDate: item.kickOffDate,
     });
-    setIsMatchdayModalOpen(true);
+    setIsMatchModalOpen(true);
   }
 
   const handleNameChange = (e: any) => {
-    setCurrentEditedMatchday({
-      ...currentEditedMatchday,
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
       name: e.target.value,
     });
   }
 
   const handleIsArchivedChange = (e: any) => {
-    setCurrentEditedMatchday({
-      ...currentEditedMatchday,
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
       isArchived: e.target.checked,
     });
   }
 
   const handleIsFinishedChange = (e: any) => {
-    setCurrentEditedMatchday({
-      ...currentEditedMatchday,
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
       isFinished: e.target.checked,
     });
   }
 
   const handleKickOffDateChange = (e: any) => {
-    setCurrentEditedMatchday({
-      ...currentEditedMatchday,
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
       kickOffDate: Timestamp.fromDate(new Date(e.target.value)),
     });
   }
 
-  const openMatchdayGenerator = (item: any) => () => {
-    history.push(`/admin-matchdays/${item.id}`)
+  const openMatchGenerator = (item: any) => () => {
+    history.push(`/admin-matches/${item.id}`)
   }
 
   const renderTeams = () => {
@@ -211,7 +204,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         </Box>
       );
     }
-    if (!matchdays.length) {
+    if (!matches.length) {
       return (
         <Box
           display="flex"
@@ -228,7 +221,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         </Box>
       );
     }
-    return matchdays.map(item => {
+    return matches.map(item => {
       return (
         <React.Fragment key={item.id}>
           <Divider />
@@ -242,7 +235,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
                 label={item.name}
                 disabled={item.isFinished}
                 color={item.isArchived ? "default" : "primary"}
-                onClick={openMatchdayGenerator(item)}
+                onClick={openMatchGenerator(item)}
                 sx={{
                   mr: "auto",
                 }}
@@ -273,71 +266,34 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       <Box>
         <StickyBar position="top">
           <Box
+            pt={1}
+            pb={1}
+            pr={2}
+            pl={2}
             bgcolor="background.default"
             sx={{
               color: "divider",
               borderBottom: "1px solid",
               minHeight: "59px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              pt={1}
-              pb={1}
-              pr={2}
-              pl={2}
-              sx={{
-                color: "divider",
-                borderBottom: "1px solid",
-                minHeight: "59px",
-              }}
+            <Typography variant="h6" component="h2" color="text.primary">
+              <Dictionary label="matches"/>
+            </Typography>
+            <IconButton
+              color="default"
+              size="small"
+              onClick={handleOpen}
             >
-              <Typography variant="h6" component="h2" color="text.primary">
-                <Dictionary label="matchdays"/>
-              </Typography>
-              <IconButton
-                color="default"
-                size="small"
-                onClick={handleOpen}
-              >
-                <AddRounded/>
-              </IconButton>
-            </Box>
-            <Box
-              sx={{
-                height: 49,
-                display: "flex",
-              }}
-            >
-              <InputBase
-                sx={{
-                  mt: 1,
-                  mb: 1,
-                  ml: 2,
-                  mr: 2,
-                  flex: 1,
-                  height: 32,
-                  bgcolor: "divider",
-                  pl: 1,
-                  pr: 1,
-                  borderRadius: 16,
-                }}
-                placeholder={props.intl.formatMessage(messages.search)}
-                value={searchQuery}
-                onChange={onSearchQueryChange}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Search/>
-                  </InputAdornment>
-                }
-              />
-            </Box>
+              <AddRounded/>
+            </IconButton>
           </Box>
         </StickyBar>
         <Box
-          pt="108px"
+          pt="58px"
         >
           <List component="nav" >
             {renderTeams()}
@@ -345,7 +301,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         </Box>
       </Box>
       <Dialog
-        open={isMatchdayModalOpen}
+        open={isMatchModalOpen}
         onClose={handleClose}
         transitionDuration={{
           enter: theme.transitions.duration.enteringScreen,
@@ -354,8 +310,8 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       >
         <DialogTitle>
           <Dictionary
-            label={currentSelectedMatchday ? "editEntity" : "newMatchday"}
-            values={currentSelectedMatchday ? { entity: currentSelectedMatchday.name } : undefined}
+            label={currentSelectedMatch ? "editEntity" : "newMatch"}
+            values={currentSelectedMatch ? { entity: currentSelectedMatch.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
@@ -363,7 +319,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             margin="normal"
             label={props.intl.formatMessage(messages.name)}
             onChange={handleNameChange}
-            value={currentEditedMatchday?.name || ""}
+            value={currentEditedMatch?.name || ""}
             type="text"
             fullWidth
             variant="outlined"
@@ -373,8 +329,8 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             margin="normal"
             type="datetime-local"
             label={props.intl.formatMessage(messages.kickOffDate)}
-            value={(currentEditedMatchday?.kickOffDate ?
-              currentEditedMatchday?.kickOffDate.toDate().toISOString() :
+            value={(currentEditedMatch?.kickOffDate ?
+              currentEditedMatch?.kickOffDate.toDate().toISOString() :
               "").slice(0, 16)
             }
             variant="outlined"
@@ -389,7 +345,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={currentEditedMatchday?.isArchived}
+                  checked={currentEditedMatch?.isArchived}
                   onChange={handleIsArchivedChange}
                   disableRipple
                   color="secondary"
@@ -400,7 +356,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={currentEditedMatchday?.isFinished}
+                  checked={currentEditedMatch?.isFinished}
                   onChange={handleIsFinishedChange}
                   disableRipple
                   color="secondary"
@@ -425,7 +381,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             disableElevation
             color="secondary"
           >
-            <Dictionary label={currentSelectedMatchday ? "update" : "create"}/>
+            <Dictionary label={currentSelectedMatch ? "update" : "create"}/>
           </Button>
         </DialogActions>
       </Dialog>
@@ -434,12 +390,13 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
         onClose={handleDeletePromptClose}
         onConfirm={handleDelete}
         titleLabel="deleteEntityPromptTitle"
-        titleValues={{ entity: currentSelectedMatchday?.name || "" }}
+        titleValues={{ entity: currentSelectedMatch?.name || "" }}
         descriptionLabel="deleteEntityPromptDescription"
-        descriptionValues={{ entity: currentSelectedMatchday?.name || "" }}
+        descriptionValues={{ entity: currentSelectedMatch?.name || "" }}
       />
     </PageWrapper>
   );
 }
 
-export default injectIntl(AdminMatchdays);
+// @ts-ignore:next-line
+export default injectIntl(Matchday);
