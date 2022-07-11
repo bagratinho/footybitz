@@ -41,6 +41,10 @@ export default defineMessages({
     id: "send",
     defaultMessage: "Send",
   },
+  matchdayMatches: {
+    id: "matchdayMatches",
+    defaultMessage: "Matches {matchdayName}",
+  },
   matches: {
     id: "matches",
     defaultMessage: "Matches",
@@ -256,5 +260,21 @@ export default defineMessages({
   isFinished: {
     id: "isFinished",
     defaultMessage: "Is finished",
+  },
+  homeTeam: {
+    id: "homeTeam",
+    defaultMessage: "Home team",
+  },
+  awayTeam: {
+    id: "awayTeam",
+    defaultMessage: "Away team",
+  },
+  competition: {
+    id: "competition",
+    defaultMessage: "Competition",
+  },
+  stage: {
+    id: "stage",
+    defaultMessage: "Stage",
   },
 });

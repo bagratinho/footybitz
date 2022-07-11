@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Avatar, Box, Button, Checkbox, Chip, CircularProgress, debounce, Dialog, DialogActions, DialogContent, DialogTitle,
+import { Autocomplete, Avatar, Box, Button, Checkbox, Chip, CircularProgress, debounce, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, FormControlLabel, FormGroup, IconButton, InputAdornment, InputBase, List, ListItem, MenuItem, Select, TextField, Typography } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
@@ -9,10 +9,11 @@ import { db } from "firebaseInstance";
 import { Timestamp, collection, getDocs, query, setDoc, doc, updateDoc, onSnapshot, orderBy, limit, deleteDoc, where } from "firebase/firestore";
 import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
-import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
+import { AddRounded, ArrowBack, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
 import { RouteComponentProps, useHistory } from "react-router-dom";
+import { EntityImagesMap } from "components/EntityImage";
 
 export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}> {
   className?: string;
@@ -20,35 +21,65 @@ export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}
 }
 
 interface IEditedMatch {
-  name?: string,
+  id?: string;
+  awayTeamAvatar?: string;
+  awayTeamGoals?: -1;
+  awayTeamName?: string;
+  awayTeamId?: string;
+  competitionAvatar?: string;
+  competitionName?: string;
+  homeTeamAvatar?: string;
+  homeTeamGoals?: -1;
+  homeTeamName?: string;
+  homeTeamId?: string;
+  competitionId?: string;
+  isFinished?: boolean;
   kickOffDate?: any;
-  isArchived?: boolean;
-  isFinished?: boolean
+  matchdayId?: string;
+  stage?: string;
 }
 
 interface ISelectedMatch {
   id: string;
-  name: string,
+  awayTeamAvatar: string;
+  awayTeamGoals: -1;
+  awayTeamName: string;
+  awayTeamId: string;
+  competitionAvatar: string;
+  competitionName: string;
+  homeTeamAvatar: string;
+  homeTeamGoals: -1;
+  homeTeamName: string;
+  homeTeamId: string;
+  competitionId: string;
+  isFinished: boolean;
   kickOffDate: any;
-  isArchived: boolean;
-  isFinished: boolean
+  matchdayId: string;
+  stage: string;
+}
+
+interface IEntitySelectOption {
+  id: string;
+  name: string;
+  avatar: string;
 }
 
 const Matchday = (props: IMatchdayProps) =>  {
   const [matches, setMatches] = useState<any[]>([]);
+  const [teams, setTeams] = useState<any[]>([]);
+  const [competitions, setCompetitions] = useState<any[]>([]);
   const [isMatchModalOpen, setIsMatchModalOpen] = useState<boolean>(false);
   const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
   const [currentSelectedMatch, setCurrentSelectedMatch] = useState<ISelectedMatch | undefined>();
   const [currentEditedMatch, setCurrentEditedMatch] = useState<IEditedMatch | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [matchdayId, matchdayName] = props.match.params.matchdayId.split("_");
   const collectionName = "matches";
   const history = useHistory();
   const theme = useTheme();
-  console.log(props.match.params.matchdayId);
-  const getMatchs = async () => {
+  const getMatches = async () => {
     setIsLoading(true);
-    const q = query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
+    const q = query(collection(db, collectionName), where("matchdayId", "==", matchdayId));
     const querySnapshot = await getDocs(q);
     const mchds: any[] = [];
     querySnapshot.forEach((doc) => {
@@ -56,21 +87,38 @@ const Matchday = (props: IMatchdayProps) =>  {
         ...doc.data() as Object,
       });
     });
+    const teams = await getEntities("teams");
+    const competitions = await getEntities("competitions");
     setIsLoading(false);
     setMatches(mchds);
+    setTeams(teams);
+    setCompetitions(competitions);
+  };
+
+  const getEntities = async (cname: string) => {
+    const q = query(collection(db, cname), orderBy("name", "asc"));
+    const querySnapshot = await getDocs(q);
+    const entities: any[] = [];
+    querySnapshot.forEach((doc) => {
+      entities.push({
+        ...doc.data() as Object,
+      });
+    });
+    return entities;
   };
 
   useEffect(() => {
-    getMatchs();
+    getMatches();
   }, []);
 
   const handleSave = async () => {
     if (currentSelectedMatch &&
       currentEditedMatch &&
-      currentEditedMatch.name &&
+      currentEditedMatch.homeTeamId &&
+      currentEditedMatch.awayTeamId &&
+      currentEditedMatch.competitionId &&
       currentEditedMatch.kickOffDate &&
-      currentEditedMatch.isArchived !== undefined &&
-      currentEditedMatch.isFinished !== undefined) {
+      currentEditedMatch.stage !== undefined) {
       const matchdayRef = doc(db, collectionName, currentSelectedMatch.id);
       const unsubscribe = onSnapshot(doc(db, collectionName, matchdayRef.id), (doc) => {
         const matchday = doc.data();
@@ -80,17 +128,27 @@ const Matchday = (props: IMatchdayProps) =>  {
         unsubscribe();
       });
       await updateDoc(matchdayRef, {
-        name: currentEditedMatch.name,
+        awayTeamAvatar: currentEditedMatch.awayTeamAvatar,
+        awayTeamGoals: currentEditedMatch.awayTeamGoals,
+        awayTeamName: currentEditedMatch.awayTeamName,
+        awayTeamId: currentEditedMatch.awayTeamId,
+        competitionAvatar: currentEditedMatch.competitionAvatar,
+        competitionName: currentEditedMatch.competitionName,
+        competitionId: currentEditedMatch.competitionId,
+        homeTeamAvatar: currentEditedMatch.homeTeamAvatar,
+        homeTeamGoals: currentEditedMatch.homeTeamGoals,
+        homeTeamName: currentEditedMatch.homeTeamName,
+        homeTeamId: currentEditedMatch.homeTeamId,
         kickOffDate: currentEditedMatch.kickOffDate,
-        isArchived: currentEditedMatch.isArchived,
-        isFinished: currentEditedMatch.isFinished,
+        stage: currentEditedMatch.stage,
       });
     } else {
       if (!currentEditedMatch ||
-        !currentEditedMatch.name ||
+        !currentEditedMatch.stage ||
         !currentEditedMatch.kickOffDate ||
-        currentEditedMatch.isArchived === undefined ||
-        currentEditedMatch.isFinished === undefined
+        !currentEditedMatch.homeTeamId ||
+        !currentEditedMatch.awayTeamId ||
+        !currentEditedMatch.competitionId
       ) { return; }
       const newTeamRef = doc(collection(db, collectionName));
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
@@ -100,10 +158,20 @@ const Matchday = (props: IMatchdayProps) =>  {
         unsubscribe();
       });
       await setDoc(newTeamRef, {
-        name: currentEditedMatch.name,
+        awayTeamAvatar: currentEditedMatch.awayTeamAvatar,
+        awayTeamGoals: currentEditedMatch.awayTeamGoals,
+        awayTeamName: currentEditedMatch.awayTeamName,
+        awayTeamId: currentEditedMatch.awayTeamId,
+        competitionAvatar: currentEditedMatch.competitionAvatar,
+        competitionName: currentEditedMatch.competitionName,
+        competitionId: currentEditedMatch.competitionId,
+        homeTeamAvatar: currentEditedMatch.homeTeamAvatar,
+        homeTeamGoals: currentEditedMatch.homeTeamGoals,
+        homeTeamName: currentEditedMatch.homeTeamName,
+        homeTeamId: currentEditedMatch.homeTeamId,
         kickOffDate: currentEditedMatch.kickOffDate,
-        isArchived: currentEditedMatch.isArchived,
-        isFinished: currentEditedMatch.isFinished,
+        stage: currentEditedMatch.stage,
+        matchdayId,
         id: newTeamRef.id,
       });
     }
@@ -135,12 +203,23 @@ const Matchday = (props: IMatchdayProps) =>  {
     setIsMatchModalOpen(false);
   }
 
-  const handleOpen = () => {
+  const handleOpen = async () => {
     setCurrentEditedMatch({
-      name: "",
-      isArchived: true,
+      awayTeamAvatar: "",
+      awayTeamGoals: -1,
+      awayTeamName: "",
+      awayTeamId: "",
+      competitionAvatar: "",
+      competitionName: "",
+      competitionId: "",
+      homeTeamAvatar: "",
+      homeTeamGoals: -1,
+      homeTeamName: "",
+      homeTeamId: "",
       isFinished: false,
       kickOffDate: "",
+      matchdayId,
+      stage: "",
     });
     setIsMatchModalOpen(true);
   }
@@ -148,33 +227,10 @@ const Matchday = (props: IMatchdayProps) =>  {
   const handleOpenWithEdit = (item: any) => () => {
     setCurrentSelectedMatch(item);
     setCurrentEditedMatch({
-      name: item.name,
-      isArchived: item.isArchived,
-      isFinished: item.isFinished,
-      kickOffDate: item.kickOffDate,
+      ...item,
+      id: undefined,
     });
     setIsMatchModalOpen(true);
-  }
-
-  const handleNameChange = (e: any) => {
-    setCurrentEditedMatch({
-      ...currentEditedMatch,
-      name: e.target.value,
-    });
-  }
-
-  const handleIsArchivedChange = (e: any) => {
-    setCurrentEditedMatch({
-      ...currentEditedMatch,
-      isArchived: e.target.checked,
-    });
-  }
-
-  const handleIsFinishedChange = (e: any) => {
-    setCurrentEditedMatch({
-      ...currentEditedMatch,
-      isFinished: e.target.checked,
-    });
   }
 
   const handleKickOffDateChange = (e: any) => {
@@ -184,11 +240,48 @@ const Matchday = (props: IMatchdayProps) =>  {
     });
   }
 
+  const handleStageChange = (e: any) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      stage: e.target.value,
+    });
+  }
+
   const openMatchGenerator = (item: any) => () => {
     history.push(`/admin-matches/${item.id}`)
   }
 
-  const renderTeams = () => {
+  const handleGoBack = () => {
+    history.goBack();
+  }
+
+  const handleCompetitionChange = (e: any, value: IEntitySelectOption) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      competitionId: value.id,
+      competitionAvatar: value.avatar,
+      competitionName: value.name,
+    })
+  }
+
+  const handleHomeTeamChange = (e: any, value: IEntitySelectOption) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      homeTeamId: value.id,
+      homeTeamAvatar: value.avatar,
+      homeTeamName: value.name,
+    })
+  }
+  const handleAwayTeamChange = (e: any, value: IEntitySelectOption) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      awayTeamId: value.id,
+      awayTeamAvatar: value.avatar,
+      awayTeamName: value.name,
+    })
+  }
+
+  const renderMatches = () => {
     if (isLoading) {
       return (
         <Box
@@ -232,7 +325,7 @@ const Matchday = (props: IMatchdayProps) =>  {
               alignItems="center"
             >
               <Chip
-                label={item.name}
+                label={`${item.homeTeamName} vs ${item.awayTeamName}`}
                 disabled={item.isFinished}
                 color={item.isArchived ? "default" : "primary"}
                 onClick={openMatchGenerator(item)}
@@ -277,16 +370,41 @@ const Matchday = (props: IMatchdayProps) =>  {
               minHeight: "59px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
             }}
           >
+            <IconButton
+              color="default"
+              size="small"
+              onClick={handleGoBack}
+              sx={{
+                mr: 2,
+              }}
+            >
+              <ArrowBack/>
+            </IconButton>
             <Typography variant="h6" component="h2" color="text.primary">
-              <Dictionary label="matches"/>
+              <Dictionary
+                label="matchdayMatches"
+                values={{
+                  matchdayName: (
+                    <Typography
+                      component="span"
+                      variant="h6"
+                      color="text.secondary"
+                    >
+                      {matchdayName}
+                    </Typography>
+                  )
+                }}
+              />
             </Typography>
             <IconButton
               color="default"
               size="small"
               onClick={handleOpen}
+              sx={{
+                ml: "auto",
+              }}
             >
               <AddRounded/>
             </IconButton>
@@ -296,7 +414,7 @@ const Matchday = (props: IMatchdayProps) =>  {
           pt="58px"
         >
           <List component="nav" >
-            {renderTeams()}
+            {renderMatches()}
           </List>
         </Box>
       </Box>
@@ -311,21 +429,93 @@ const Matchday = (props: IMatchdayProps) =>  {
         <DialogTitle>
           <Dictionary
             label={currentSelectedMatch ? "editEntity" : "newMatch"}
-            values={currentSelectedMatch ? { entity: currentSelectedMatch.name } : undefined}
+            // values={currentSelectedMatch ? { entity: currentSelectedMatch.name } : undefined}
           />
         </DialogTitle>
         <DialogContent>
-          <TextField
-            margin="normal"
-            label={props.intl.formatMessage(messages.name)}
-            onChange={handleNameChange}
-            value={currentEditedMatch?.name || ""}
-            type="text"
-            fullWidth
-            variant="outlined"
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={competitions}
+            autoHighlight
             color="secondary"
+            getOptionLabel={(option: IEntitySelectOption) => option.name}
+            value={competitions.find(i => i.id === currentEditedMatch?.competitionId) || competitions[0]}
+            onChange={handleCompetitionChange}
+            renderOption={(p, option) => (
+              <Box component="li" sx={{ }} {...p}>
+                <Avatar src={EntityImagesMap.competition.find(i => i.id === option.avatar)!.img} sx={{ p: 0.5 }}/>
+                {option.name}
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="dense"
+                color="secondary"
+                label={props.intl.formatMessage(messages.competition)}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password', // disable autocomplete and autofill
+                }}
+              />
+            )}
+          />
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={teams}
+            autoHighlight
+            color="secondary"
+            getOptionLabel={(option: IEntitySelectOption) => option.name}
+            value={teams.find(i => i.id === currentEditedMatch?.homeTeamId) || teams[0]}
+            onChange={handleHomeTeamChange}
+            renderOption={(p, option) => (
+              <Box component="li" sx={{ }} {...p}>
+                <Avatar src={EntityImagesMap.team.find(i => i.id === option.avatar)!.img} sx={{ mr: 1, borderRadius: 0 }}/>
+                {option.name}
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="dense"
+                color="secondary"
+                label={props.intl.formatMessage(messages.homeTeam)}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password', // disable autocomplete and autofill
+                }}
+              />
+            )}
+          />
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={teams}
+            autoHighlight
+            color="secondary"
+            getOptionLabel={(option: IEntitySelectOption) => option.name}
+            value={teams.find(i => i.id === currentEditedMatch?.awayTeamId) || teams[0]}
+            onChange={handleAwayTeamChange}
+            renderOption={(p, option) => (
+              <Box component="li" sx={{ }} {...p}>
+                <Avatar src={EntityImagesMap.team.find(i => i.id === option.avatar)!.img} sx={{ mr: 1, borderRadius: 0 }}/>
+                {option.name}
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="dense"
+                color="secondary"
+                label={props.intl.formatMessage(messages.awayTeam)}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password', // disable autocomplete and autofill
+                }}
+              />
+            )}
           />
           <TextField
+            sx={{ width: 300, display: "flex" }}
             margin="normal"
             type="datetime-local"
             label={props.intl.formatMessage(messages.kickOffDate)}
@@ -335,36 +525,21 @@ const Matchday = (props: IMatchdayProps) =>  {
             }
             variant="outlined"
             color="secondary"
-            fullWidth
             InputLabelProps={{
               shrink: true,
             }}
             onChange={handleKickOffDateChange}
           />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentEditedMatch?.isArchived}
-                  onChange={handleIsArchivedChange}
-                  disableRipple
-                  color="secondary"
-                />
-              }
-              label={props.intl.formatMessage(messages.isArchived)}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentEditedMatch?.isFinished}
-                  onChange={handleIsFinishedChange}
-                  disableRipple
-                  color="secondary"
-                />
-              }
-              label={props.intl.formatMessage(messages.isFinished)}
-            />
-          </FormGroup>
+          <TextField
+            sx={{ width: 300, display: "flex" }}
+            margin="normal"
+            label={props.intl.formatMessage(messages.stage)}
+            onChange={handleStageChange}
+            value={currentEditedMatch?.stage || ""}
+            type="text"
+            variant="outlined"
+            color="secondary"
+          />
         </DialogContent>
         <DialogActions>
           <Button
@@ -390,9 +565,9 @@ const Matchday = (props: IMatchdayProps) =>  {
         onClose={handleDeletePromptClose}
         onConfirm={handleDelete}
         titleLabel="deleteEntityPromptTitle"
-        titleValues={{ entity: currentSelectedMatch?.name || "" }}
+        titleValues={{ entity: `${currentSelectedMatch?.homeTeamName} vs ${currentSelectedMatch?.awayTeamName}` }}
         descriptionLabel="deleteEntityPromptDescription"
-        descriptionValues={{ entity: currentSelectedMatch?.name || "" }}
+        descriptionValues={{ entity: `${currentSelectedMatch?.homeTeamName} vs ${currentSelectedMatch?.awayTeamName}` }}
       />
     </PageWrapper>
   );

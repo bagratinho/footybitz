@@ -192,10 +192,10 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
   }
 
   const openMatchdayGenerator = (item: any) => () => {
-    history.push(`/admin-matchdays/${item.id}`)
+    history.push(`/admin-matchdays/${item.id}_${item.name}`)
   }
 
-  const renderTeams = () => {
+  const renderMatchdays = () => {
     if (isLoading) {
       return (
         <Box
@@ -340,7 +340,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
           pt="108px"
         >
           <List component="nav" >
-            {renderTeams()}
+            {renderMatchdays()}
           </List>
         </Box>
       </Box>

@@ -42,8 +42,8 @@ const Teams = (props: ITeamsProps) =>  {
   const getTeams = async (nameFilter?: string) => {
     setIsLoading(true);
     const q = nameFilter ?
-      query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
-      query(collection(db, collectionName), orderBy("name", "desc"), limit(40));
+      query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "asc"), limit(10)) :
+      query(collection(db, collectionName), orderBy("name", "asc"));
     const querySnapshot = await getDocs(q);
     const tms: any[] = [];
     querySnapshot.forEach((doc) => {
