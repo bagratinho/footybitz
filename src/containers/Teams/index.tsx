@@ -196,7 +196,7 @@ const Teams = (props: ITeamsProps) =>  {
                 avatar={<Avatar src={EntityImagesMap.team.find(i => i.id === item.avatar)!.img} sx={{ p: 0.5 }}/>}
                 onClick={handleOpenWithEdit(item)}
                 label={item.name}
-                color="primary"
+                color="secondary"
                 sx={{
                   mr: "auto",
                 }}

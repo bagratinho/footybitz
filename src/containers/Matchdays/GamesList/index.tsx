@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography, useTheme } from "@mui/material";
 import Match, { IMatchProps } from "containers/Match";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { transparentize } from "utils"
 
 export interface IGamesListProps {
   className?: string;
@@ -16,6 +17,7 @@ export default (props: IGamesListProps) =>  {
   const [matches, setMatches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [matchScores, setMatchScores] = useState<Object>({});
+  const theme = useTheme();
 
   const onMatchScoreSet = (id: string, index: number, value: number) => {
     setMatchScores({
@@ -120,6 +122,10 @@ export default (props: IGamesListProps) =>  {
           borderRight={0}
           borderBottom={0}
           borderTop={1}
+          sx={{
+            background: transparentize(theme.palette.background.default, 0.8),
+            backdropFilter: "blur(12px)",
+          }}
         >
           <Typography variant="h6" component="h2" color="text.primary">
             {matchesWithPrediction.length}/{matches.length}

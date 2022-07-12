@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Box, FormControl, MenuItem, Select, styled, Tab, Tabs, Typography } from "@mui/material";
+import { Box, FormControl, MenuItem, Select, styled, Tab, Tabs, Typography, useTheme } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";
 import MatchList from "./MatchList";
 import Leaderboard from "./Leaderboard";
 import PageWrapper from "containers/PageWrapper";
+import { transparentize } from "utils"
 
 export interface IResultsProps {
   className?: string;
@@ -20,17 +21,18 @@ export default (props: IResultsProps) =>  {
   const handleTabChange = (event: React.ChangeEvent<{}>, value: number) => {
     setSelectedTab(value);
   };
+  const theme = useTheme();
   return (
     <PageWrapper>
       <Box>
         <StickyBar position="top">
           <Box
-            bgcolor="background.default"
             sx={{
               color: "divider",
               borderBottom: "1px solid",
               minHeight: "59px",
-              // backdropFilter: "blur(12px)",
+              background: transparentize(theme.palette.background.default, 0.8),
+              backdropFilter: "blur(12px)",
             }}
           >
             <Box

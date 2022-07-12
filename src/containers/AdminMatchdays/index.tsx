@@ -49,7 +49,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
     setIsLoading(true);
     const q = nameFilter ?
       query(collection(db, collectionName), where("name", ">=", nameFilter), where("name", "<", nameFilter + "z"), orderBy("name", "desc"), limit(40)) :
-      query(collection(db, collectionName), orderBy("kickOffDate", "desc"), limit(40));
+      query(collection(db, collectionName), orderBy("kickOffDate", "asc"), limit(40));
     const querySnapshot = await getDocs(q);
     const mchds: any[] = [];
     querySnapshot.forEach((doc) => {

@@ -9,11 +9,14 @@ import { db } from "firebaseInstance";
 import { Timestamp, collection, getDocs, query, setDoc, doc, updateDoc, onSnapshot, orderBy, limit, deleteDoc, where } from "firebase/firestore";
 import { injectIntl } from "react-intl";
 import messages from "components/Dictionary/messages";
-import { AddRounded, ArrowBack, Delete, EditOutlined, Search } from "@mui/icons-material";
+import { AddRounded, ArrowBack, Delete, EditOutlined, Outlet, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { EntityImagesMap } from "components/EntityImage";
+import { transparentize } from "utils"
+import NumberInput from "components/NumberInput";
+
 
 export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}> {
   className?: string;
@@ -23,13 +26,13 @@ export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}
 interface IEditedMatch {
   id?: string;
   awayTeamAvatar?: string;
-  awayTeamGoals?: -1;
+  awayTeamGoals?: number;
   awayTeamName?: string;
   awayTeamId?: string;
   competitionAvatar?: string;
   competitionName?: string;
   homeTeamAvatar?: string;
-  homeTeamGoals?: -1;
+  homeTeamGoals?: number;
   homeTeamName?: string;
   homeTeamId?: string;
   competitionId?: string;
@@ -42,13 +45,13 @@ interface IEditedMatch {
 interface ISelectedMatch {
   id: string;
   awayTeamAvatar: string;
-  awayTeamGoals: -1;
+  awayTeamGoals: number;
   awayTeamName: string;
   awayTeamId: string;
   competitionAvatar: string;
   competitionName: string;
   homeTeamAvatar: string;
-  homeTeamGoals: -1;
+  homeTeamGoals: number;
   homeTeamName: string;
   homeTeamId: string;
   competitionId: string;
@@ -281,6 +284,20 @@ const Matchday = (props: IMatchdayProps) =>  {
     })
   }
 
+  const handleHomeTeamGaolsChange = (value: number) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      homeTeamGoals: value,
+    })
+  }
+
+  const handleAwayTeamGaolsChange = (value: number) => {
+    setCurrentEditedMatch({
+      ...currentEditedMatch,
+      awayTeamGoals: value,
+    })
+  }
+
   const renderMatches = () => {
     if (isLoading) {
       return (
@@ -306,8 +323,15 @@ const Matchday = (props: IMatchdayProps) =>  {
           sx={{
             width: "100%",
             height: 300,
+            flexDirection: "column",
           }}
         >
+          <Outlet
+            sx={{
+              fontSize: 80,
+              mb: 1,
+            }}
+          />
           <Typography variant="body2" color="text.secondary">
             <Dictionary label="nothingToShow"/>
           </Typography>
@@ -363,13 +387,13 @@ const Matchday = (props: IMatchdayProps) =>  {
             pb={1}
             pr={2}
             pl={2}
-            bgcolor="background.default"
             sx={{
               color: "divider",
               borderBottom: "1px solid",
               minHeight: "59px",
               display: "flex",
               alignItems: "center",
+              background: transparentize(theme.palette.background.default, 0.8),
             }}
           >
             <IconButton
@@ -377,7 +401,8 @@ const Matchday = (props: IMatchdayProps) =>  {
               size="small"
               onClick={handleGoBack}
               sx={{
-                mr: 2,
+                mr: 1,
+                ml: -1,
               }}
             >
               <ArrowBack/>
@@ -429,17 +454,18 @@ const Matchday = (props: IMatchdayProps) =>  {
         <DialogTitle>
           <Dictionary
             label={currentSelectedMatch ? "editEntity" : "newMatch"}
-            // values={currentSelectedMatch ? { entity: currentSelectedMatch.name } : undefined}
+            values={currentSelectedMatch ? { entity: `${currentSelectedMatch?.homeTeamName} vs ${currentSelectedMatch?.awayTeamName}` } : undefined}
           />
         </DialogTitle>
-        <DialogContent>
+        <DialogContent
+          sx={{ width: 600 }}
+        >
           <Autocomplete
-            sx={{ width: 300 }}
             options={competitions}
             autoHighlight
             color="secondary"
             getOptionLabel={(option: IEntitySelectOption) => option.name}
-            value={competitions.find(i => i.id === currentEditedMatch?.competitionId) || competitions[0]}
+            value={competitions.find(i => i.id === currentEditedMatch?.competitionId)}
             onChange={handleCompetitionChange}
             renderOption={(p, option) => (
               <Box component="li" sx={{ }} {...p}>
@@ -455,18 +481,17 @@ const Matchday = (props: IMatchdayProps) =>  {
                 label={props.intl.formatMessage(messages.competition)}
                 inputProps={{
                   ...params.inputProps,
-                  autoComplete: 'new-password', // disable autocomplete and autofill
+                  autoComplete: "off", // disable autocomplete and autofill
                 }}
               />
             )}
           />
           <Autocomplete
-            sx={{ width: 300 }}
             options={teams}
             autoHighlight
             color="secondary"
             getOptionLabel={(option: IEntitySelectOption) => option.name}
-            value={teams.find(i => i.id === currentEditedMatch?.homeTeamId) || teams[0]}
+            value={teams.find(i => i.id === currentEditedMatch?.homeTeamId)}
             onChange={handleHomeTeamChange}
             renderOption={(p, option) => (
               <Box component="li" sx={{ }} {...p}>
@@ -482,18 +507,17 @@ const Matchday = (props: IMatchdayProps) =>  {
                 label={props.intl.formatMessage(messages.homeTeam)}
                 inputProps={{
                   ...params.inputProps,
-                  autoComplete: 'new-password', // disable autocomplete and autofill
+                  autoComplete: "off", // disable autocomplete and autofill
                 }}
               />
             )}
           />
           <Autocomplete
-            sx={{ width: 300 }}
             options={teams}
             autoHighlight
             color="secondary"
             getOptionLabel={(option: IEntitySelectOption) => option.name}
-            value={teams.find(i => i.id === currentEditedMatch?.awayTeamId) || teams[0]}
+            value={teams.find(i => i.id === currentEditedMatch?.awayTeamId)}
             onChange={handleAwayTeamChange}
             renderOption={(p, option) => (
               <Box component="li" sx={{ }} {...p}>
@@ -509,13 +533,13 @@ const Matchday = (props: IMatchdayProps) =>  {
                 label={props.intl.formatMessage(messages.awayTeam)}
                 inputProps={{
                   ...params.inputProps,
-                  autoComplete: 'new-password', // disable autocomplete and autofill
+                  autoComplete: "off", // disable autocomplete and autofill
                 }}
               />
             )}
           />
           <TextField
-            sx={{ width: 300, display: "flex" }}
+            sx={{ display: "flex" }}
             margin="normal"
             type="datetime-local"
             label={props.intl.formatMessage(messages.kickOffDate)}
@@ -530,8 +554,18 @@ const Matchday = (props: IMatchdayProps) =>  {
             }}
             onChange={handleKickOffDateChange}
           />
+          <NumberInput
+            label={props.intl.formatMessage(messages.homeTeamGoals)}
+            onChange={handleHomeTeamGaolsChange}
+            value={currentEditedMatch?.homeTeamGoals || 0}
+          />
+          <NumberInput
+            label={props.intl.formatMessage(messages.awayTeamGoals)}
+            onChange={handleAwayTeamGaolsChange}
+            value={currentEditedMatch?.awayTeamGoals || 0}
+          />
           <TextField
-            sx={{ width: 300, display: "flex" }}
+            sx={{ display: "flex" }}
             margin="normal"
             label={props.intl.formatMessage(messages.stage)}
             onChange={handleStageChange}

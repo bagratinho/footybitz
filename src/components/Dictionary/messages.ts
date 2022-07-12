@@ -277,4 +277,12 @@ export default defineMessages({
     id: "stage",
     defaultMessage: "Stage",
   },
+  homeTeamGoals: {
+    id: "homeTeamGoals",
+    defaultMessage: "Home goals",
+  },
+  awayTeamGoals: {
+    id: "awayTeamGoals",
+    defaultMessage: "Away goals",
+  },
 });

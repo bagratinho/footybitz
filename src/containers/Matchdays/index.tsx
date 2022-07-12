@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography } from "@mui/material";
+import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography, useTheme } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";
@@ -9,6 +9,7 @@ import PageWrapper from "containers/PageWrapper";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { transparentize } from "utils"
 
 export interface IMatchdaysProps {
   className?: string;
@@ -18,6 +19,7 @@ export default (props: IMatchdaysProps) =>  {
   const [selectedMatchday, setSelectedMatchday] = useState<string | undefined>();
   const [selectedTab, setSelectedTab] = useState(0);
   const [matchdays, setMatchdays] = useState<any[]>([]);
+  const theme = useTheme();
 
   const handleTabChange = (event: React.ChangeEvent<{}>, value: number) => {
     setSelectedTab(value);
@@ -33,7 +35,6 @@ export default (props: IMatchdaysProps) =>  {
         <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
       );
     });
-    console.log({ selectedMatchday });
     return options.length ? (
       <FormControl variant="filled">
         <Select
@@ -51,7 +52,12 @@ export default (props: IMatchdaysProps) =>  {
   useEffect(() => {
     const matchdaysCollectionRef = collection(db, "matchdays");
     const data = async (y: any) => {
-      const q = query(y, where("kickOffDate", ">", new Date(Date.now())), orderBy("kickOffDate", "asc"),);
+      const q = query(y,
+        where("kickOffDate", ">", new Date(Date.now())),
+        where("isArchived", "==", false),
+        where("isFinished", "==", false),
+        orderBy("kickOffDate", "asc"),
+      );
       const querySnapshot = await getDocs(q);
       let mds: any[] = [];
       querySnapshot.forEach((doc) => {
@@ -59,7 +65,6 @@ export default (props: IMatchdaysProps) =>  {
           ...doc.data() as Object,
         });
       });
-      console.log(mds, mds[0].id);
       setSelectedMatchday(mds[0].id);
       setMatchdays(mds);
     };
@@ -71,12 +76,12 @@ export default (props: IMatchdaysProps) =>  {
       <Box>
         <StickyBar position="top">
           <Box
-            bgcolor="background.default"
             sx={{
               color: "divider",
               borderBottom: "1px solid",
               minHeight: "59px",
-              // backdropFilter: "blur(12px)",
+              background: transparentize(theme.palette.background.default, 0.8),
+              backdropFilter: "blur(12px)",
             }}
           >
             <Box

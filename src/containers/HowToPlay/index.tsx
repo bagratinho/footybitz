@@ -1,19 +1,20 @@
 import * as React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import PageWrapper from "containers/PageWrapper";
+import { transparentize } from "utils"
 
 export interface IHowToPlayProps {
   className?: string;
 }
 
 export default (props: IHowToPlayProps) =>  {
+  const theme = useTheme();
   return (
     <PageWrapper>
       <Box>
         <StickyBar position="top">
           <Box
-            bgcolor="background.default"
             sx={{
               color: "divider",
               borderBottom: "1px solid",
@@ -21,7 +22,12 @@ export default (props: IHowToPlayProps) =>  {
               alignItems: "center",
               minHeight: "59px",
               justifyContent: "space-between",
-              padding: "0 16px",
+              pt: 0,
+              pb: 0,
+              pr: 2,
+              pl: 2,
+              background: transparentize(theme.palette.background.default, 0.8),
+              backdropFilter: "blur(12px)",
             }}
           >
             <Typography variant="h6" component="h2" color="text.primary">

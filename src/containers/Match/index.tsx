@@ -3,8 +3,9 @@ import NumberInput from "./NumberInput";
 import Dictionary from "components/Dictionary";
 import * as images from "./images";
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import { FormattedDate } from "react-intl";
+import { EntityImage, EntityImagesMap } from "components/EntityImage";
 
 export interface IMatchProps {
   id: string;
@@ -27,7 +28,18 @@ export default (props: IMatchProps) => {
   return (
     <StyledContainer>
       <div className="info">
-        <img src={props.competitionAvatar} alt=""/>
+        <EntityImage
+          id={props.competitionAvatar}
+          size="large"
+          type="competition"
+          sx={{
+            width: 42,
+            height: 42,
+            borderRadius: "4px",
+            background: "#fff",
+            mr: 1,
+          }}
+        />
         <div>
           <span>{props.competitionName}</span>
           <span>
@@ -53,7 +65,16 @@ export default (props: IMatchProps) => {
         </div>
         <div className="match">
           <div className="team">
-            <img src={props.homeTeamAvatar} alt=""/>
+            <EntityImage
+              id={props.homeTeamAvatar}
+              size="large"
+              type="team"
+              sx={{
+                mb: 1,
+                width: 64,
+                height: 64,
+              }}
+            />
             {props.homeTeamName}
           </div>
           <div className="outcome">
@@ -70,7 +91,16 @@ export default (props: IMatchProps) => {
             </div>}
           </div>
           <div className="team">
-            <img src={props.awayTeamAvatar} alt=""/>
+            <EntityImage
+              id={props.awayTeamAvatar}
+              size="large"
+              type="team"
+              sx={{
+                mb: 1,
+                width: 64,
+                height: 64,
+              }}
+            />
             {props.awayTeamName}
           </div>
         </div>
@@ -135,14 +165,9 @@ const StyledContainer = styled(Box)`
         display: flex;
         flex-direction: column;
         align-items: center;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 500;
         justify-content: center;
-        & > img {
-          display: block;
-          margin-bottom: 10px;
-          height: 64px;
-        }
       }
       & .outcome {
         display: flex;
