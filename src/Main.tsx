@@ -16,6 +16,7 @@ const muiTheme = createTheme({
     },
     background: {
       default: "#15202B",
+      paper: "#1e2731",
     },
     text: {
       primary: "#ffffff",

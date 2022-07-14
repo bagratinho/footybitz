@@ -17,10 +17,12 @@ export interface IMatchProps {
   competitionName: string;
   competitionAvatar: string;
   score?: number[];
+  isSet?: boolean;
   onScoreSet?: (id: string, index: number, value: number) => void;
 }
 
 export default (props: IMatchProps) => {
+
   const changeScore = (index: number) => (value: number) => {
     if (!props.onScoreSet) { return; }
     props.onScoreSet(props.id, index, value);
@@ -85,9 +87,9 @@ export default (props: IMatchProps) => {
               <div>{props.score[1]}</div>
             </div> :
             <div className="prediction">
-              <NumberInput onChange={changeScore(0)}/>
+              <NumberInput onChange={changeScore(0)} isHighlighted={props.isSet}/>
               -
-              <NumberInput onChange={changeScore(1)}/>
+              <NumberInput onChange={changeScore(1)} isHighlighted={props.isSet}/>
             </div>}
           </div>
           <div className="team">
@@ -143,7 +145,7 @@ const StyledContainer = styled(Box)`
     padding: 16px 8px;
     margin: 16px;
     border-radius: 5px;
-    background: #1e2731;
+    background: ${props => props.theme.palette.background.paper};
     & .label {
       width: 100%;
       line-height: 24px;

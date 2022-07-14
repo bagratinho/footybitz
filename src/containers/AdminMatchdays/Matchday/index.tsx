@@ -77,7 +77,7 @@ const Matchday = (props: IMatchdayProps) =>  {
   const [currentEditedMatch, setCurrentEditedMatch] = useState<IEditedMatch | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [matchdayId, matchdayName] = props.match.params.matchdayId.split("_");
-  const collectionName = "matches";
+  const collectionName = `matchdays/${matchdayId}/matches`;
   const history = useHistory();
   const theme = useTheme();
   const getMatches = async () => {

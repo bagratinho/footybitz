@@ -107,7 +107,7 @@ const StyledContainer = styled(Box)`
           font-weight: 700;
         }
         &:hover {
-          background: rgb(120 29 242);
+          background: ${props => props.theme.palette.primary.main};
         }
       }
     }

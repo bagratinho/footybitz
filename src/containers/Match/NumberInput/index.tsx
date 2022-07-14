@@ -7,6 +7,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 export interface INumberInputProps {
   onChange: (value: number) => void;
+  isHighlighted?: boolean;
 }
 
 export default function NumberInput (props: INumberInputProps) {
@@ -21,7 +22,7 @@ export default function NumberInput (props: INumberInputProps) {
   // };
 
   const add = () => {
-    const newValue = Number(value) + 1;
+    const newValue = Number(value === "" ? -1 : value) + 1;
     props.onChange(newValue);
     setValue(newValue);
   };
@@ -33,7 +34,7 @@ export default function NumberInput (props: INumberInputProps) {
   };
 
   return (
-    <StyledContainer>
+    <StyledContainer isHighlighted={props.isHighlighted}>
       <IconButton
         onClick={add}
         size="medium"
@@ -62,7 +63,7 @@ export default function NumberInput (props: INumberInputProps) {
   );
 }
 
-const StyledContainer = styled(Box)`
+const StyledContainer = styled(Box)<{isHighlighted?: boolean}>`
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -73,7 +74,6 @@ const StyledContainer = styled(Box)`
     font-size: 24px;
     padding: 0;
     height: 30px;
-    color: #fbd46d;
     color: ${props => props.theme.palette.secondary.main};
     font-weight: 700;
     &::placeholder {
@@ -84,7 +84,8 @@ const StyledContainer = styled(Box)`
   flex-direction: column;
   align-items: center;
   width: 44px;
-  background: ${props => props.theme.palette.divider};
+  transition: ${props => `background-color ${props.theme.transitions.duration.standard}ms ${props.theme.transitions.easing.easeIn}`};
+  background: ${props => props.isHighlighted ? "#607d0c" : props.theme.palette.divider};
   border-radius: 26px;
   padding: 2px;
 `

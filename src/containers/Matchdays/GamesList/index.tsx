@@ -5,7 +5,7 @@ import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot, query, where, setDoc } from "firebase/firestore";
 import { transparentize } from "utils"
 
 export interface IGamesListProps {
@@ -27,6 +27,24 @@ export default (props: IGamesListProps) =>  {
         [index]: value,
       }
     })
+  }
+
+  const sendPrediction = async () => {
+    const collectionName = `matchdays/${props.matchdayId}/predictions`;
+    const newPredictionRef = doc(collection(db, collectionName));
+    const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
+      // const predictin = doc.data();
+      // if (!matchday) { return; }
+      // setMatches([...matches, matchday]);
+      unsubscribe();
+    });
+    await setDoc(newPredictionRef, {
+      matchdayId: props.matchdayId,
+      scores: matchScores,
+      id: newPredictionRef.id,
+    }).catch(e => {
+      console.log({e});
+    });
   }
 
   const renderMatches = () => {
@@ -73,6 +91,7 @@ export default (props: IGamesListProps) =>  {
         kickOffDate={i.kickOffDate}
         competitionName={i.competitionName}
         competitionAvatar={i.competitionAvatar}
+        isSet={matchScores[i.id] ? Object.keys(matchScores[i.id]).length === 2 : false}
         onScoreSet={onMatchScoreSet}
       />
     ));
@@ -80,7 +99,7 @@ export default (props: IGamesListProps) =>  {
 
   useEffect(() => {
     if (!props.matchdayId) { return; }
-    const matchesCollectionRef = collection(db, "matches");
+    const matchesCollectionRef = collection(db, `matchdays/${props.matchdayId}/matches`);
     const data = async (y: any) => {
       setIsLoading(true);
       const q = query(y, where("matchdayId", "==", props.matchdayId));
@@ -135,6 +154,8 @@ export default (props: IGamesListProps) =>  {
             color="primary"
             variant="contained"
             disableElevation
+            disabled={matchesWithPrediction.length !== matches.length}
+            onClick={sendPrediction}
           >
             <Dictionary label="send"/>
           </Button>

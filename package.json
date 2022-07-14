@@ -14,7 +14,8 @@
     "react-dom": "^16.9.0",
     "react-intl": "^5.0.2",
     "react-measure": "^2.1.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "react-window": "^1.8.7"
   },
   "scripts": {
     "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
