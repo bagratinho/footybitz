@@ -154,7 +154,7 @@ const Signup = (props: ISignupProps) => {
             <Box
               mb={2}
             >
-              <Button
+              {/* <Button
                 size="large"
                 disableElevation
                 variant="contained"
@@ -163,7 +163,7 @@ const Signup = (props: ISignupProps) => {
                 disabled={isLoading}
               >
                 <Dictionary label="signUp"/>
-              </Button>
+              </Button> */}
             </Box>
             {isPasswordsMismatch ?
             <Box
