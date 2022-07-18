@@ -25,12 +25,12 @@ const AuthProvider = (props: any) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const signUp = async (email: string, password: string) => {
-    // const userCredential: any = await
-    // createUserWithEmailAndPassword(auth, email, password).catch((e: any) => {
-    //   setIsLoading(false);
-    //   setAuthMessage(e.code);
-    // });
-    // sendEmailVerification(userCredential.user);
+    const userCredential: any = await
+    createUserWithEmailAndPassword(auth, email, password).catch((e: any) => {
+      setIsLoading(false);
+      setAuthMessage(e.code);
+    });
+    sendEmailVerification(userCredential.user);
   };
 
   const signIn = (email: string, password: string) => {
