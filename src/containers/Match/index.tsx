@@ -3,7 +3,7 @@ import NumberInput from "./NumberInput";
 import Dictionary from "components/Dictionary";
 import * as images from "./images";
 import { styled } from "@mui/material/styles";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { FormattedDate } from "react-intl";
 import { EntityImage, EntityImagesMap } from "components/EntityImage";
 
@@ -16,6 +16,7 @@ export interface IMatchProps {
   kickOffDate: { seconds: number};
   competitionName: string;
   competitionAvatar: string;
+  stage: string;
   score?: number[];
   isSet?: boolean;
   onScoreSet?: (id: string, index: number, value: number) => void;
@@ -43,7 +44,19 @@ export default (props: IMatchProps) => {
           }}
         />
         <div>
-          <span>{props.competitionName}</span>
+          <span>
+            {props.competitionName}
+            <Typography
+              component="span"
+              color="text.secondary"
+              sx={{
+                ml: 0.5,
+                fontWeight: 700,
+              }}
+            >
+              {props.stage}
+            </Typography>
+          </span>
           <span>
             <Dictionary
               label="ko"

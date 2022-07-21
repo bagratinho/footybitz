@@ -44,6 +44,17 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#1e2731",
+          backgroundImage: "none",
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          padding: 24,
+          paddingTop: 16,
+          paddingBottom: 16,
+          background: "rgba(0,0,0,0.1)",
         },
       },
     },
@@ -72,7 +83,6 @@ const muiTheme = createTheme({
           padding: 8,
           paddingLeft: 16,
           lineHeight: "26px",
-
         },
         underline: {
           "&:after": {
@@ -134,7 +144,6 @@ const Main: React.FC = () => {
     >
       <ThemeProvider theme={muiTheme}>
         <AuthProvider>
-          <CssBaseline/>
           <Routes/>
         </AuthProvider>
       </ThemeProvider>

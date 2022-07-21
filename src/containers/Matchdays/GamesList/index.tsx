@@ -29,6 +29,20 @@ export default (props: IGamesListProps) =>  {
     })
   }
 
+  // const sendPrediction = async () => {
+  //   const collectionName = `matchdays/${props.matchdayId}/predictions`;
+  //   const newPredictionRef = doc(collection(db, collectionName));
+  //   // const newPredictionRef = doc(collection(db, collectionName), user.uid);
+  //   // const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
+  //   //   unsubscribe();
+  //   // });
+  //   await setDoc(newPredictionRef, {
+  //     scores: matchScores,
+  //   }).catch(e => {
+  //     console.log({e});
+  //   });
+  // }
+
   const sendPrediction = async () => {
     const collectionName = `matchdays/${props.matchdayId}/predictions`;
     const newPredictionRef = doc(collection(db, collectionName));
@@ -80,6 +94,7 @@ export default (props: IGamesListProps) =>  {
         </Box>
       );
     }
+    console.log(matches);
     return matches.map((i: IMatchProps) => (
       <Match
         id={i.id}
@@ -90,6 +105,7 @@ export default (props: IGamesListProps) =>  {
         homeTeamName={i.homeTeamName}
         kickOffDate={i.kickOffDate}
         competitionName={i.competitionName}
+        stage={i.stage}
         competitionAvatar={i.competitionAvatar}
         isSet={matchScores[i.id] ? Object.keys(matchScores[i.id]).length === 2 : false}
         onScoreSet={onMatchScoreSet}

@@ -10,6 +10,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../firebaseInstance";
+import LoadingScreen from "containers/LoadingScreen";
 
 const AuthContext = React.createContext<any|null>(null);
 
@@ -26,7 +27,11 @@ const AuthProvider = (props: any) => {
 
   const signUp = async (email: string, password: string) => {
     const userCredential: any = await
-    createUserWithEmailAndPassword(auth, email, password).catch((e: any) => {
+    createUserWithEmailAndPassword(auth, email, password).then(function(result) {
+      // return result.user.updateProfile({
+      //   displayName: document.getElementById("name").value
+      // })
+    }).catch((e: any) => {
       setIsLoading(false);
       setAuthMessage(e.code);
     });
@@ -98,7 +103,9 @@ const AuthProvider = (props: any) => {
         resetAuthMessage,
       }}
     >
-      {props.children}
+      {isLoading ?
+      <LoadingScreen/>
+      : props.children}
     </AuthContext.Provider>
   );
 }

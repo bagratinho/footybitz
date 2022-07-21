@@ -14,6 +14,7 @@ import Teams from "containers/Teams";
 import Competitions from "containers/Competitions";
 import AdminMatchdays from "containers/AdminMatchdays";
 import Matchday from "containers/AdminMatchdays/Matchday";
+import { CssBaseline } from "@mui/material";
 
 const Routes = () => {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ const Routes = () => {
 
   return (
     <Router>
+      <CssBaseline/>
       <Switch>
         <Route exact={true} path="/signin" render={renderUnprotectedRoute(Signin, user)}/>
         <Route exact={true} path="/signup" render={renderUnprotectedRoute(Signup, user)}/>
