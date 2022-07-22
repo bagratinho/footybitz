@@ -5,8 +5,9 @@ import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import { useEffect, useState } from "react";
 import { db } from "firebaseInstance";
-import { collection, doc, getDocs, onSnapshot, query, where, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot, query, where, setDoc, orderBy } from "firebase/firestore";
 import { transparentize } from "utils"
+import { useAuth } from "context/AuthContext";
 
 export interface IGamesListProps {
   className?: string;
@@ -18,8 +19,10 @@ export default (props: IGamesListProps) =>  {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [matchScores, setMatchScores] = useState<Object>({});
   const theme = useTheme();
+  const { user } = useAuth();
 
   const onMatchScoreSet = (id: string, index: number, value: number) => {
+    console.log(matches);
     setMatchScores({
       ...matchScores,
       [id]: {
@@ -29,37 +32,46 @@ export default (props: IGamesListProps) =>  {
     })
   }
 
-  // const sendPrediction = async () => {
-  //   const collectionName = `matchdays/${props.matchdayId}/predictions`;
-  //   const newPredictionRef = doc(collection(db, collectionName));
-  //   // const newPredictionRef = doc(collection(db, collectionName), user.uid);
-  //   // const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
-  //   //   unsubscribe();
-  //   // });
-  //   await setDoc(newPredictionRef, {
-  //     scores: matchScores,
-  //   }).catch(e => {
-  //     console.log({e});
-  //   });
-  // }
-
   const sendPrediction = async () => {
     const collectionName = `matchdays/${props.matchdayId}/predictions`;
-    const newPredictionRef = doc(collection(db, collectionName));
+    console.log(user);
+    const newPredictionRef = doc(collection(db, collectionName), user.uid);
     const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
-      // const predictin = doc.data();
-      // if (!matchday) { return; }
-      // setMatches([...matches, matchday]);
       unsubscribe();
     });
+    // return console.log({
+    //   scores: Object.keys(matchScores).map((id: string) => ({
+    //     id,
+    //     scores: matchScores[id],
+    //   })),
+    // });
     await setDoc(newPredictionRef, {
-      matchdayId: props.matchdayId,
-      scores: matchScores,
-      id: newPredictionRef.id,
+      scores: Object.keys(matchScores).map((matchId: string) => ({
+        matchId,
+        scores: matchScores[matchId],
+      })),
     }).catch(e => {
       console.log({e});
     });
   }
+
+  // const sendPrediction = async () => {
+  //   const collectionName = `matchdays/${props.matchdayId}/predictions`;
+  //   const newPredictionRef = doc(collection(db, collectionName));
+  //   const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
+  //     // const predictin = doc.data();
+  //     // if (!matchday) { return; }
+  //     // setMatches([...matches, matchday]);
+  //     unsubscribe();
+  //   });
+  //   await setDoc(newPredictionRef, {
+  //     matchdayId: props.matchdayId,
+  //     scores: matchScores,
+  //     id: newPredictionRef.id,
+  //   }).catch(e => {
+  //     console.log({e});
+  //   });
+  // }
 
   const renderMatches = () => {
     if (isLoading) {
@@ -113,12 +125,15 @@ export default (props: IGamesListProps) =>  {
     ));
   };
 
+  // const matchScoreSetGenerator = (i: number) => (id: string, index: number, value: number) =>
+  //   onMatchScoreSet(i, id, index, value);
+
   useEffect(() => {
     if (!props.matchdayId) { return; }
     const matchesCollectionRef = collection(db, `matchdays/${props.matchdayId}/matches`);
     const data = async (y: any) => {
       setIsLoading(true);
-      const q = query(y, where("matchdayId", "==", props.matchdayId));
+      const q = query(y, where("matchdayId", "==", props.matchdayId), orderBy("kickOffDate", "asc"));
       const querySnapshot = await getDocs(q);
       let mtchs: any[] = [];
       querySnapshot.forEach((doc) => {

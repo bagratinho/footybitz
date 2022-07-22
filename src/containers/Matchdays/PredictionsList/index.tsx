@@ -83,14 +83,16 @@ export default (props: IPredictionsListProps) =>  {
     const predictionsCollectionRef = collection(db, `matchdays/${props.matchdayId}/predictions`);
     const data = async (y: any) => {
       setIsLoading(true);
-      const q = query(y, orderBy("id"), startAt(page * 20 ), limit(20));
+      const q = query(y, orderBy("scores", "asc"), startAt(page * 20 ), limit(20));
       querySnapshot = await getDocs(q);
       let preds: any[] = [];
       querySnapshot.forEach((doc) => {
         preds.push({
+          id: doc.id,
           ...doc.data() as Object,
         });
       });
+      console.log(preds);
       setPredictions([...predictions, ...preds]);
       setIsLoading(false);
     };
