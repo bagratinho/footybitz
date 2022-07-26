@@ -39,16 +39,10 @@ export default (props: IGamesListProps) =>  {
     const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
       unsubscribe();
     });
-    // return console.log({
-    //   scores: Object.keys(matchScores).map((id: string) => ({
-    //     id,
-    //     scores: matchScores[id],
-    //   })),
-    // });
     await setDoc(newPredictionRef, {
       scores: Object.keys(matchScores).map((matchId: string) => ({
         matchId,
-        scores: matchScores[matchId],
+        score: matchScores[matchId],
       })),
     }).catch(e => {
       console.log({e});

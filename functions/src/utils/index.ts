@@ -44,11 +44,9 @@ export const isPredictionValid = (
     matches.length === prediction.scores.length &&
     matches.reduce((sum: boolean, i: IMatch) => {
       return sum === false ? false :
-        prediction.scores.find((j: IMatchScore) => j.matchId === i.id) ?
+        prediction.scores.find((j: IMatchScore) =>
+          j.matchId === i.id && isValidScore(j.score)) ?
         true : false;
-    }, true) &&
-    prediction.scores.reduce((sum: boolean, i: IMatchScore) => {
-      return sum === false ? false : isValidScore(i);
     }, true)
   );
 };
