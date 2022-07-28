@@ -250,10 +250,6 @@ const Matchday = (props: IMatchdayProps) =>  {
     });
   }
 
-  const openMatchGenerator = (item: any) => () => {
-    history.push(`/admin-matches/${item.id}`)
-  }
-
   const handleGoBack = () => {
     history.goBack();
   }
@@ -352,7 +348,7 @@ const Matchday = (props: IMatchdayProps) =>  {
                 label={`${item.homeTeamName} vs ${item.awayTeamName}`}
                 disabled={item.isFinished}
                 color={item.isArchived ? "default" : "primary"}
-                onClick={openMatchGenerator(item)}
+                onClick={handleOpenWithEdit(item)}
                 sx={{
                   mr: "auto",
                 }}

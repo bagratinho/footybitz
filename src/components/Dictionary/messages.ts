@@ -253,14 +253,6 @@ export default defineMessages({
     id: "matchdayName",
     defaultMessage: "Matchday name",
   },
-  isArchived: {
-    id: "isArchived",
-    defaultMessage: "Is archived",
-  },
-  isFinished: {
-    id: "isFinished",
-    defaultMessage: "Is finished",
-  },
   homeTeam: {
     id: "homeTeam",
     defaultMessage: "Home team",
@@ -284,5 +276,25 @@ export default defineMessages({
   awayTeamGoals: {
     id: "awayTeamGoals",
     defaultMessage: "Away goals",
+  },
+  inProgress: {
+    id: "inProgress",
+    defaultMessage: "In progress",
+  },
+  active: {
+    id: "active",
+    defaultMessage: "Active",
+  },
+  started: {
+    id: "started",
+    defaultMessage: "Started",
+  },
+  archived: {
+    id: "archived",
+    defaultMessage: "Archived",
+  },
+  finished: {
+    id: "finished",
+    defaultMessage: "Finished",
   },
 });

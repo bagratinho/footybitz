@@ -69,7 +69,7 @@ export const createPrediction = functions.firestore
         });
       } else {
         if (change.before.data()) {
-          return change.after.ref.set({
+          return change.before.ref.set({
             ...change.before.data(),
             sanitized: true,
           });

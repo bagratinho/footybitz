@@ -19,6 +19,7 @@ export interface IMatchProps {
   stage: string;
   score?: number[];
   isSet?: boolean;
+  status: "finished" | "started" | "pending" | "predicted";
   onScoreSet?: (id: string, index: number, value: number) => void;
 }
 
@@ -76,7 +77,9 @@ export default (props: IMatchProps) => {
       </div>
       <div className="details">
         <div className="label">
-          {props.score ? <Dictionary label="finalScore"/> : <Dictionary label="yourPrediction"/>}
+          {props.status === "finished" ? <Dictionary label="finalScore"/> : null}
+          {props.status === "predicted" || props.status === "pending" ? <Dictionary label="yourPrediction"/> : null}
+          {props.status === "started" ? <Dictionary label="inProgress"/> : null}
         </div>
         <div className="match">
           <div className="team">
@@ -93,16 +96,16 @@ export default (props: IMatchProps) => {
             {props.homeTeamName}
           </div>
           <div className="outcome">
-            {props.score ?
+            {(props.status === "finished" || props.status === "predicted") && props.score ?
             <div className="result">
               <div>{props.score[0]}</div>
               -
               <div>{props.score[1]}</div>
             </div> :
             <div className="prediction">
-              <NumberInput onChange={changeScore(0)} isHighlighted={props.isSet}/>
+              <NumberInput onChange={changeScore(0)} value={props.score && props.score[0]} isHighlighted={props.isSet}/>
               -
-              <NumberInput onChange={changeScore(1)} isHighlighted={props.isSet}/>
+              <NumberInput onChange={changeScore(1)} value={props.score && props.score[1]} isHighlighted={props.isSet}/>
             </div>}
           </div>
           <div className="team">
@@ -188,6 +191,18 @@ const StyledContainer = styled(Box)`
         display: flex;
         flex-direction: column;
         color: ${props => props.theme.palette.divider};
+        font-family: "Kdam Thmor Pro";
+        & .result > div{
+          flex: 1;
+          text-align: right;
+          font-weight: 700;
+          margin-right: 10px;
+          &:last-child {
+            text-align: left;
+            margin-left: 10px;
+            margin-right: 0;
+          }
+        }
         & .result,
         & .prediction {
           display: flex;
@@ -195,8 +210,8 @@ const StyledContainer = styled(Box)`
           align-items: center;
           justify-content: space-between;
           color: ${props => props.theme.palette.text.primary};
-          font-size: 30px;
-          height: 130px;
+          font-size: 40px;
+          height: 114px;
           font-weight: 700;
         }
       }

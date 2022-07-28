@@ -21,15 +21,13 @@ export interface IAdminMatchdaysProps {
 interface IEditedMatchday {
   name?: string,
   kickOffDate?: any;
-  isArchived?: boolean;
-  isFinished?: boolean
+  status?: string;
 }
 interface ISelectedMatchday {
   id: string;
   name: string,
   kickOffDate: any;
-  isArchived: boolean;
-  isFinished: boolean
+  status: string;
 }
 
 const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
@@ -76,8 +74,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       currentEditedMatchday &&
       currentEditedMatchday.name &&
       currentEditedMatchday.kickOffDate &&
-      currentEditedMatchday.isArchived !== undefined &&
-      currentEditedMatchday.isFinished !== undefined) {
+      currentEditedMatchday.status !== undefined) {
       const matchdayRef = doc(db, collectionName, currentSelectedMatchday.id);
       const unsubscribe = onSnapshot(doc(db, collectionName, matchdayRef.id), (doc) => {
         const matchday = doc.data();
@@ -89,15 +86,13 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       await updateDoc(matchdayRef, {
         name: currentEditedMatchday.name,
         kickOffDate: currentEditedMatchday.kickOffDate,
-        isArchived: currentEditedMatchday.isArchived,
-        isFinished: currentEditedMatchday.isFinished,
+        status: currentEditedMatchday.status,
       });
     } else {
       if (!currentEditedMatchday ||
         !currentEditedMatchday.name ||
         !currentEditedMatchday.kickOffDate ||
-        currentEditedMatchday.isArchived === undefined ||
-        currentEditedMatchday.isFinished === undefined
+        currentEditedMatchday.status === undefined
       ) { return; }
       const newTeamRef = doc(collection(db, collectionName));
       const unsubscribe = onSnapshot(doc(db, collectionName, newTeamRef.id), (doc) => {
@@ -109,8 +104,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
       await setDoc(newTeamRef, {
         name: currentEditedMatchday.name,
         kickOffDate: currentEditedMatchday.kickOffDate,
-        isArchived: currentEditedMatchday.isArchived,
-        isFinished: currentEditedMatchday.isFinished,
+        status: currentEditedMatchday.status,
         id: newTeamRef.id,
       });
     }
@@ -145,8 +139,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
   const handleOpen = () => {
     setCurrentEditedMatchday({
       name: "",
-      isArchived: true,
-      isFinished: false,
+      status: "archived",
       kickOffDate: "",
     });
     setIsMatchdayModalOpen(true);
@@ -156,8 +149,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
     setCurrentSelectedMatchday(item);
     setCurrentEditedMatchday({
       name: item.name,
-      isArchived: item.isArchived,
-      isFinished: item.isFinished,
+      status: item.status,
       kickOffDate: item.kickOffDate,
     });
     setIsMatchdayModalOpen(true);
@@ -170,20 +162,12 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
     });
   }
 
-  const handleIsArchivedChange = (e: any) => {
+  const handleStatusChange = (e: any) => {
     setCurrentEditedMatchday({
       ...currentEditedMatchday,
-      isArchived: e.target.checked,
+      status: e.target.value,
     });
   }
-
-  const handleIsFinishedChange = (e: any) => {
-    setCurrentEditedMatchday({
-      ...currentEditedMatchday,
-      isFinished: e.target.checked,
-    });
-  }
-
   const handleKickOffDateChange = (e: any) => {
     setCurrentEditedMatchday({
       ...currentEditedMatchday,
@@ -240,8 +224,8 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             >
               <Chip
                 label={item.name}
-                disabled={item.isFinished}
-                color={item.isArchived ? "default" : "primary"}
+                disabled={item.status === "started" || item.status === "finished"}
+                color={item.status === "active" ? "primary" : "default"}
                 onClick={openMatchdayGenerator(item)}
                 sx={{
                   mr: "auto",
@@ -358,7 +342,9 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             values={currentSelectedMatchday ? { entity: currentSelectedMatchday.name } : undefined}
           />
         </DialogTitle>
-        <DialogContent>
+        <DialogContent
+          sx={{ width: 600 }}
+        >
           <TextField
             margin="normal"
             label={props.intl.formatMessage(messages.name)}
@@ -385,30 +371,20 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
             }}
             onChange={handleKickOffDateChange}
           />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentEditedMatchday?.isArchived}
-                  onChange={handleIsArchivedChange}
-                  disableRipple
-                  color="secondary"
-                />
-              }
-              label={props.intl.formatMessage(messages.isArchived)}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentEditedMatchday?.isFinished}
-                  onChange={handleIsFinishedChange}
-                  disableRipple
-                  color="secondary"
-                />
-              }
-              label={props.intl.formatMessage(messages.isFinished)}
-            />
-          </FormGroup>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={currentEditedMatchday?.status}
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            onChange={handleStatusChange}
+          >
+            <MenuItem value="archived"><Dictionary label="archived"/></MenuItem>
+            <MenuItem value="active"><Dictionary label="active"/></MenuItem>
+            <MenuItem value="started"><Dictionary label="started"/></MenuItem>
+            <MenuItem value="finished"><Dictionary label="finished"/></MenuItem>
+          </Select>
         </DialogContent>
         <DialogActions>
           <Button

@@ -3,7 +3,8 @@ import { IntlProvider } from "react-intl";
 import { createTheme, ThemeProvider }  from "@mui/material/styles";
 import Routes from "routes";
 import AuthProvider from "context/AuthContext";
-import CssBaseline from "@mui/material/CssBaseline";
+import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const muiTheme = createTheme({
   palette: {
@@ -134,6 +135,8 @@ const formats = {
 
 console.log(muiTheme);
 
+const queryClient = new QueryClient();
+
 const Main: React.FC = () => {
   return (
     <IntlProvider
@@ -144,7 +147,10 @@ const Main: React.FC = () => {
     >
       <ThemeProvider theme={muiTheme}>
         <AuthProvider>
-          <Routes/>
+          <QueryClientProvider client={queryClient}>
+            <Routes/>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
         </AuthProvider>
       </ThemeProvider>
     </IntlProvider>

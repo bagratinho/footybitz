@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
     "@mui/types": "^7.1.4",
+    "@tanstack/react-query": "^4.0.10",
     "firebase": "^9.6.4",
     "react": "^16.9.0",
     "react-content-slider": "^1.0.1",
@@ -44,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^4.0.10",
     "@types/firebase": "^3.2.1",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.5",

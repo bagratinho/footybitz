@@ -54,8 +54,7 @@ export default (props: IMatchdaysProps) =>  {
     const data = async (y: any) => {
       const q = query(y,
         where("kickOffDate", ">", new Date(Date.now())),
-        where("isArchived", "==", false),
-        where("isFinished", "==", false),
+        where("status", "==", "active"),
         orderBy("kickOffDate", "asc"),
       );
       const querySnapshot = await getDocs(q);

@@ -6,7 +6,6 @@ import { FormattedNumber } from "react-intl";
 import { useEffect, useState } from "react";
 import { collection, endAt, getDocs, limit, orderBy, query, startAfter, startAt } from "firebase/firestore";
 import { db } from "firebaseInstance";
-import { useRef } from "react";
 
 export interface IPredictionsListProps {
   className?: string;
