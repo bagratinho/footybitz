@@ -40,7 +40,7 @@ export default (props: IGamesListProps) =>  {
   const [ matchdayData, predictionData] = useQueries({
     queries: [
       { queryKey: ["matchday", props.matchdayId], queryFn: getMatches },
-      { queryKey: ["prediction", user.uid], queryFn: getPrediction },
+      { queryKey: ["prediction", props.matchdayId, user.uid], queryFn: getPrediction },
     ]
   });
 
@@ -73,7 +73,7 @@ export default (props: IGamesListProps) =>  {
 
   const isLoading = matchdayData.isLoading || predictionData.isLoading;
   const matches = matchdayData.data;
-
+  console.log(matchdayData, predictionData);
   const renderMatches = () => {
     if (isLoading) {
       return (

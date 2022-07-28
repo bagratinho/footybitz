@@ -120,9 +120,9 @@ export default (props: IMatchdaysProps) =>  {
           pt="108px"
         >
           <TabPanel value={selectedTab} index={0}>
-            <GamesList
+            {selectedMatchday ? <GamesList
               matchdayId={selectedMatchday}
-            />
+            /> : null}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             <PredictionsList
