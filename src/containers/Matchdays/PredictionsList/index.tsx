@@ -3,20 +3,22 @@ import { Box, Chip, CircularProgress, Divider, List, ListItem, Paper, Typography
 import FaceIcon from '@mui/icons-material/Face';
 import Dictionary from "components/Dictionary";
 import { FormattedNumber } from "react-intl";
-import { useEffect, useState } from "react";
-import { collection, endAt, getDocs, limit, orderBy, query, startAfter, startAt } from "firebase/firestore";
-import { db } from "firebaseInstance";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getPredictions } from "api/queries";
 
 export interface IPredictionsListProps {
   className?: string;
-  matchdayId?: string;
+  matchdayId: string;
 }
 
 export default (props: IPredictionsListProps) =>  {
-  const [predictions, setPredictions] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
-  let querySnapshot: any;
+  const { isLoading, isError, data } = useQuery(
+    ["predictions"],
+    () => getPredictions(props.matchdayId, page),
+  );
+  const predictions = data || [];
   const renderPredictions = () => {
     if (isLoading && !predictions.length) {
       return (
@@ -76,34 +78,6 @@ export default (props: IPredictionsListProps) =>  {
       </List>
     );
   };
-
-  useEffect(() => {
-    if (!props.matchdayId) { return; }
-    const predictionsCollectionRef = collection(db, `matchdays/${props.matchdayId}/predictions`);
-    const data = async (y: any) => {
-      setIsLoading(true);
-      const q = query(y, orderBy("scores", "asc"), startAt(page * 20 ), limit(20));
-      querySnapshot = await getDocs(q);
-      let preds: any[] = [];
-      querySnapshot.forEach((doc) => {
-        preds.push({
-          id: doc.id,
-          ...doc.data() as Object,
-        });
-      });
-      console.log(preds);
-      setPredictions([...predictions, ...preds]);
-      setIsLoading(false);
-    };
-    data(predictionsCollectionRef);
-  }, [props.matchdayId, page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", onScrollEnd);
-    return () => {
-      window.removeEventListener("scroll", onScrollEnd);
-    };
-  }, []);
 
   const onScrollEnd = () => {
     const doc = document.documentElement;

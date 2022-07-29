@@ -2,6 +2,7 @@ import {isPredictionValid} from "./utils/index";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {generateFromEmail} from "unique-username-generator";
+
 admin.initializeApp();
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -39,6 +40,22 @@ export const createPrediction = functions.firestore
       if (prediction && prediction.sanitized) {
         return null;
       }
+
+      const visits = new Counter(admin.firestore().collection("pages").doc("hello-world"), "visits")
+
+      // Increment the field "visits" of the document "pages/hello-world".
+      visits.incrementBy(1);
+
+      // Listen to locally consistent values.
+      visits.onSnapshot((snap) => {
+        console.log("Locally consistent view of visits: " + snap.data());
+      });
+
+      // Alternatively, if you don't mind counter delays, you can listen to the document directly.
+      db.collection("pages").doc("hello-world").onSnapshot((snap) => {
+        console.log("Eventually consistent view of visits: " + snap.get("visits"));
+      });
+
       const matches = (await admin
           .firestore()
           .collection(`matchdays/${context.params.matchdayId}/matches`)
@@ -63,6 +80,11 @@ export const createPrediction = functions.firestore
       );
 
       if (isPredictionValid(matchday, matches, prediction)) {
+        const FieldValue = admin.firestore.FieldValue;
+        const predictionsCounterRef = admin.firestore()
+            .collection("counters")
+            .doc("matchdays/{matchdayId}/predictions");
+        predictionsCounterRef.update({count: FieldValue.increment(1)});
         return change.after.ref.set({
           ...prediction!,
           sanitized: true,

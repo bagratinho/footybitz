@@ -3,16 +3,17 @@ import { Box, Button, CircularProgress, Typography, useTheme } from "@mui/materi
 import Match, { IMatchProps } from "containers/Match";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { db } from "firebaseInstance";
-import { collection, doc, getDocs, onSnapshot, query, where, setDoc, orderBy, getDoc } from "firebase/firestore";
+import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { transparentize } from "utils"
 import { useQueries } from "@tanstack/react-query";
 import { useAuth } from "context/AuthContext";
+import { getMatches, getPrediction } from "api/queries";
 
 export interface IGamesListProps {
   className?: string;
-  matchdayId?: string;
+  matchdayId: string;
 }
 
 export default (props: IGamesListProps) =>  {
@@ -20,30 +21,12 @@ export default (props: IGamesListProps) =>  {
   const theme = useTheme();
   const { user } = useAuth();
 
-  const getMatches = async () => {
-    const matchesCollectionRef = collection(db, `matchdays/${props.matchdayId}/matches`);
-    const q = query(
-        matchesCollectionRef,
-        where("matchdayId", "==", props.matchdayId),
-        orderBy("kickOffDate", "asc")
-      );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => doc.data());
-  }
-
-  const getPrediction = async () => {
-    const predictionRef = doc(db, `matchdays/${props.matchdayId}/predictions/${user.uid}`);
-    const prediction = await getDoc(predictionRef);
-    return prediction.data();
-  }
-
   const [ matchdayData, predictionData] = useQueries({
     queries: [
-      { queryKey: ["matchday", props.matchdayId], queryFn: getMatches },
-      { queryKey: ["prediction", props.matchdayId, user.uid], queryFn: getPrediction },
+      { queryKey: ["matchday", props.matchdayId], queryFn: () => getMatches(props.matchdayId) },
+      { queryKey: ["prediction", props.matchdayId, user.uid], queryFn: () => getPrediction(props.matchdayId, user.uid) },
     ]
   });
-
 
   const onMatchScoreSet = (id: string, index: number, value: number) => {
     setMatchScores({

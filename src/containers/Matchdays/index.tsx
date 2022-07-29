@@ -6,27 +6,35 @@ import TabPanel from "components/TabPanel";
 import PredictionsList from "./PredictionsList";
 import GamesList from "./GamesList";
 import PageWrapper from "containers/PageWrapper";
-import { useEffect, useState } from "react";
-import { db } from "firebaseInstance";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { transparentize } from "utils"
+import { getMatchdays } from "api/queries";
 
 export interface IMatchdaysProps {
   className?: string;
 }
 
 export default (props: IMatchdaysProps) =>  {
-  const [selectedMatchday, setSelectedMatchday] = useState<string | undefined>();
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [matchdays, setMatchdays] = useState<any[]>([]);
+  const { isLoading, isError, data } = useQuery(
+    ["matchdays"],
+    getMatchdays,
+    {
+      onSuccess: data => setSelectedMatchdayId(data && data[0].id)
+    }
+  );
+  const matchdays = data || [];
   const theme = useTheme();
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedMatchdayId, setSelectedMatchdayId] = useState(data ? data[0].id : undefined);
+
 
   const handleTabChange = (event: React.ChangeEvent<{}>, value: number) => {
     setSelectedTab(value);
   };
 
   const handleMatchdayChange = (event: any) => {
-    setSelectedMatchday(event.target.value);
+    setSelectedMatchdayId(event.target.value);
   };
 
   const getMatchdaysControl = () => {
@@ -40,7 +48,7 @@ export default (props: IMatchdaysProps) =>  {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={selectedMatchday}
+          value={selectedMatchdayId}
           onChange={handleMatchdayChange}
         >
           {options}
@@ -48,27 +56,13 @@ export default (props: IMatchdaysProps) =>  {
       </FormControl>
     ) : null;
   }
-
-  useEffect(() => {
-    const matchdaysCollectionRef = collection(db, "matchdays");
-    const data = async (y: any) => {
-      const q = query(y,
-        where("kickOffDate", ">", new Date(Date.now())),
-        where("status", "==", "active"),
-        orderBy("kickOffDate", "asc"),
-      );
-      const querySnapshot = await getDocs(q);
-      let mds: any[] = [];
-      querySnapshot.forEach((doc) => {
-        mds.push({
-          ...doc.data() as Object,
-        });
-      });
-      setSelectedMatchday(mds[0].id);
-      setMatchdays(mds);
-    };
-    data(matchdaysCollectionRef);
-  }, []);
+  if (isLoading) {
+    return (
+      <PageWrapper>
+        asd
+      </PageWrapper>
+    );
+  }
 
   return (
     <PageWrapper>
@@ -120,13 +114,13 @@ export default (props: IMatchdaysProps) =>  {
           pt="108px"
         >
           <TabPanel value={selectedTab} index={0}>
-            {selectedMatchday ? <GamesList
-              matchdayId={selectedMatchday}
+            {selectedMatchdayId ? <GamesList
+              matchdayId={selectedMatchdayId}
             /> : null}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             <PredictionsList
-              matchdayId={selectedMatchday}
+              matchdayId={selectedMatchdayId}
             />
           </TabPanel>
         </Box>
