@@ -26,6 +26,13 @@ export const getMatches = async (matchdayId: string) => {
   return querySnapshot.docs.map((doc) => doc.data());
 }
 
+// Get user data
+export const getUserData = async (userId: string) => {
+  const userRef = doc(db, `users/${userId}`);
+  const user = await getDoc(userRef);
+  return user.data();
+}
+
 // Get users prediction on a specified matchday
 export const getPrediction = async (matchdayId: string, userId: string) => {
   const predictionRef = doc(db, `matchdays/${matchdayId}/predictions/${userId}`);

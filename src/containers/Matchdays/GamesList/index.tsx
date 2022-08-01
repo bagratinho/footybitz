@@ -50,7 +50,11 @@ export default (props: IGamesListProps) =>  {
         score: matchScores[matchId],
       })),
     }).catch(e => {
-      console.log({e});
+
+      console.log({e}, Object.keys(matchScores).map((matchId: string) => ({
+        matchId,
+        score: matchScores[matchId],
+      })));
     });
   }
 

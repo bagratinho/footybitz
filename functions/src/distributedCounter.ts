@@ -1,4 +1,5 @@
-
+/* eslint-disable */
+// @ts-nocheck
 
 /*
  * Copyright 2019 Google LLC
@@ -16,12 +17,12 @@
  * limitations under the License.
  */
 
-const uuid = require("uuid");
-const admin = require("firebase-admin");
+import * as uuid from "uuid";
+import admin from "firebase-admin";
 
 const SHARD_COLLECTION_ID = "_counter_shards_";
 
-module.exports = class Counter {
+export default class Counter {
   /**
    * Constructs a sharded counter object that references to a field
    * in a document that is a counter.

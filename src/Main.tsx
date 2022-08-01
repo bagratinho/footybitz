@@ -135,7 +135,13 @@ const formats = {
 
 console.log(muiTheme);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const Main: React.FC = () => {
   return (

@@ -2,6 +2,7 @@ import {isPredictionValid} from "./utils/index";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {generateFromEmail} from "unique-username-generator";
+import Counter from "./distributedCounter";
 
 admin.initializeApp();
 // Start writing Firebase Functions
@@ -16,7 +17,7 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
   const querySnapshot = await admin
       .firestore()
       .collection("users")
-      .where("username", "==", "asd")
+      .where("username", "==", user.email)
       .get();
   const username = generateFromEmail(user.email!, querySnapshot.empty ? 0 : 5);
   return admin
@@ -37,25 +38,12 @@ export const createPrediction = functions.firestore
     .document("matchdays/{matchdayId}/predictions/{predictionId}")
     .onWrite(async (change, context) => {
       const prediction = change.after.data();
+      if (!prediction) {
+        return null;
+      }
       if (prediction && prediction.sanitized) {
         return null;
       }
-
-      const visits = new Counter(admin.firestore().collection("pages").doc("hello-world"), "visits")
-
-      // Increment the field "visits" of the document "pages/hello-world".
-      visits.incrementBy(1);
-
-      // Listen to locally consistent values.
-      visits.onSnapshot((snap) => {
-        console.log("Locally consistent view of visits: " + snap.data());
-      });
-
-      // Alternatively, if you don't mind counter delays, you can listen to the document directly.
-      db.collection("pages").doc("hello-world").onSnapshot((snap) => {
-        console.log("Eventually consistent view of visits: " + snap.get("visits"));
-      });
-
       const matches = (await admin
           .firestore()
           .collection(`matchdays/${context.params.matchdayId}/matches`)
@@ -80,11 +68,16 @@ export const createPrediction = functions.firestore
       );
 
       if (isPredictionValid(matchday, matches, prediction)) {
-        const FieldValue = admin.firestore.FieldValue;
-        const predictionsCounterRef = admin.firestore()
-            .collection("counters")
-            .doc("matchdays/{matchdayId}/predictions");
-        predictionsCounterRef.update({count: FieldValue.increment(1)});
+        // increment predictiosn count if prediction is created
+        if (!change.before.data()) {
+          const predictionsCount = new Counter(
+              admin.firestore()
+                  .collection("matchdays")
+                  .doc(context.params.matchdayId),
+              "predictions_count"
+          );
+          predictionsCount.incrementBy(1);
+        }
         return change.after.ref.set({
           ...prediction!,
           sanitized: true,

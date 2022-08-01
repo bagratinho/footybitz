@@ -3,12 +3,14 @@ import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person, S
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
 import { Box, styled, Typography } from "@mui/material";
+import { useAuth } from "context/AuthContext";
 
 export interface ISidebarNavigationProps {
   className?: string;
 }
 
 export default (props: ISidebarNavigationProps) =>  {
+  const { user } = useAuth();
   return (
     <StyledContainer>
       <Typography
@@ -48,21 +50,25 @@ export default (props: ISidebarNavigationProps) =>  {
             <Person/><Dictionary label="profile"/>
           </NavLink>
         </li>
-        <li>
-          <NavLink activeClassName="active" to="/teams">
-            <SecurityOutlined/><Dictionary label="teams"/>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink activeClassName="active" to="/competitions">
-            <EmojiEventsOutlined/><Dictionary label="competitions"/>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink activeClassName="active" to="/admin-matchdays">
-            <Sports/><Dictionary label="matchdays"/>
-          </NavLink>
-        </li>
+        {user.firestoreData?.role === "admin" ?
+        <>
+          <li>
+            <NavLink activeClassName="active" to="/teams">
+              <SecurityOutlined/><Dictionary label="teams"/>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink activeClassName="active" to="/competitions">
+              <EmojiEventsOutlined/><Dictionary label="competitions"/>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink activeClassName="active" to="/admin-matchdays">
+              <Sports/><Dictionary label="matchdays"/>
+            </NavLink>
+          </li>
+        </>
+        : null}
       </ul>
     </StyledContainer>
   );

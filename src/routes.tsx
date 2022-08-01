@@ -32,7 +32,6 @@ const Routes = () => {
       return <Component {...props}/>;
     }
   }
-
   return (
     <Router>
       <CssBaseline/>
@@ -41,14 +40,18 @@ const Routes = () => {
         <Route exact={true} path="/signup" render={renderUnprotectedRoute(Signup, user)}/>
         <Route exact={true} path="/password-reset" render={renderUnprotectedRoute(PasswordReset, user)}/>
         <Route exact={true} path="/" render={renderProtectedRoute(Matchdays, user)}/>
+        <Route exact={true} path="/standings" render={renderProtectedRoute(Standings, user)}/>
+        <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>
+        <Route exact={true} path="/profile" render={renderProtectedRoute(Profile, user)}/>
+        <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
+        {user.firestoreData?.role === "admin" ?
+        <>
         <Route exact={true} path="/teams" render={renderProtectedRoute(Teams, user)}/>
         <Route exact={true} path="/competitions" render={renderProtectedRoute(Competitions, user)}/>
         <Route exact={true} path="/admin-matchdays" render={renderProtectedRoute(AdminMatchdays, user)}/>
         <Route exact={true} path="/admin-matchdays/:matchdayId" render={renderProtectedRoute(Matchday, user)}/>
-        <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
-        <Route exact={true} path="/standings" render={renderProtectedRoute(Standings, user)}/>
-        <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>
-        <Route exact={true} path="/profile" render={renderProtectedRoute(Profile, user)}/>
+        </>
+        : null}
         {/* <Route path="/:lang/404" exact={true} component={AppService.getComponent("NotFound")} />
         <Route path="/:lang?/:page?" render={({ match, location: { search } }) => <Redirect to={`/${locale}/${match.params.page ? "404" : `home${search}`}`} />} /> */}
       </Switch>

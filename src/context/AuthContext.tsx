@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebaseInstance";
 import LoadingScreen from "containers/LoadingScreen";
+import { getUserData } from "api/queries";
 
 const AuthContext = React.createContext<any|null>(null);
 
@@ -21,21 +22,17 @@ export const useAuth = () => {
 };
 
 const AuthProvider = (props: any) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [authMessage, setAuthMessage] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const signUp = async (email: string, password: string) => {
-    const userCredential: any = await
-    createUserWithEmailAndPassword(auth, email, password).then(function(result) {
-      // return result.user.updateProfile({
-      //   displayName: document.getElementById("name").value
-      // })
+  const signUp = (email: string, password: string) => {
+    createUserWithEmailAndPassword(auth, email, password).then(r => {
+      sendEmailVerification(r.user)
     }).catch((e: any) => {
       setIsLoading(false);
       setAuthMessage(e.code);
     });
-    sendEmailVerification(userCredential.user);
   };
 
   const signIn = (email: string, password: string) => {
@@ -71,10 +68,19 @@ const AuthProvider = (props: any) => {
   }
 
   useEffect(() => {
-    const unsubuscribe = onAuthStateChanged(auth, (currentUser: any) => {
-      console.log({ currentUser });
-      setUser(currentUser);
+    const unsubuscribe = onAuthStateChanged(auth, async (currentUser: any) => {
+      if (currentUser && !user) {
+        const firestoreData = await getUserData(currentUser.uid);
+        console.log("firestoreData", firestoreData);
+        setUser({
+          ...currentUser,
+          firestoreData: firestoreData!,
+        });
+      } else {
+        setUser(currentUser);
+      }
       setIsLoading(false);
+      console.log(user);
       // if (currentUser && currentUser.emailVerified) {
       //   setUser(currentUser);
       //   setIsLoading(false);
