@@ -297,4 +297,20 @@ export default defineMessages({
     id: "finished",
     defaultMessage: "Finished",
   },
+  yourBalance: {
+    id: "yourBalance",
+    defaultMessage: "Your balance",
+  },
+  tetherUsdt: {
+    id: "tetherUsdt",
+    defaultMessage: "Tether (USDT)",
+  },
+  withdraw: {
+    id: "withdraw",
+    defaultMessage: "Withdraw",
+  },
+  joinedDate: {
+    id: "joinedDate",
+    defaultMessage: "Joined: {date}",
+  },
 });

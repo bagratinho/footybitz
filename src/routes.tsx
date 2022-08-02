@@ -44,7 +44,7 @@ const Routes = () => {
         <Route exact={true} path="/how-to-play" render={renderProtectedRoute(HowToPlay, user)}/>
         <Route exact={true} path="/profile" render={renderProtectedRoute(Profile, user)}/>
         <Route exact={true} path="/results" render={renderProtectedRoute(Results, user)}/>
-        {user.firestoreData?.role === "admin" ?
+        {user?.firestoreData?.role === "admin" ?
         <>
         <Route exact={true} path="/teams" render={renderProtectedRoute(Teams, user)}/>
         <Route exact={true} path="/competitions" render={renderProtectedRoute(Competitions, user)}/>

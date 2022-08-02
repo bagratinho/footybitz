@@ -206,7 +206,7 @@ const StyledContainer = styled(Box)`
         & .result,
         & .prediction {
           display: flex;
-          width: 150px;
+          width: 130px;
           align-items: center;
           justify-content: space-between;
           color: ${props => props.theme.palette.text.primary};

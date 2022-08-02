@@ -10,6 +10,7 @@ export interface IProfileProps {
 }
 
 export default (props: IProfileProps) =>  {
+
   return (
     <PageWrapper>
       <Box>
