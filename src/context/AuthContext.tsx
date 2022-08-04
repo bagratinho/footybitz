@@ -70,6 +70,7 @@ const AuthProvider = (props: any) => {
   useEffect(() => {
     const unsubuscribe = onAuthStateChanged(auth, async (currentUser: any) => {
       if (currentUser && !user) {
+        console.log("SAd");
         const firestoreData = await getUserData(currentUser.uid);
         console.log("firestoreData", firestoreData);
         setUser({
@@ -92,9 +93,8 @@ const AuthProvider = (props: any) => {
       //   setIsLoading(false);
       // }
     });
-    return () => unsubuscribe();
+    return unsubuscribe;
   }, []);
-
   return (
     <AuthContext.Provider
       value={{

@@ -16,11 +16,14 @@ export interface IMatchdaysProps {
 }
 
 export default (props: IMatchdaysProps) =>  {
-  const { isLoading, isError, data } = useQuery(
+  const { isLoading, isError, data, refetch } = useQuery(
     ["matchdays"],
     getMatchdays,
     {
-      onSuccess: data => setSelectedMatchdayId(data && data[0].id)
+      onSuccess: data => {
+        if (selectedMatchdayId) { return; }
+        setSelectedMatchdayId(data && data[0].id);
+      }
     }
   );
   const matchdays = data || [];
@@ -36,6 +39,10 @@ export default (props: IMatchdaysProps) =>  {
   const handleMatchdayChange = (event: any) => {
     setSelectedMatchdayId(event.target.value);
   };
+
+  const getPredictionsCount = () => {
+    return data?.find(i => i.id === selectedMatchdayId)?.predictions_count || 0;
+  }
 
   const getMatchdaysControl = () => {
     const options = matchdays.map(i => {
@@ -114,12 +121,15 @@ export default (props: IMatchdaysProps) =>  {
           pt="108px"
         >
           <TabPanel value={selectedTab} index={0}>
-            {selectedMatchdayId ? <GamesList
+            {selectedMatchdayId ?
+            <GamesList
               matchdayId={selectedMatchdayId}
+              refetchMatchdays={refetch}
             /> : null}
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             <PredictionsList
+              predictionsCount={getPredictionsCount()}
               matchdayId={selectedMatchdayId}
             />
           </TabPanel>

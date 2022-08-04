@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
 import EntitySelect, { IEntitySelectOption } from "components/EntitySelect";
 import { EntityImage, EntityImagesMap } from "components/EntityImage";
+import NoResult from "components/NoResult";
 export interface ICompetitionsProps {
   className?: string;
   intl?: any;
@@ -168,19 +169,7 @@ const Competitions = (props: ICompetitionsProps) =>  {
     }
     if (!competitions.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     return competitions.map(item => {

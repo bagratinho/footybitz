@@ -10,10 +10,12 @@ import { transparentize } from "utils"
 import { useQueries } from "@tanstack/react-query";
 import { useAuth } from "context/AuthContext";
 import { getMatches, getPrediction } from "api/queries";
+import NoResult from "components/NoResult";
 
 export interface IGamesListProps {
   className?: string;
   matchdayId: string;
+  refetchMatchdays: () => void;
 }
 
 export default (props: IGamesListProps) =>  {
@@ -23,8 +25,15 @@ export default (props: IGamesListProps) =>  {
 
   const [ matchdayData, predictionData] = useQueries({
     queries: [
-      { queryKey: ["matchday", props.matchdayId], queryFn: () => getMatches(props.matchdayId) },
-      { queryKey: ["prediction", props.matchdayId, user.uid], queryFn: () => getPrediction(props.matchdayId, user.uid) },
+      {
+        queryKey: ["matchday", props.matchdayId],
+        queryFn: () => getMatches(props.matchdayId),
+      },
+      {
+        queryKey: ["prediction", props.matchdayId, user.uid],
+        queryFn: () => getPrediction(props.matchdayId, user.uid),
+        keepPreviousData: true,
+      }
     ]
   });
 
@@ -49,18 +58,16 @@ export default (props: IGamesListProps) =>  {
         matchId,
         score: matchScores[matchId],
       })),
+    }).then(r => {
+      props.refetchMatchdays();
+      predictionData.refetch();
     }).catch(e => {
 
-      console.log({e}, Object.keys(matchScores).map((matchId: string) => ({
-        matchId,
-        score: matchScores[matchId],
-      })));
     });
   }
 
   const isLoading = matchdayData.isLoading || predictionData.isLoading;
   const matches = matchdayData.data;
-  console.log(matchdayData, predictionData);
   const renderMatches = () => {
     if (isLoading) {
       return (
@@ -79,19 +86,7 @@ export default (props: IGamesListProps) =>  {
     }
     if (!matches || !matches.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     return matches.map((i: IMatchProps) => {

@@ -13,6 +13,7 @@ import { AddRounded, Delete, EditOutlined, Search } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
 import { useHistory } from "react-router-dom";
+import NoResult from "components/NoResult";
 export interface IAdminMatchdaysProps {
   className?: string;
   intl?: any;
@@ -197,19 +198,7 @@ const AdminMatchdays = (props: IAdminMatchdaysProps) =>  {
     }
     if (!matchdays.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     return matchdays.map(item => {

@@ -139,6 +139,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      refetchOnMount: false,
     },
   },
 });
@@ -152,12 +153,12 @@ const Main: React.FC = () => {
       onError={error => console.log("Intl :::", error)}
     >
       <ThemeProvider theme={muiTheme}>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
             <Routes/>
             <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </IntlProvider>
   );

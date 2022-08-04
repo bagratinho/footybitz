@@ -16,6 +16,7 @@ import { RouteComponentProps, useHistory } from "react-router-dom";
 import { EntityImagesMap } from "components/EntityImage";
 import { transparentize } from "utils"
 import NumberInput from "components/NumberInput";
+import NoResult from "components/NoResult";
 
 
 export interface IMatchdayProps extends RouteComponentProps<{matchdayId: string}> {
@@ -312,26 +313,7 @@ const Matchday = (props: IMatchdayProps) =>  {
     }
     if (!matches.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-            flexDirection: "column",
-          }}
-        >
-          <Outlet
-            sx={{
-              fontSize: 80,
-              mb: 1,
-            }}
-          />
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     return matches.map(item => {

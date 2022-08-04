@@ -16,7 +16,6 @@ export default (props: ISidebarNavigationProps) =>  {
   const { signOut, user } = useAuth();
   const { isLoading, isError, data } = useQuery(["user"], () => getUserData(user.uid));
   if (isLoading || isError) { return null; }
-  console.log(data);
   return (
     <StickyBar
       position="top"
@@ -82,7 +81,7 @@ export default (props: ISidebarNavigationProps) =>  {
               ml: "auto",
             }}
           >
-            <ArrowDropDown/>
+            <Settings/>
           </IconButton>
         </Box>
         <Box
@@ -153,7 +152,3 @@ export default (props: ISidebarNavigationProps) =>  {
     </StickyBar>
   );
 }
-
-
-const StyledContainer = styled(Box)`
-`;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person, SecurityOutlined } from "@mui/icons-material";
+import { Sports, FormatListNumbered, EmojiEventsOutlined, HelpOutline, Person, SecurityOutlined, ScoreboardOutlined } from "@mui/icons-material";
 import Dictionary from "components/Dictionary";
 import { NavLink } from "react-router-dom";
 import { Box, styled, Typography } from "@mui/material";
@@ -27,7 +27,7 @@ export default (props: ISidebarNavigationProps) =>  {
       <ul>
         <li>
           <NavLink exact activeClassName="active" to="/">
-            <Sports/><Dictionary label="matchdays"/>
+            <ScoreboardOutlined/><Dictionary label="matchdays"/>
           </NavLink>
         </li>
         <li>

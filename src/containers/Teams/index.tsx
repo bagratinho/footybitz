@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import ConfirmationPrompt from "components/ConfirmationPrompt";
 import { EntityImagesMap } from "components/EntityImage";
 import EntitySelect, { IEntitySelectOption } from "components/EntitySelect";
+import NoResult from "components/NoResult";
 export interface ITeamsProps {
   className?: string;
   intl?: any;
@@ -167,19 +168,7 @@ const Teams = (props: ITeamsProps) =>  {
     }
     if (!teams.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     return teams.map(item => {

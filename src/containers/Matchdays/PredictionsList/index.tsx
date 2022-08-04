@@ -6,10 +6,12 @@ import { FormattedNumber } from "react-intl";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPredictions } from "api/queries";
+import NoResult from "components/NoResult";
 
 export interface IPredictionsListProps {
   className?: string;
   matchdayId: string;
+  predictionsCount: number;
 }
 
 export default (props: IPredictionsListProps) =>  {
@@ -37,19 +39,7 @@ export default (props: IPredictionsListProps) =>  {
     }
     if (!predictions.length) {
       return (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            width: "100%",
-            height: 300,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            <Dictionary label="nothingToShow"/>
-          </Typography>
-        </Box>
+        <NoResult/>
       );
     }
     const predictionsList = predictions.map((i: any) => (
@@ -123,7 +113,7 @@ export default (props: IPredictionsListProps) =>  {
             >
               <Typography variant="h6" component="h2" color="textPrimary">
                 <FormattedNumber
-                  value={1218}
+                  value={props.predictionsCount}
                 />
               </Typography>
               <Typography variant="subtitle2" color="text.secondary">
