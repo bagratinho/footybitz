@@ -13,7 +13,7 @@ export const hexToRgbA = (hex: string) => {
   throw new Error('Bad Hex');
 }
 
-export const transparentize = (hex: string, alpha: 0.8) => {
+export const transparentize = (hex: string, alpha: number = 0.8) => {
   let c;
   if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
       c = hex.substring(1).split('');

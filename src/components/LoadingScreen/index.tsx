@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Box, CircularProgress, CssBaseline, useTheme } from "@mui/material";
+import { Box, CssBaseline, useTheme } from "@mui/material";
+import Loading from "components/Loading";
 
 export interface IHowToPlayProps {
   className?: string;
@@ -15,10 +16,12 @@ export default (props: IHowToPlayProps) =>  {
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
+        width: "100%",
+        position: "fixed",
       }}
     >
       <CssBaseline/>
-      <CircularProgress color="primary" size={60} />
+      <Loading/>
     </Box>
   );
 }

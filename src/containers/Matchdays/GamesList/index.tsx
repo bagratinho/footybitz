@@ -4,13 +4,15 @@ import Match, { IMatchProps } from "containers/Match";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import { useState } from "react";
-import { db } from "firebaseInstance";
-import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { transparentize } from "utils"
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { useAuth } from "context/AuthContext";
 import { getMatches, getPrediction } from "api/queries";
 import NoResult from "components/NoResult";
+import Loading from "components/Loading";
+import { PredictionConfirmation } from "./PredictionConfirmation";
+import MatchRow from "components/MatchRow";
+import { sendPrediction } from "api/mutations";
 
 export interface IGamesListProps {
   className?: string;
@@ -19,9 +21,17 @@ export interface IGamesListProps {
 }
 
 export default (props: IGamesListProps) =>  {
-  const [matchScores, setMatchScores] = useState<Object>({});
   const theme = useTheme();
   const { user } = useAuth();
+  const [matchScores, setMatchScores] = useState<Object>({});
+  const [isPredictionConfirmationOpen, setIsPredictionConfirmationOpen] = useState<boolean>(false);
+  const sendPredictionMutation = useMutation(sendPrediction, {
+    onSuccess: () => {
+      props.refetchMatchdays();
+      predictionData.refetch();
+      setIsPredictionConfirmationOpen(false)
+    },
+  });
 
   const [ matchdayData, predictionData] = useQueries({
     queries: [
@@ -47,26 +57,15 @@ export default (props: IGamesListProps) =>  {
     })
   }
 
-  const sendPrediction = async () => {
-    const collectionName = `matchdays/${props.matchdayId}/predictions`;
-    const newPredictionRef = doc(collection(db, collectionName), user.uid);
-    const unsubscribe = onSnapshot(doc(db, collectionName, newPredictionRef.id), (doc) => {
-      unsubscribe();
-    });
-    await setDoc(newPredictionRef, {
-      scores: Object.keys(matchScores).map((matchId: string) => ({
-        matchId,
-        score: matchScores[matchId],
-      })),
-    }).then(r => {
-      props.refetchMatchdays();
-      predictionData.refetch();
-    }).catch(e => {
-
-    });
+  const onPredictionConfirm = async () => {
+    sendPredictionMutation.mutate({
+      matchdayId: props.matchdayId,
+      uid: user.uid,
+      matchScores,
+    })
   }
 
-  const isLoading = matchdayData.isLoading || predictionData.isLoading;
+  const isLoading = matchdayData.isLoading;
   const matches = matchdayData.data;
   const renderMatches = () => {
     if (isLoading) {
@@ -80,7 +79,7 @@ export default (props: IGamesListProps) =>  {
             height: 300,
           }}
         >
-          <CircularProgress color="primary" />
+          <Loading/>
         </Box>
       );
     }
@@ -112,6 +111,35 @@ export default (props: IGamesListProps) =>  {
     });
   };
 
+  const renderPrediction = () => {
+    if (isLoading || !matchScores) { return null; }
+
+    return matches!.map(i => {
+      return (
+        <MatchRow
+          key={i.id}
+          score={matchScores[i.id]}
+          homeTeamName={i.homeTeamName}
+          homeTeamAvatar={i.homeTeamAvatar}
+          awayTeamName={i.awayTeamName}
+          awayTeamAvatar={i.awayTeamAvatar}
+        />
+      );
+    })
+  }
+
+  const onPredictionConfirmationClose = () => {
+    setIsPredictionConfirmationOpen(false);
+  }
+
+  const onPredictionConfirmationOpen = () => {
+    setIsPredictionConfirmationOpen(true);
+  }
+
+  const toggleEditMode = () => {
+    predictionData.remove();
+  }
+
   const matchesWithPrediction = Object.keys(matchScores).reduce((sum: any[], item: string) => {
     return Object.keys(matchScores[item]).length === 2 ? [...sum, matchScores[item]] : sum
   }, []);
@@ -122,7 +150,8 @@ export default (props: IGamesListProps) =>  {
       >
         {renderMatches()}
       </Box>
-      {matches && matches.length ? <StickyBar position="bottom">
+      {matches && matches.length ?
+      <StickyBar position="bottom">
         <Box
           display="flex"
           alignItems="center"
@@ -150,13 +179,21 @@ export default (props: IGamesListProps) =>  {
             color="primary"
             variant="contained"
             disableElevation
-            disabled={matchesWithPrediction.length !== matches.length}
-            onClick={sendPrediction}
+            disabled={predictionData.data ? false : matchesWithPrediction.length !== matches.length}
+            onClick={predictionData.data ? toggleEditMode : onPredictionConfirmationOpen}
           >
             <Dictionary label="send"/>
           </Button>
         </Box>
       </StickyBar> : null}
+      <PredictionConfirmation
+        onClose={onPredictionConfirmationClose}
+        onSave={onPredictionConfirm}
+        isOpen={isPredictionConfirmationOpen}
+        isLoading={sendPredictionMutation.isLoading}
+      >
+        {renderPrediction()}
+      </PredictionConfirmation>
     </>
   );
 }

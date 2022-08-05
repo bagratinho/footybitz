@@ -55,3 +55,4 @@ export const getPredictions = async (matchdayId: string, page: number) => {
     ...doc.data(),
   }));
 }
+

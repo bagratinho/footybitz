@@ -6,24 +6,34 @@ import AuthProvider from "context/AuthContext";
 import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+const colors = {
+  primary: "#781df2",
+  secondary: "#fff",
+  backgroundDefault: "#15202B",
+  backgroundPaper: "#1e2731",
+  textPrimary: "#fff",
+  textSecondary: "#8899a6",
+  divider: "#38444d",
+}
+
 const muiTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#781df2",
+      main: colors.primary,
     },
     secondary: {
-      main: "#fff",
+      main: colors.secondary,
     },
     background: {
-      default: "#15202B",
-      paper: "#1e2731",
+      default: colors.backgroundDefault,
+      paper: colors.backgroundPaper,
     },
     text: {
-      primary: "#ffffff",
-      secondary: "#8899a6",
+      primary: colors.secondary,
+      secondary: colors.textSecondary,
     },
-    divider: "#38444d",
+    divider: colors.divider,
   },
   components: {
     MuiList: {
@@ -37,14 +47,14 @@ const muiTheme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: "solid 1px #38444d",
+          borderBottom: `solid 1px ${ colors.divider}`,
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: "#1e2731",
+          backgroundColor: colors.backgroundPaper,
           backgroundImage: "none",
         },
       },
@@ -55,9 +65,37 @@ const muiTheme = createTheme({
           padding: 24,
           paddingTop: 16,
           paddingBottom: 16,
-          background: "rgba(0,0,0,0.1)",
+          background: colors.backgroundDefault,
         },
       },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          background: colors.backgroundDefault,
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          paddingTop: "20px !important",
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: "20px",
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backdropFilter: "blur(5px)",
+        }
+      }
     },
     MuiInputBase: {
       styleOverrides: {
@@ -72,12 +110,12 @@ const muiTheme = createTheme({
           padding: 0,
           borderRadius: 4,
           overflow: "hidden",
-          backgroundColor: "#1e2731",
+          backgroundColor: colors.backgroundPaper,
           "&.Mui-focused": {
-            backgroundColor: "#1e2731",
+            backgroundColor: colors.backgroundPaper,
           },
           "&:hover": {
-            backgroundColor: "#1e2731",
+            backgroundColor: colors.backgroundPaper,
           },
         },
         input: {

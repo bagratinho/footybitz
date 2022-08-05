@@ -1,8 +1,6 @@
 import React from "react";
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import SidebarNavigation from "containers/SidebarNavigation";
-import Dictionary from "components/Dictionary";
-import { useAuth } from "context/AuthContext";
 import UserWidget from "containers/UserWidget";
 
 const PageWrapper: React.FC = (props: any) => {

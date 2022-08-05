@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPredictions } from "api/queries";
 import NoResult from "components/NoResult";
+import Loading from "components/Loading";
 
 export interface IPredictionsListProps {
   className?: string;
@@ -33,7 +34,7 @@ export default (props: IPredictionsListProps) =>  {
             height: 300,
           }}
         >
-          <CircularProgress color="primary" />
+          <Loading/>
         </Box>
       );
     }

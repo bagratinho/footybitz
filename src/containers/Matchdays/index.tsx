@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, FormControl, MenuItem, Select, Tab, Tabs, Typography, useTheme } from "@mui/material";
+import { Box, FormControl, MenuItem, Select, Skeleton, Tab, Tabs, Typography, useTheme } from "@mui/material";
 import StickyBar from "components/StickyBar";
 import Dictionary from "components/Dictionary";
 import TabPanel from "components/TabPanel";
@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { transparentize } from "utils"
 import { getMatchdays } from "api/queries";
+import Loading from "components/Loading";
 
 export interface IMatchdaysProps {
   className?: string;
@@ -45,6 +46,7 @@ export default (props: IMatchdaysProps) =>  {
   }
 
   const getMatchdaysControl = () => {
+    if (isLoading) { return null; }
     const options = matchdays.map(i => {
       return (
         <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
@@ -62,13 +64,6 @@ export default (props: IMatchdaysProps) =>  {
         </Select>
       </FormControl>
     ) : null;
-  }
-  if (isLoading) {
-    return (
-      <PageWrapper>
-        asd
-      </PageWrapper>
-    );
   }
 
   return (
@@ -120,19 +115,32 @@ export default (props: IMatchdaysProps) =>  {
         <Box
           pt="108px"
         >
-          <TabPanel value={selectedTab} index={0}>
-            {selectedMatchdayId ?
-            <GamesList
-              matchdayId={selectedMatchdayId}
-              refetchMatchdays={refetch}
-            /> : null}
-          </TabPanel>
-          <TabPanel value={selectedTab} index={1}>
-            <PredictionsList
-              predictionsCount={getPredictionsCount()}
-              matchdayId={selectedMatchdayId}
-            />
-          </TabPanel>
+          {isLoading ?
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            sx={{
+              width: "100%",
+              height: 300,
+            }}
+          >
+            <Loading/>
+          </Box> :
+          <>
+            <TabPanel value={selectedTab} index={0}>
+              <GamesList
+                matchdayId={selectedMatchdayId}
+                refetchMatchdays={refetch}
+              />
+            </TabPanel>
+            <TabPanel value={selectedTab} index={1}>
+              <PredictionsList
+                predictionsCount={getPredictionsCount()}
+                matchdayId={selectedMatchdayId}
+              />
+            </TabPanel>
+          </>}
         </Box>
       </Box>
     </PageWrapper>

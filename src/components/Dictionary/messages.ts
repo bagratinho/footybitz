@@ -313,4 +313,8 @@ export default defineMessages({
     id: "joinedDate",
     defaultMessage: "Joined: {date}",
   },
+  predictionConfirmationTitle: {
+    id: "predictionConfirmationTitle",
+    defaultMessage: "Confirm your prediction",
+  },
 });

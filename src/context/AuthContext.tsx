@@ -10,7 +10,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../firebaseInstance";
-import LoadingScreen from "containers/LoadingScreen";
+import LoadingScreen from "components/LoadingScreen";
 import { getUserData } from "api/queries";
 
 const AuthContext = React.createContext<any|null>(null);

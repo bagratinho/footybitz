@@ -1,11 +1,10 @@
 import * as React from "react";
 import NumberInput from "./NumberInput";
 import Dictionary from "components/Dictionary";
-import * as images from "./images";
 import { styled } from "@mui/material/styles";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { FormattedDate } from "react-intl";
-import { EntityImage, EntityImagesMap } from "components/EntityImage";
+import { EntityImage } from "components/EntityImage";
 
 export interface IMatchProps {
   id: string;
@@ -129,8 +128,8 @@ export default (props: IMatchProps) => {
 
 
 const StyledContainer = styled(Box)`
-  color: #fff;
-  border-bottom: solid 1px #38444d;
+  color: ${props => props.theme.palette.secondary.main};
+  border-bottom: solid 1px ${props => props.theme.palette.divider};
   user-select: none;
   & .info {
     padding: 16px 16px 0;
@@ -192,7 +191,7 @@ const StyledContainer = styled(Box)`
         flex-direction: column;
         color: ${props => props.theme.palette.divider};
         font-family: "Kdam Thmor Pro";
-        & .result > div{
+        & .result > div {
           flex: 1;
           text-align: right;
           font-weight: 700;
